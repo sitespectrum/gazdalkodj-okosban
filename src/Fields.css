@@ -1,0 +1,260 @@
+/*Bottom-right*/
+.start
+{
+  width: 13.4%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+
+.first 
+{
+  width: 8.2%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 12.9%;
+}
+
+.second
+{
+  width: 8.2%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 20.8%;
+}
+
+.third
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 28.7%;
+}
+
+.fourth
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 36.9%;
+}
+
+.fifth
+{
+  width: 8.2%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 45.2%;
+}
+
+.sixth
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 53.3%;
+}
+
+.seventh
+{
+  width: 12.4%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 61.6%;
+}
+
+.eighth
+{
+  width: 8.24%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 69.9%;
+}
+
+.ninth
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 78.1%;
+}
+
+/*Bottom-left*/
+.tenth
+{
+  width: 13.5%;
+  float: right;
+  position: fixed;
+  bottom: 0;
+  right: 86.5%;
+}
+
+.eleventh
+{
+  width: 8.6%;
+  float: right;
+  position: fixed;
+  bottom: 19.4%;
+  right: 89%;
+  rotate: 90deg;
+}
+
+.twelfth
+{
+  width: 13.5%;
+  float: right;
+  position: fixed;
+  bottom: 38%;
+  right: 86.5%;
+}
+
+.thirteenth
+{
+  width: 8.9%;
+  float: right;
+  position: fixed;
+  bottom: 57%;
+  right: 89%;
+  rotate: 90deg;
+}
+
+/*Top-left*/
+.fourteenth
+{
+  width: 13.5%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 86.5%;
+}
+
+.fifteenth
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 78.1%;
+}
+
+.sixteenth
+{
+  width: 8.5%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 69.9%;
+}
+
+.seventeenth
+{
+  width: 10.47%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 60%;
+}
+
+.eighteenth
+{
+  width: 8.2%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 54%;
+}
+
+.nineteenth
+{
+  width: 8.25%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 46%; 
+}
+
+.twenteenth
+{
+  width: 8.56%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 37.5%;
+}
+
+.twenty-first
+{
+  width: 8.56%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 29.2%;
+}
+
+.twenty-second
+{
+  width: 8.56%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 21.15%;
+}
+
+.twenty-third
+{
+  width: 8.59%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: 12.85%;
+}
+
+/*Top-right*/
+.twenty-fourth
+{
+  width: 13.5%;
+  float: right;
+  position: fixed;
+  top: 0;
+  right: -0.6%;
+}
+
+.twenty-fifth
+{
+  width: 8.2%;
+  float: right;
+  position: fixed;
+  bottom: 57.45%;
+  right: 2.3%;
+  rotate: -90deg;
+}
+
+.twenty-sixth
+{
+  width: 12.9%;
+  float: right;
+  position: fixed;
+  bottom: 38%;
+  right: 0;
+  rotate: 180deg;
+}
+
+.twenty-seventh
+{
+  width: 8.6%;
+  float: right;
+  position: fixed;
+  bottom: 19.4%;
+  right: 1.8%;
+  rotate: -90deg;
+}
