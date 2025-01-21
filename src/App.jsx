@@ -8,15 +8,29 @@ import Players from './Players.jsx'
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  const rollDice = () => Math.floor(Math.random() * 2) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
-  const fields = [
+  const [playerMoney, setPlayerMoney] = useState([170000, 170000, 170000, 170000]);
+
+  const reducePlayerMoney = (playerIndex, amount) =>
+  {
+    setPlayerMoney((prevMoney) => {
+      const updatedMoney = [...prevMoney];
+      updatedMoney[playerIndex] -= amount;
+      alert(`Player ${playerIndex + 1} new balance: ${updatedMoney[playerIndex]} Ft`);
+;
+      return updatedMoney;
+    })
+  }
+
+  const fields = 
+  [
     {id: 0, name: "Start", x: 88.9, y: 80},
 
     {id: 1, name: "Mezo 1", x: 71.5, y: 80},
-    {id: 2, name: "Mezo 2", x: 64, y: 80},
+    {id: 2, name: "Mezo 2", x: 64, y: 80, action: () => reducePlayerMoney(currentPlayer, 1500)},
     {id: 3, name: "Mezo 3", x: 56.5, y: 80},
     {id: 4, name: "Mezo 4", x: 48.9, y: 80},
     {id: 5, name: "Mezo 5", x: 41.3, y: 80},
@@ -96,9 +110,10 @@ function App()
       <div className="game-board">
         <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
         <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
-        <Fields />
+        <p className='playermoney'>Bábu {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
+        <Fields/>
         <Players fields={fields} playerPositions={playerPositions} />
-        {ActivatePictures()};
+        {ActivatePictures()}
       </div>
     </div>
   );

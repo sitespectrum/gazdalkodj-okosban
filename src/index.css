@@ -113,3 +113,12 @@ button:disabled {
   rotate: -90deg;
   left: 38%;
 }
+
+.playermoney
+{
+  position: fixed;
+  left: 65%;
+  top: 30%;
+  font-weight: bold;
+  font-size: 1.5vw;
+}
