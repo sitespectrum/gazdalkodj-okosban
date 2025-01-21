@@ -8,22 +8,21 @@ import Players from './Players.jsx'
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 2) + 1;
+  const rollDice = () => Math.floor(Math.random() * 6) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
   const [playerMoney, setPlayerMoney] = useState([170000, 170000, 170000, 170000]);
 
-  const reducePlayerMoney = (playerIndex, amount) =>
-  {
+  const reducePlayerMoney = (playerIndex, amount) => {
     setPlayerMoney((prevMoney) => {
       const updatedMoney = [...prevMoney];
       updatedMoney[playerIndex] -= amount;
-      alert(`Player ${playerIndex + 1} new balance: ${updatedMoney[playerIndex]} Ft`);
-;
+  
       return updatedMoney;
-    })
-  }
+    });
+  };
+  
 
   const fields = 
   [
@@ -40,7 +39,7 @@ function App()
 
     {id: 9, name: "Mezo 9", x: 4, y: 88},
 
-    {id: 10, name: "Mezo 10", x: 8, y: 63},
+    {id: 10, name: "Mezo 10", x: 8, y: 63, action: () => reducePlayerMoney(currentPlayer, 5000)},
     {id: 11, name: "Mezo 11", x: 8, y: 45},
     {id: 12, name: "Mezo 12", x: 8, y: 28},
 
@@ -51,13 +50,11 @@ function App()
     {id: 16, name: "Mezo 16", x: 33.9, y: 12},
     {id: 17, name: "Mezo 17", x: 41.3, y: 12},
     {id: 18, name: "Mezo 18", x: 48.9, y: 12},
-    {id: 19, name: "Mezo 19", x: 56.5, y: 12},
+    {id: 19, name: "Mezo 19", x: 56.5, y: 12, action: () => reducePlayerMoney(currentPlayer, 15000)},
     {id: 20, name: "Mezo 20", x: 64, y: 12},
     {id: 21, name: "Mezo 21", x: 71.5, y: 12},
-    {id: 22, name: "Mezo 22", x: 79.2, y: 12},
-
+    {id: 22, name: "Mezo 22", x: 79.2, y: 12, action: () => reducePlayerMoney(currentPlayer, 10000)},
     {id: 23, name: "Mezo 23", x: 88.9, y: 12},
-
     {id: 24, name: "Mezo 24", x: 88.9, y: 28},
     {id: 25, name: "Mezo 25", x: 88.9, y: 45},
     {id: 26, name: "Mezo 26", x: 88.9, y: 64},
@@ -69,19 +66,30 @@ function App()
   //const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false);
   const [activePicture, setActivePicture] = useState(null);
 
-  const movePlayer = (playerIndex, steps) => 
-  {
+  const movePlayer = (playerIndex, steps) => {
     alert("Kör eleje: Bábu " + (playerIndex + 1));
-    alert("Dobott szám: " + steps)
+    alert("Dobott szám: " + steps);
     setIsThrowButtonDisabled(true);
-
+  
     setPlayerPositions((prevPositions) => {
       const newPositions = [...prevPositions];
-      newPositions[playerIndex] = (newPositions[playerIndex] + steps) % fields.length;
+      const newPosition = (newPositions[playerIndex] + steps) % fields.length;
+      newPositions[playerIndex] = newPosition;
+  
+      const newField = fields[newPosition];
+  
+      // Ellenőrizzük, hogy az akció még nem lett végrehajtva
+      if (newField.action && !newField.hasActionBeenExecuted) {
+        newField.action();
+        // Jelöljük, hogy az akció már végrehajtásra került
+        newField.hasActionBeenExecuted = true;
+      }
+  
       setActivePicture(newPositions[playerIndex] + 1);
       return newPositions;
     });
   };
+  
 
   const [currentPlayer, setCurrentPlayer] = useState(0);
 
