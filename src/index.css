@@ -1,8 +1,10 @@
 body
 {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: montserrat;
   line-height: 1.5;
   font-weight: 400;
+
+  overflow: hidden;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -12,4 +14,102 @@ body
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.throwButton
+{
+  width: 7%;
+  height: 5%;
+  left: 65%;
+  top: 42%;
+  position: fixed;
+  color: black;
+  font-size: 1.6vw;
+  border-radius: 7px;
+  background-color: white;
+}
+
+.nextPlayer
+{
+  width: 8%;
+  height: 5%;
+  left: 64.5%;
+  top: 50%;
+  position: fixed;
+  color: black;
+  font-size: 1.5vw;
+  border-radius: 7px;
+  background-color: white;
+}
+
+button:disabled {
+  background-color: grey;
+  color: white;
+  cursor: not-allowed;
+}
+
+.board {
+  height: 95%;
+  display: block;
+  margin: auto;
+}
+
+.fields {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 97vh;
+}
+
+.player {
+  position: absolute;
+  width: 2.5%;
+  transition: left 1s ease, top 1s ease;
+}
+
+.field-pic 
+{
+  position: absolute;
+  z-index: 20;
+  top: 27%;
+  left: 42.5%;
+  width: 15%;
+}
+
+.field-1
+{
+  width: 25%;
+  left: 37.5%;
+}
+
+.field-10
+{
+  width: 25%;
+  left: 37.5%;
+}
+
+.field-14
+{
+  width: 25%;
+  left: 37.5%;
+}
+
+.field-24
+{
+  width: 25%;
+  left: 37.5%;
+}
+
+.field-12
+{
+  width: 24%;
+  rotate: -90deg;
+  left: 38%;
+}
+
+.field-26
+{
+  width: 24%;
+  rotate: -90deg;
+  left: 38%;
 }
