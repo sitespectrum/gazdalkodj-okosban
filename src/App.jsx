@@ -6,6 +6,7 @@ import './Fields.css'
 import Fields from './Fields.jsx'
 import Players from './Players.jsx'
 import Sumasang from './Components/Sumasang.jsx'
+import Lucky from './Components/Lucky.jsx'
 
 
 function App() 
@@ -17,6 +18,7 @@ function App()
   const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
 
   const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState(null);
 
   const playerInventory = [0, 0, 0, 0];
   
@@ -198,8 +200,20 @@ function App()
 
       if (newPositions[playerIndex] === 3) 
       {
-        setShowPopup(false);
-        setTimeout(() => setShowPopup(true), 10);
+        setPopupContent(
+              <>
+              <img src="./src/Logos/Elza logo.png" className='elza'/>
+              <Sumasang onClose={() => setPopupContent(null)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
+              </>
+        );
+      }
+      if (newPositions[playerIndex] === 1 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17) 
+      {
+        setPopupContent(
+          <>
+            <Lucky onClose={() => setPopupContent(null)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
+          </>
+        )
       }
   
       setActivePicture(newPositions[playerIndex] + 1);
@@ -265,14 +279,21 @@ function App()
         </div>
         */}
         <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
-        {showPopup && (
+        {/* {showPopup && (
           <div className="popup-wrapper" onClick={() => setShowPopup(false)}>
             <div className="popup-content" onClick={(e) => e.stopPropagation()}>
               <img src="./src/Logos/Elza logo.png" className='elza'/>
               <Sumasang onClose={() => setShowPopup(false)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
             </div>
           </div>
-        )}
+        )} */}
+        {popupContent ? <>
+          <div className="popup-wrapper" onClick={() => setPopupContent(null)}>
+            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+              {popupContent}
+            </div>
+          </div>
+        </> : <></>}
         <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
         <p className='playermoney'>Bábu {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
         <Fields/>

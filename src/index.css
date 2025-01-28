@@ -172,6 +172,21 @@ input
   box-shadow: 0 4px 20px black;
 }
 
+.lucky
+{
+  position: fixed;
+  z-index: 30;
+  background-color: white;
+  padding: 30px;
+  color: black;
+  border-radius: 5px;
+  width: 35%;
+  height: 55%;
+  left: 30.5%;
+  top: 22%;
+  box-shadow: 0 4px 20px black;
+}
+
 .popup-wrapper {
   position: fixed;
   top: 0;
@@ -206,6 +221,19 @@ input
 }
 
 .sumasang-close
+{
+  background-color: #a1c900;
+  width: 8%;
+  height: 5%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: fixed;
+  left: 46%;
+  top: 75%;
+}
+
+.lucky-close
 {
   background-color: #a1c900;
   width: 8%;
