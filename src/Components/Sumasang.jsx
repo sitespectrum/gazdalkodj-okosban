@@ -1,15 +1,12 @@
-const Sumasang = ({player}) => 
-{
+import React from 'react';
+
+const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney }) => {
     return (
-        <div className="sumasang">
-        {player.map((money, index) => {
-            return (
-                <div className="sumasang">
-                    <h1></h1>
-                </div>
-            )})}
+        <div className='sumasang'>
+            <p>Sumasang 65" TV - 599 990 Ft <button className='buyButton' onClick={() => reducePlayerMoney(currentPlayer, 599990)}>Vásárlás</button></p>
+            <button className='sumasang-close' onClick={onClose}>Bezárás</button>
         </div>
-    )
-}
+    );
+  };  
 
 export default Sumasang

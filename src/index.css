@@ -1,6 +1,6 @@
 body
 {
-  font-family: montserrat;
+  font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -121,4 +121,116 @@ button:disabled {
   top: 30%;
   font-weight: bold;
   font-size: 1.5vw;
+}
+
+.cheats
+{
+  display: none;
+  z-index: 30;
+  position: fixed;
+  background-color: black;
+  padding: 30px;  
+  border-radius: 10px;
+  left: 43%;
+  top: 38%;
+}
+
+.close
+{
+  color: gray;
+  background-color: black;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.submit
+{
+  color: grey;
+  margin-left: 33%;
+  background-color: black;
+}
+
+input
+{
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.sumasang
+{
+  position: fixed;
+  z-index: 30;
+  background-color: white;
+  padding: 30px;
+  color: black;
+  border-radius: 5px;
+  width: 35%;
+  height: 55%;
+  left: 30.5%;
+  top: 22%;
+  box-shadow: 0 4px 20px black;
+}
+
+.popup-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-content {
+  position: relative;
+  background: linear-gradient(to bottom, white, #bae2fc);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  color: black;
+  width: 40%;
+  height: 75%;
+}
+
+.elza
+{
+  margin-left: 10px;
+  width: 28%;
+}
+
+.sumasang-close
+{
+  background-color: #a1c900;
+  width: 8%;
+  height: 5%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: fixed;
+  left: 46%;
+  top: 75%;
+}
+
+button
+{
+  cursor: pointer;
+}
+
+.sumasang p
+{
+  font-weight: bold;
+  font-size: 1.3vw;
+  margin-left: 15px;
+}
+
+.buyButton
+{
+  margin-left: 20%;
 }
