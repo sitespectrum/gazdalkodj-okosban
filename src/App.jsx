@@ -7,21 +7,20 @@ import Fields from './Fields.jsx'
 import Players from './Players.jsx'
 import Sumasang from './Components/Sumasang.jsx'
 import Lucky from './Components/Lucky.jsx'
+import Steelroad from './Components/Steelroad.jsx'
 
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 3) + 1;
+  const rollDice = () => Math.floor(Math.random() * 1) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
   const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
 
-  const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState(null);
 
-  const playerInventory = [0, 0, 0, 0];
-  
+  const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
   /*
   const openCheats = () =>
   {
@@ -62,6 +61,14 @@ function App()
       return updatedMoney;
     });
   };
+
+  const addItemToInventory = (playerIndex, item) => {
+    setPlayerInventory((prevInventory) => {
+      const updatedInventory = [...prevInventory];
+      updatedInventory[playerIndex] = [...updatedInventory[playerIndex], item];
+      return updatedInventory;
+    });
+  };
   
   const rollDiceAgain = () =>
   {
@@ -100,6 +107,18 @@ function App()
           }
 
           setActivePicture(nextPosition + 1);
+
+          setPopupContent(
+            <>
+              <Lucky
+                onClose={() => setPopupContent(null)}
+                currentPlayer={currentPlayer}
+                addPlayerMoney={addPlayerMoney}
+                reducePlayerMoney={reducePlayerMoney}
+                missRound={missRound}
+              />
+            </>
+          );
         }
       }, 1000);
       return newPositions;
@@ -127,8 +146,23 @@ function App()
       whosTurn();
       alert(`Bábu ${currentPlayer + 1} most nem dobhat.`);  
     }
-  }, [round, currentPlayer, missedRounds]);
-  
+
+    if (popupContent) 
+    {
+      setPopupContent(
+        <>
+          <div className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
+          <img src="./src/Logos/Elza logo.png" className='elza'/>
+          <Sumasang
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer} 
+            addItemToInventory={addItemToInventory} 
+            reducePlayerMoney={reducePlayerMoney} 
+          />
+        </>
+      );
+    }
+  }, [round, currentPlayer, missedRounds, playerMoney]);
 
   const fields = 
   [
@@ -137,7 +171,7 @@ function App()
     {id: 1, name: "Mezo 1", x: 71.5, y: 80},
     {id: 2, name: "Mezo 2", x: 64, y: 80, action: () => reducePlayerMoney(currentPlayer, 1500)},
     {id: 3, name: "Mezo 3", x: 56.5, y: 80},
-    {id: 4, name: "Mezo 4", x: 48.9, y: 80},
+    {id: 4, name: "Mezo 4", x: 48.9, y: 80, isStop: true},
     {id: 5, name: "Mezo 5", x: 41.3, y: 80},
     {id: 6, name: "Mezo 6", x: 33.9, y: 80},
     {id: 7, name: "Mezo 7", x: 26.4, y: 80},
@@ -146,7 +180,7 @@ function App()
     {id: 9, name: "Mezo 9", x: 4, y: 88},
 
     {id: 10, name: "Mezo 10", x: 8, y: 63, action: () => reducePlayerMoney(currentPlayer, 5000)},
-    {id: 11, name: "Mezo 11", x: 8, y: 45},
+    {id: 11, name: "Mezo 11", x: 8, y: 45, isStop: true},
     {id: 12, name: "Mezo 12", x: 8, y: 28},
 
     {id: 13, name: "Mezo 13", x: 8, y: 12, action: () => {tpPlayer(currentPlayer, 4)}},
@@ -155,14 +189,14 @@ function App()
     {id: 15, name: "Mezo 15", x: 26.4, y: 12},
     {id: 16, name: "Mezo 16", x: 33.9, y: 12},
     {id: 17, name: "Mezo 17", x: 41.3, y: 12},
-    {id: 18, name: "Mezo 18", x: 48.9, y: 12},
+    {id: 18, name: "Mezo 18", x: 48.9, y: 12, isStop: true},
     {id: 19, name: "Mezo 19", x: 56.5, y: 12, action: () => reducePlayerMoney(currentPlayer, 15000)},
     {id: 20, name: "Mezo 20", x: 64, y: 12},
     {id: 21, name: "Mezo 21", x: 71.5, y: 12},
     {id: 22, name: "Mezo 22", x: 79.2, y: 12, action: () => reducePlayerMoney(currentPlayer, 10000)},
     {id: 23, name: "Mezo 23", x: 88.9, y: 12, action: () => missRound(currentPlayer)},
     {id: 24, name: "Mezo 24", x: 88.9, y: 28},
-    {id: 25, name: "Mezo 25", x: 88.9, y: 45},
+    {id: 25, name: "Mezo 25", x: 88.9, y: 45, isStop: true},
     {id: 26, name: "Mezo 26", x: 88.9, y: 64, action: () => rollDiceAgain()},
 
     //{id: 27, name: "Börtön", x: 8, y: 80},
@@ -201,21 +235,49 @@ function App()
       if (newPositions[playerIndex] === 3) 
       {
         setPopupContent(
-              <>
-              <img src="./src/Logos/Elza logo.png" className='elza'/>
-              <Sumasang onClose={() => setPopupContent(null)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
-              </>
+          <>
+          <div className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
+          <img src="./src/Logos/Elza logo.png" className='elza'/>
+          <Sumasang
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer} 
+            addItemToInventory={addItemToInventory} 
+            reducePlayerMoney={reducePlayerMoney} 
+          />
+          </>
         );
       }
-      if (newPositions[playerIndex] === 1 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17) 
+      
+      if ([1,7,17].includes(newPositions[playerIndex])) 
       {
         setPopupContent(
           <>
-            <Lucky onClose={() => setPopupContent(null)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
+            <h1 className='title'>Szerencsemező</h1>
+            <Lucky
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              addPlayerMoney={addPlayerMoney}
+              reducePlayerMoney={reducePlayerMoney}
+            />
           </>
         )
       }
-  
+
+      if ([4,11,18,25].includes(newPositions[playerIndex]))
+      {
+        setPopupContent(
+        <>
+        <Steelroad onClose={() => setPopupContent(null)}
+          currentPlayer={currentPlayer} 
+          reducePlayerMoney={reducePlayerMoney} 
+          playerPositions={playerPositions} 
+          setPlayerPositions={setPlayerPositions} 
+          fields={fields}
+        />
+        </>
+        )
+
+      }
       setActivePicture(newPositions[playerIndex] + 1);
       return newPositions;
     });
@@ -234,7 +296,7 @@ function App()
     if (nextPlayer === 0) {
       setRound((prevRound) => prevRound + 1);
     }
-    
+
     setCurrentPlayer(nextPlayer);
     setIsThrowButtonDisabled(false);
   }
@@ -269,24 +331,7 @@ function App()
   return (
     <div>
       <div className="game-board">
-        {/*
-        <div className="cheats">  
-          <button className='close' onClick={() =>closeCheats()}>X</button><br />
-          <form onSubmit={(e) => handleSubmit(e, playerPositions, currentPlayer)}>
-            <input type="number" className="cheatInput" placeholder="Cheat code" />
-            <button type="submit">Submit</button>
-          </form>
-        </div>
-        */}
         <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
-        {/* {showPopup && (
-          <div className="popup-wrapper" onClick={() => setShowPopup(false)}>
-            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-              <img src="./src/Logos/Elza logo.png" className='elza'/>
-              <Sumasang onClose={() => setShowPopup(false)} currentPlayer={currentPlayer} reducePlayerMoney={reducePlayerMoney}/>
-            </div>
-          </div>
-        )} */}
         {popupContent ? <>
           <div className="popup-wrapper" onClick={() => setPopupContent(null)}>
             <div className="popup-content" onClick={(e) => e.stopPropagation()}>
@@ -294,8 +339,17 @@ function App()
             </div>
           </div>
         </> : <></>}
+        <div className="inventory">
+          <p>Bábu {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
+          <ul>
+            {playerInventory[currentPlayer].length > 0 ? (
+              playerInventory[currentPlayer].map((item, index) => <li key={index}>{item}</li>)
+            ) : (
+              <li>Nincs vásárolt termék</li>
+            )}
+          </ul>
+        </div>
         <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
-        <p className='playermoney'>Bábu {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
         <Fields/>
         <Players fields={fields} playerPositions={playerPositions} />
         {ActivatePictures()}
