@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 
-const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventory}) => {
+const ElzaAndIdea = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventory}) => {
   const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(false);
   const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(false);
   const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(false);
   const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(false);
   const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(false);
   const [isVButtonDisabled, setIsVButtonDisabled] = useState(false);
+  const [isKButtonDisabled, setIsKButtonDisabled] = useState(false);
+  const [isRButtonDisabled, setIsRButtonDisabled] = useState(false);
+  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(false);
 
   const handlePurchase = (item, price) => {
     reducePlayerMoney(currentPlayer, price);
@@ -14,14 +17,14 @@ const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventor
   };
 
   return (
-    <div className="sumasang">
+    <div className="elzaandidea">
       <p>
-        Sumasang 4K TV - 120 990 Ft
+        Sumasang 4K TV - 119 990 Ft
         <button
           className="buyButton"
           disabled={isTVButtonDisabled}
           onClick={() => {
-            handlePurchase('Sumasang 4K TV', 120990);
+            handlePurchase('Sumasang 4K TV', 119990);
             setIsTVButtonDisabled(true);
           }}
         >
@@ -34,7 +37,7 @@ const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventor
           className="buyButton"
           disabled={isWMButtonDisabled}
           onClick={() => {
-            handlePurchase('GL előltöltős mosógép', 100000);
+            handlePurchase('GL előltöltős mosógép', 99990);
             setIsWMButtonDisabled(true);
           }}
         >
@@ -47,7 +50,7 @@ const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventor
           className="buyButton"
           disabled={isDRButtonDisabled}
           onClick={() => {
-            handlePurchase('Boss előltöltős szárítógép', 130000);
+            handlePurchase('Boss előltöltős szárítógép', 129990);
             setIsDRButtonDisabled(true);
           }}
         >
@@ -93,11 +96,50 @@ const Sumasang = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventor
           Vásárlás
         </button>
       </p>
-      <button className="sumasang-close" onClick={onClose}>
+      <p>
+        Konyhabútor - 549 990 Ft
+        <button
+          className="buyButton"
+          disabled={isKButtonDisabled}
+          onClick={() => {
+            handlePurchase('Konyhabútor', 549990);
+            setIsKButtonDisabled(true);
+          }}
+        >
+          Vásárlás
+        </button>
+      </p>
+      <p>
+        Szobabútor - 999 990 Ft
+        <button
+          className="buyButton"
+          disabled={isRButtonDisabled}
+          onClick={() => {
+            handlePurchase('Szobabútor', 999990);
+            setIsRButtonDisabled(true);
+          }}
+        >
+          Vásárlás
+        </button>
+      </p>
+      <p>
+        Fürdőszobabútor - 349 990 Ft
+        <button
+          className="buyButton"
+          disabled={isBRButtonDisabled}
+          onClick={() => {
+            handlePurchase('Fürdőszobabútor', 349990);
+            setIsBRButtonDisabled(true);
+          }}
+        >
+          Vásárlás
+        </button>
+      </p>
+      <button className="eai-close" onClick={onClose}>
         Bezárás
       </button>
     </div>
   );
 };
 
-export default Sumasang;
+export default ElzaAndIdea;

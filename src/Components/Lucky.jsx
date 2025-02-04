@@ -3,23 +3,23 @@ import React, { useState } from "react";
 const luckyCards = [
   {
     id: 1,
-    text: "Kapsz 50,000 Ft-ot.",
-    action: (currentPlayer, { addPlayerMoney }) => addPlayerMoney(currentPlayer, 50000),
+    text: "Tipszmixen 100 000 forintot nyertél.",
+    action: (currentPlayer, { addPlayerMoney }) => addPlayerMoney(currentPlayer, 100000),
   },
   {
     id: 2,
-    text: "Fizess 200,000 Ft-ot.",
-    action: (currentPlayer, { reducePlayerMoney }) => reducePlayerMoney(currentPlayer, 200000),
+    text: "Étteremben ebédeltél, fizess 20 000 Ft-ot.",
+    action: (currentPlayer, { reducePlayerMoney }) => reducePlayerMoney(currentPlayer, 20000),
   },
   {
     id: 3,
-    text: "Elveszítettél 20,000 Ft-ot.",
+    text: "Szeretsz focizni, ezért meglepted magad egy 20 000 Ft értékű Pumba cipővel.",
     action: (currentPlayer, { reducePlayerMoney }) => reducePlayerMoney(currentPlayer, 20000),
   },
   {
     id: 4,
-    text: "Kapsz 70,000 Ft-ot.",
-    action: (currentPlayer, { addPlayerMoney }) => addPlayerMoney(currentPlayer, 70000),
+    text: "Munkahelyeden túlóráztál, ezért kapsz 60 000 forintot.",
+    action: (currentPlayer, { addPlayerMoney }) => addPlayerMoney(currentPlayer, 60000),
   },
 ];
 
@@ -33,13 +33,19 @@ const Lucky = ({ onClose, currentPlayer, addPlayerMoney, reducePlayerMoney }) =>
     onClose();
   };
 
+  const [flipped, setFlipped] = useState(false);
+
+    const handleFlip = () => {
+    setFlipped(!flipped);
+    };
+
+
   return (
     <div className="lucky">
-      <h2>Szerencsekártya</h2>
-      <p>{currentCard.text}</p>
-      <button onClick={handleCardAction}>
-        OK
-      </button>
+        <div className={`luckycard-front ${flipped ? "animate" : ""}`}><p>Szerencsekártya</p></div>
+        <div className={`luckycard-text ${flipped ? "animate" : ""}`}><p>{currentCard.text}</p></div>
+        <button className="flip-button" onClick={handleFlip}>Húzás</button>
+        <button className="close-lucky" onClick={handleCardAction}>Bezárás</button>
     </div>
   );
 };

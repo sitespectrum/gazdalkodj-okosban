@@ -5,14 +5,19 @@ import './App.css'
 import './Fields.css'
 import Fields from './Fields.jsx'
 import Players from './Players.jsx'
-import Sumasang from './Components/Sumasang.jsx'
+import Elza from './Components/Elza.jsx'
 import Lucky from './Components/Lucky.jsx'
 import Steelroad from './Components/Steelroad.jsx'
+import Idea from './Components/Idea.jsx'
+import ElzaAndIdea from './Components/ElzaAndIdea.jsx'
+import Casino from './Components/Casino.jsx'
+import Cheats from './Components/Cheats.jsx'
+import Carshop from './Components/Carshop.jsx'
 
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 1) + 1;
+  const rollDice = () => Math.floor(Math.random() * 3) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
@@ -21,27 +26,7 @@ function App()
   const [popupContent, setPopupContent] = useState(null);
 
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
-  /*
-  const openCheats = () =>
-  {
-    const cheatsMenu = document.querySelector(".cheats");
-    cheatsMenu.style.display = "block";
-  }
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") 
-    {
-      openCheats();
-    }
-  });
-
-  const closeCheats = () =>
-  {
-    const cheatsMenu = document.querySelector(".cheats");
-    cheatsMenu.style.display = "none";
-  }
-  */
-  
   const reducePlayerMoney = (playerIndex, amount) => 
     {
     setPlayerMoney((prevMoney) => {
@@ -108,8 +93,10 @@ function App()
 
           setActivePicture(nextPosition + 1);
 
+          setPopupClass("lucky");
           setPopupContent(
             <>
+              <h1 className='title'>Szerencsemező</h1>
               <Lucky
                 onClose={() => setPopupContent(null)}
                 currentPlayer={currentPlayer}
@@ -145,22 +132,6 @@ function App()
     if (currentPlayer !== undefined && missedRounds.length > 0 && missedRounds[currentPlayer] >= round) {
       whosTurn();
       alert(`Bábu ${currentPlayer + 1} most nem dobhat.`);  
-    }
-
-    if (popupContent) 
-    {
-      setPopupContent(
-        <>
-          <div className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
-          <img src="./src/Logos/Elza logo.png" className='elza'/>
-          <Sumasang
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer} 
-            addItemToInventory={addItemToInventory} 
-            reducePlayerMoney={reducePlayerMoney} 
-          />
-        </>
-      );
     }
   }, [round, currentPlayer, missedRounds, playerMoney]);
 
@@ -199,13 +170,14 @@ function App()
     {id: 25, name: "Mezo 25", x: 88.9, y: 45, isStop: true},
     {id: 26, name: "Mezo 26", x: 88.9, y: 64, action: () => rollDiceAgain()},
 
-    //{id: 27, name: "Börtön", x: 8, y: 80},
+    //{id: 32, name: "Börtön", x: 8, y: 80},
   ]
 
   const [isThrowButtonDisabled, setIsThrowButtonDisabled] = useState(false);
   //const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false);
   const [activePicture, setActivePicture] = useState(null);
   const [executedActions, setExecutedActions] = useState(new Array(fields.length).fill(false));
+  const [popupClass, setPopupClass] = useState(null);
 
   const movePlayer = (playerIndex, steps) => 
     {  
@@ -214,42 +186,59 @@ function App()
   
     setPlayerPositions((prevPositions) =>
       {
-      const newPositions = [...prevPositions];
-      const newPosition = (newPositions[playerIndex] + steps) % fields.length;
-      newPositions[playerIndex] = newPosition;
+        const newPositions = [...prevPositions];
+        let newPosition = newPositions[playerIndex] + steps;
+        
+        const crossedStart = newPosition > 27;
+        
+        newPosition = newPosition % 27;
+        
+        if (crossedStart) {
+          console.log(`Pénz hozzáadva a ${currentPlayer}. játékosnak`);
+          addPlayerMoney(currentPlayer, 150000);
+        }
+        
+        newPositions[playerIndex] = newPosition; 
+        setPlayerPositions(newPositions);
+        
   
-      const currentField = fields[newPosition];
-  
-      if (currentField.action) {
-        setExecutedActions((prev) => {
-          if (!prev[newPosition]) {
-            currentField.action();
-            const updated = [...prev];
-            updated[newPosition] = true;
-            return updated;
-          }
-          return prev;
-        });
-      }
+        const currentField = fields[newPosition];
 
+        if (currentField?.action) {
+          setExecutedActions((prev) => {
+            const updated = [...prev];
+        
+            if (!updated[newPosition]) {
+              updated[newPosition] = true; 
+              currentField.action();
+            }
+        
+            return updated;
+          });
+        }
+        
       if (newPositions[playerIndex] === 3) 
       {
+        setPopupClass("elza");
         setPopupContent(
           <>
           <div className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
           <img src="./src/Logos/Elza logo.png" className='elza'/>
-          <Sumasang
+          <Elza
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer} 
             addItemToInventory={addItemToInventory} 
-            reducePlayerMoney={reducePlayerMoney} 
+            reducePlayerMoney={reducePlayerMoney}
+            playerMoney={playerMoney}
+            setPlayerMoney={setPlayerMoney}
           />
           </>
         );
       }
       
-      if ([1,7,17].includes(newPositions[playerIndex])) 
+      if (newPositions[playerIndex] === 15 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17)
       {
+        setPopupClass("lucky");
         setPopupContent(
           <>
             <h1 className='title'>Szerencsemező</h1>
@@ -263,10 +252,12 @@ function App()
         )
       }
 
-      if ([4,11,18,25].includes(newPositions[playerIndex]))
+      if ((newPositions[playerIndex]) === 4 || (newPositions[playerIndex]) === 11 || (newPositions[playerIndex]) === 18 || (newPositions[playerIndex]) === 25)
       {
+        setPopupClass("steelroad");
         setPopupContent(
         <>
+        <img src="./src/Logos/MKV logo.png" className='steelroad-logo'/>
         <Steelroad onClose={() => setPopupContent(null)}
           currentPlayer={currentPlayer} 
           reducePlayerMoney={reducePlayerMoney} 
@@ -276,8 +267,72 @@ function App()
         />
         </>
         )
-
       }
+
+      if (newPositions[playerIndex] === 20)
+      {
+        setPopupClass("idea");
+        setPopupContent(
+          <>
+          <img src="./src/Logos/Idea logo.png" className='idea-logo'/>
+          <Idea 
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer}
+            addItemToInventory={addItemToInventory} 
+            reducePlayerMoney={reducePlayerMoney} 
+          />
+          </>
+        )
+      }
+
+      if (newPositions[playerIndex] === 6)
+      {
+        setPopupClass("elzaandidea");
+        setPopupContent(
+          <>
+          <h1 className='eai-title'>Bevásárlóközpont</h1>
+          <ElzaAndIdea
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer} 
+            addItemToInventory={addItemToInventory} 
+            reducePlayerMoney={reducePlayerMoney}
+          />
+          </>
+        )
+      }
+
+      if (newPositions[playerIndex] === 1)
+      {
+        setPopupClass("carshop");
+        setPopupContent(
+          <>
+            <Carshop
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              reducePlayerMoney={reducePlayerMoney}
+              playerMoney={playerMoney}
+            />
+          </>
+        )
+      }
+
+      if (newPositions[playerIndex] === 12) 
+        {
+          setPopupContent(
+            <>
+            <Casino
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              reducePlayerMoney={reducePlayerMoney}
+              addPlayerMoney={addPlayerMoney}
+              playerMoney={playerMoney}
+            >
+              <div key={currentPlayer} className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
+            </Casino>
+            </>
+          );
+        }
+
       setActivePicture(newPositions[playerIndex] + 1);
       return newPositions;
     });
@@ -333,14 +388,14 @@ function App()
       <div className="game-board">
         <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
         {popupContent ? <>
-          <div className="popup-wrapper" onClick={() => setPopupContent(null)}>
-            <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+          <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
+            <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
               {popupContent}
             </div>
           </div>
         </> : <></>}
         <div className="inventory">
-          <p>Bábu {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
+          <p>Játékos {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
           <ul>
             {playerInventory[currentPlayer].length > 0 ? (
               playerInventory[currentPlayer].map((item, index) => <li key={index}>{item}</li>)
