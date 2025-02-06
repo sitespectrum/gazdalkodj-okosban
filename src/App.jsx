@@ -17,15 +17,25 @@ import Carshop from './Components/Carshop.jsx'
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 3) + 1;
+  const rollDice = () => Math.floor(Math.random() * 6) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
-  const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
+  const [playerMoney, setPlayerMoney] = useState([1200000, 1200000, 1200000, 1200000]);
 
   const [popupContent, setPopupContent] = useState(null);
 
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
+
+  const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
+
+  const updatePlayerHasCar = (playerIndex) => {
+    setPlayerHasCar((prev) => {
+      const updated = [...prev];
+      updated[playerIndex] = 1;
+      return updated;
+    });
+  };
 
   const reducePlayerMoney = (playerIndex, amount) => 
     {
@@ -61,7 +71,50 @@ function App()
     rollDice();
   }
 
-  const tpPlayer = (playerIndex, steps) => {
+  const tpPlayerCar = (playerIndex, steps, playerHasCar) => {
+    if (playerHasCar[playerIndex] === 1) {
+      setPlayerPositions((prevPositions) => {
+        const newPositions = [...prevPositions];
+        let currentPosition = newPositions[playerIndex];
+
+        setPlayerPositions((prevPositions) => {
+          const newPositions = [...prevPositions];
+          newPositions[playerIndex] = currentPosition;
+          return newPositions;
+        });
+
+        setTimeout(() => {
+
+          let nextPosition = currentPosition;
+    
+          for (let i = 1; i <= steps; i++) {
+            nextPosition = (nextPosition + 1) % fields.length;
+
+            setPlayerPositions((prevPositions) => {
+              const newPositions = [...prevPositions];
+              newPositions[playerIndex] = nextPosition;
+              return newPositions;
+            });
+
+            setActivePicture(newPositions[playerIndex] + 1);
+            const currentField = fields[nextPosition];
+            if (currentField.action) {
+              currentField.action();
+            }
+
+            setActivePicture(nextPosition + 1);
+          }
+        }, 1000);
+        return newPositions;
+      });
+    }
+
+    else {
+      return;
+    }
+  };
+
+  const tpPlayerPlane = (playerIndex, steps) => {
     setPlayerPositions((prevPositions) => {
       const newPositions = [...prevPositions];
       let currentPosition = newPositions[playerIndex];
@@ -154,11 +207,11 @@ function App()
     {id: 11, name: "Mezo 11", x: 8, y: 45, isStop: true},
     {id: 12, name: "Mezo 12", x: 8, y: 28},
 
-    {id: 13, name: "Mezo 13", x: 8, y: 12, action: () => {tpPlayer(currentPlayer, 4)}},
+    {id: 13, name: "Mezo 13", x: 8, y: 12, action: () => {tpPlayerPlane(currentPlayer, 4)}},
 
     {id: 14, name: "Mezo 14", x: 18.9, y: 12},
     {id: 15, name: "Mezo 15", x: 26.4, y: 12},
-    {id: 16, name: "Mezo 16", x: 33.9, y: 12},
+    {id: 16, name: "Mezo 16", x: 33.9, y: 12, action: () => {tpPlayerCar(currentPlayer, 10, playerHasCar)}},
     {id: 17, name: "Mezo 17", x: 41.3, y: 12},
     {id: 18, name: "Mezo 18", x: 48.9, y: 12, isStop: true},
     {id: 19, name: "Mezo 19", x: 56.5, y: 12, action: () => reducePlayerMoney(currentPlayer, 15000)},
@@ -236,7 +289,7 @@ function App()
         );
       }
       
-      if (newPositions[playerIndex] === 15 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17)
+      if (newPositions[playerIndex] === 1 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17)
       {
         setPopupClass("lucky");
         setPopupContent(
@@ -301,16 +354,18 @@ function App()
         )
       }
 
-      if (newPositions[playerIndex] === 1)
+      if (newPositions[playerIndex] === 15)
       {
         setPopupClass("carshop");
         setPopupContent(
           <>
+          <h1 className='car-title'>Autóvásárlás</h1>
             <Carshop
               onClose={() => setPopupContent(null)}
               currentPlayer={currentPlayer}
               reducePlayerMoney={reducePlayerMoney}
               playerMoney={playerMoney}
+              updatePlayerHasCar={updatePlayerHasCar}
             />
           </>
         )
