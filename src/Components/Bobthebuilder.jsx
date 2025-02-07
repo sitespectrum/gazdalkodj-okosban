@@ -28,7 +28,9 @@ const Bobthebuilder = ({ onClose, currentPlayer, playerInventory, playerMoney, r
             <button
                 className="bobthebuilder-close"
                 onClick={onClose}
-            ></button>
+            >
+                Bezárás
+            </button>
         </div>
     );
 };

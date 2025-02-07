@@ -32,7 +32,8 @@ export const purchaseableItems = [
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  //const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  const rollDice = () => 14;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
@@ -380,6 +381,7 @@ function App()
         setPopupClass("bobthebuilder");
         setPopupContent(
           <>
+          <h1 className='title'>Házépítés</h1>
           <Bobthebuilder
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer}

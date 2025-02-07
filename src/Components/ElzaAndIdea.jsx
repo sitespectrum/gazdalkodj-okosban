@@ -12,8 +12,14 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
   const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Fürdőszobabútor"));
 
   const handlePurchase = (item, price) => {
-    reducePlayerMoney(currentPlayer, price);
-    addItemToInventory(currentPlayer, item);
+    if (playerMoney[currentPlayer] >= price) {
+      reducePlayerMoney(currentPlayer, price);
+      addItemToInventory(currentPlayer, item);
+    }
+
+    else {
+      alert("Nincs elég pénzed!");
+    }
   };
 
   return (
