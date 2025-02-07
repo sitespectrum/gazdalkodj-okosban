@@ -50,8 +50,8 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
 
     const shouldFine = Math.random();
     if (shouldFine < 0.5) {
-      reducePlayerMoney(currentPlayer, 20000);
-      alert(`Bábu ${currentPlayer + 1} büntetést kapott! 20000 Ft levonva.`);
+      reducePlayerMoney(currentPlayer, 40000);
+      alert(`Bábu ${currentPlayer + 1} büntetést kapott! 40000 Ft levonva.`);
     }
 
 

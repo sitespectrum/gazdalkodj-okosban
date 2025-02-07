@@ -159,31 +159,16 @@ input
 
 .sumasang
 {
-  position: fixed;
+  position: absolute;
+  top: 110px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   z-index: 30;
+  padding-top: 30px;
   background-color: white;
-  padding: 30px;
   color: black;
   border-radius: 5px;
-  width: 35%;
-  height: 55%;
-  left: 30.5%;
-  top: 22%;
-  box-shadow: 0 4px 20px black;
-}
-
-.lucky
-{
-  position: fixed;
-  z-index: 30;
-  background-color: lightblue;
-  padding: 30px;
-  color: black;
-  border-radius: 5px;
-  width: 35%;
-  height: 55%;
-  left: 30.5%;
-  top: 22%;
   box-shadow: 0 4px 20px black;
 }
 
@@ -212,7 +197,22 @@ input
   color: black;
   width: 40%;
   height: 75%;
-} 
+}
+
+.lucky
+{
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  background-color: lightblue;
+  padding: 30px;
+  color: black;
+  border-radius: 5px;
+  box-shadow: 0 4px 20px black;
+}
 
 .popup-wrapper-lucky {
   position: fixed;
@@ -243,36 +243,49 @@ input
 
 .luckycard-front
 {
-  position: fixed;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 110px;
   background-color: #fff77e;
-  width: 365px;
+  max-width: 365px;
+  min-width: 365px;
+  max-height: 60px;
+  min-height: 60px;
   padding-top: 70px;
   padding-bottom: 70px;
   text-align: center;
   border-radius: 15px;
   border: black solid 2px;
   box-shadow: 2px 2px 20px black;
-  left: 38%;
-  top: 35%;
   font-weight: bold;
   z-index: 10001;
 }
 
 .luckycard-text
 {
-  position: fixed;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -205px;
   background-color: #fff77e;
-  width: 365px;
+  max-width: 325px;
+  min-width: 325px;
+  max-height: 60px;
+  min-height: 60px;
   padding-top: 70px;
   padding-bottom: 70px;
-  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
   border-radius: 15px;
+  text-align: center;
   border: black solid 2px;
   box-shadow: 2px 2px 20px black;
-  left: 38%;
-  top: 35%;
   font-weight: bold;
   z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flip-button
@@ -362,17 +375,19 @@ input
 
 .steelroad
 {
-  position: fixed;
+  position: absolute;
+  top: 110px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   z-index: 30;
   background-color: #c6eef8;
   padding: 10px;
   color: black;
   border-radius: 5px;
-  width: 37.5%;
-  height: 45%;
-  left: 30.5%;
-  top: 30%;
   box-shadow: 0 4px 20px black;
+  display: flex;
+  justify-content: center;
 }
 
 .steelroad h2
@@ -382,40 +397,47 @@ input
 
 .steelroad-text
 {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 45%;
   background-color: lightblue;
   border-radius: 5px;
   padding: 15px;
   color: black;
-  height: 48%;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .steelroad-close
 {
+  position: absolute;
   background-color: lightblue;
   border: 1.5px solid black;
-  width: 8%;
-  height: 5%;
+  width: 20%;
+  height: 9%;
   border-radius: 5px;
-  position: fixed;
-  left: 46%;
-  top: 67%;
   font-size: 17px;
   color: black;
   font-weight: bold;
+  margin-top: 50%;
 }
 
 .delay
 {
-  position: fixed;
+  position: absolute;
   width: 280px;
-  left: 48%;
-  top: 43%;
+  top: 15%;
+  left: 50%;
   color: red;
 }
 
 .simple
 {
-  width: 120px;
+  position: absolute;
+  width: 140px;
   padding-left: 33px;
   font-weight: bold;
   font-size: 1.2vw;
@@ -423,6 +445,7 @@ input
 
 .red
 {
+  position: absolute;
   width: 120px;
   padding-left: 40px;
   color: red;
@@ -430,6 +453,8 @@ input
 
 .question
 {
+  position: absolute;
+  margin-top: 15%;
   text-align: center;
   font-weight: bold;
 }
@@ -565,16 +590,16 @@ input
 
 .elzaandidea
 {
-  position: fixed;
+  position: absolute;
+  top: 110px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   z-index: 30;
   background-color: white;
   padding: 30px;
   color: black;
   border-radius: 5px;
-  width: 35%;
-  height: 55%;
-  left: 30.5%;
-  top: 22%;
   box-shadow: 0 4px 20px black;
   font-weight: bold;
 }
@@ -695,6 +720,309 @@ input
   color: white;
 }
 
+.popup-wrapper-bankrobbery {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-content-bankrobbery {
+  position: relative;
+  background-color: #21abe3;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  color: black;
+  width: 40%;
+  height: 60%;
+}
+
+.bankrobbery {
+  position: absolute;
+  top: 88px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  box-shadow: 0 4px 20px black;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.b-title
+{
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin-left: 140px;
+  margin-right: 140px;
+  border-radius: 5px;
+  color: white;
+}
+
+.robbery-question
+{
+  text-align: center;
+  font-size: 1.40vw;
+  font-weight: bold;
+  margin-top: -100px;
+}
+
+.robbery-yes
+{
+  color: black;
+  font-weight: bold;
+  border: 1.5px solid black;
+  position: fixed;
+  left: 42.5%;
+  top: 55%;
+  width: 7%;
+  height: 4%;
+  border-radius: 5px;
+  background-color: #c6eef8;
+  font-size: 17px;
+}
+
+.robbery-no
+{
+  color: black;
+  font-weight: bold;
+  border: 1.5px solid black;
+  position: fixed;
+  left: 50.5%;
+  top: 55%;
+  width: 7%;
+  height: 4%;
+  border-radius: 5px;
+  background-color: #c6eef8;
+  font-size: 17px;
+}
+
+.robbery
+{
+  margin-top: -20px;
+  font-size: 40px;
+}
+
+.fail, .success
+{
+  font-size: 20px;
+  margin-top: -15px;
+}
+
+.robBtn
+{
+  color: black;
+  font-weight: bold;
+  border: 1.5px solid black;
+  position: fixed;
+  margin: auto;
+  margin-top: 320px;
+  width: 10%;
+  height: 4%;
+  border-radius: 5px;
+  background-color: #c6eef8;
+  font-size: 17px;
+}
+
+.escape
+{
+  color: black;
+  font-weight: bold;
+  border: 1.5px solid black;
+  position: fixed;
+  margin: auto;
+  margin-top: 150px;
+  width: 10%;
+  height: 4%;
+  border-radius: 5px;
+  background-color: #c6eef8;
+  font-size: 17px;
+}
+
+.robbery-close
+{
+  color: black;
+  font-weight: bold;
+  border: 1.5px solid black;
+  position: fixed;
+  margin: auto;
+  margin-top: 320px;
+  width: 7%;
+  height: 4%;
+  border-radius: 5px;
+  background-color: #c6eef8;
+  font-size: 17px;
+}
+
+.popup-wrapper-casino {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup-content-casino {
+  position: relative;
+  background-color: #c22133;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  color: black;
+  width: 40%;
+  height: 75%;
+}
+
+.casino
+{
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  background-color: white;
+  padding: 30px;
+  color: black;
+  border-radius: 5px;
+  box-shadow: 0 4px 20px black;
+  font-weight: bold;
+  text-align: center;
+}
+
+.game-title
+{
+  text-align: center;
+}
+
+.casino-close
+{
+  background-color: #c22133;
+  width: 20%;
+  height: 8%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: absolute;
+  left: 40%;
+  top: 80%;
+  font-size: 17px;
+  color: white;
+}
+
+.game-start
+{
+  background-color: #c22133;
+  width: 20%;
+  height: 8%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: absolute;
+  left: 40%;
+  top: 40%;
+  font-size: 17px;
+  color: white;
+}
+
+.hit
+{
+  background-color: #c22133;
+  width: 20%;
+  height: 8%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: absolute;
+  left: 28%;
+  top: 60%;
+  font-size: 17px;
+  color: white;
+}
+
+.stand
+{
+  background-color: #c22133;
+  width: 20%;
+  height: 8%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  font-size: 17px;
+  color: white;
+}
+
+.message
+{
+  text-align: center;
+}
+
+.bet
+{
+  text-align: center;
+  right: auto;
+  width: 90px;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.new-game
+{
+  background-color: #c22133;
+  width: 20%;
+  height: 8%;
+  border-radius: 5px;
+  box-shadow: none;
+  border: none;
+  position: absolute;
+  left: 40%;
+  top: 65%;
+  font-size: 17px;
+  color: white;
+}
+
+.cards
+{
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .elza
 {
   margin-left: 10px;
@@ -743,7 +1071,8 @@ button
 
 .buyButton
 {
-  left: 60%;
+  position: absolute;
+  left: 84%;
   padding-left: 10px;
   padding-right: 10px;
   padding-top: 5px;
@@ -751,7 +1080,6 @@ button
   color: black;
   background: linear-gradient(to bottom, lightgrey, grey);
   border: none;
-  position: fixed;
   border-radius: 5px;
 }
 

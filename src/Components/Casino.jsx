@@ -16,14 +16,11 @@ const Casino = ({ onClose, currentPlayer, playerMoney, reducePlayerMoney, addPla
         return;
       }
 
-      // Levonás a pénzből
       reducePlayerMoney(currentPlayer, bet);
 
-      // Kártyák osztása
       setPlayerCards([getRandomCard(), getRandomCard()]);
       setDealerCards([getRandomCard(), getRandomCard()]);
 
-      // Játék indítása
       setGameOver(false);
       setGameStarted(true);
       setMessage("");
@@ -62,35 +59,28 @@ const Casino = ({ onClose, currentPlayer, playerMoney, reducePlayerMoney, addPla
       setGameOver(true);
     };
 
-    // A kártyák generálása
-    const getRandomCard = () => Math.floor(Math.random() * 11) + 1; // A kártyák értéke 1-11 között van
+    const getRandomCard = () => Math.floor(Math.random() * 11) + 1;
 
     return (
-      <div className="p-4 text-center bg-white rounded-lg shadow-lg relative">
-        <button className="absolute top-2 right-2 text-gray-600" onClick={onClose}>
-          ✖
-        </button>
-        <h1 className="text-xl font-bold">Blackjack</h1>
-        <p>Pénzed: {playerMoney[currentPlayer]} $</p>
-        <div className="my-2">
-          <label className="block text-sm font-medium">Tét:</label>
+      <div className="casino">
+        <h1 className="game-title">Blackjack</h1>
           <input
             type="number"
+            placeholder="Tét"
             value={bet}
             min="1"
             max={playerMoney[currentPlayer]}
             onChange={(e) => setBet(parseInt(e.target.value) || 1)}
-            className="border p-1 rounded w-20 text-center"
+            className="bet"
             disabled={gameStarted}
           />
-        </div>
         {!gameStarted ? (
-          <button className="m-2" onClick={startGame}>
+          <button className="game-start" onClick={startGame}>
             Játék indítása
           </button>
         ) : (
           <>
-            <div className="my-4">
+            <div className="cards">
               <p>Játékos kártyái: {playerCards.join(", ")} (Összeg: {getTotal(playerCards)})</p>
               <p>
                 Gép kártyái: {gameOver ? dealerCards.join(", ") : "??, " + dealerCards[1]} (Összeg:{" "}
@@ -99,23 +89,26 @@ const Casino = ({ onClose, currentPlayer, playerMoney, reducePlayerMoney, addPla
             </div>
             {!gameOver ? (
               <>
-                <button className="m-2" onClick={hit}>
+                <button className="hit" onClick={hit}>
                   Kártya kérés
                 </button>
-                <button className="m-2" onClick={stand}>
+                <button className="stand" onClick={stand}>
                   Passz
                 </button>
               </>
             ) : (
               <>
-                <p className="text-lg font-bold">{message}</p>
-                <button className="m-2" onClick={() => setGameStarted(false)}>
+                <p className="message">{message}</p>
+                <button className="new-game" onClick={() => setGameStarted(false)}>
                   Új játék
                 </button>
               </>
             )}
           </>
         )}
+        <button className="casino-close" onClick={onClose}>
+          Bezárás
+        </button>
       </div>
     );
   }

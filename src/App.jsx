@@ -13,6 +13,8 @@ import ElzaAndIdea from './Components/ElzaAndIdea.jsx'
 import Casino from './Components/Casino.jsx'
 import Cheats from './Components/Cheats.jsx'
 import Carshop from './Components/Carshop.jsx'
+import BankRobbery from './Components/BankRobbery.jsx'
+import Bobthebuilder from './Components/Bobthebuilder.jsx'
 
 
 function App() 
@@ -21,21 +23,13 @@ function App()
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
-  const [playerMoney, setPlayerMoney] = useState([1200000, 1200000, 1200000, 1200000]);
+  const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
 
   const [popupContent, setPopupContent] = useState(null);
 
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
 
   const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
-
-  const updatePlayerHasCar = (playerIndex) => {
-    setPlayerHasCar((prev) => {
-      const updated = [...prev];
-      updated[playerIndex] = 1;
-      return updated;
-    });
-  };
 
   const reducePlayerMoney = (playerIndex, amount) => 
     {
@@ -71,96 +65,71 @@ function App()
     rollDice();
   }
 
-  const tpPlayerCar = (playerIndex, steps, playerHasCar) => {
+  const tpPlayerCar = (playerIndex, steps) => {
     if (playerHasCar[playerIndex] === 1) {
       setPlayerPositions((prevPositions) => {
         const newPositions = [...prevPositions];
         let currentPosition = newPositions[playerIndex];
-
-        setPlayerPositions((prevPositions) => {
-          const newPositions = [...prevPositions];
-          newPositions[playerIndex] = currentPosition;
-          return newPositions;
-        });
-
+        
+        let nextPosition = (currentPosition + steps) % fields.length;
+        
         setTimeout(() => {
+          setPlayerPositions((prevPositions) => {
+            const updatedPositions = [...prevPositions];
+            updatedPositions[playerIndex] = nextPosition;
+            return updatedPositions;
+          });
 
-          let nextPosition = currentPosition;
-    
-          for (let i = 1; i <= steps; i++) {
-            nextPosition = (nextPosition + 1) % fields.length;
-
-            setPlayerPositions((prevPositions) => {
-              const newPositions = [...prevPositions];
-              newPositions[playerIndex] = nextPosition;
-              return newPositions;
-            });
-
-            setActivePicture(newPositions[playerIndex] + 1);
-            const currentField = fields[nextPosition];
-            if (currentField.action) {
-              currentField.action();
-            }
-
-            setActivePicture(nextPosition + 1);
+          const finalField = fields[nextPosition];
+          if (finalField.action) {
+            finalField.action();
           }
+  
+          setActivePicture(nextPosition + 1);
         }, 1000);
+        
         return newPositions;
       });
     }
-
-    else {
-      return;
-    }
   };
+
 
   const tpPlayerPlane = (playerIndex, steps) => {
     setPlayerPositions((prevPositions) => {
       const newPositions = [...prevPositions];
       let currentPosition = newPositions[playerIndex];
-
-      setPlayerPositions((prevPositions) => {
-        const newPositions = [...prevPositions];
-        newPositions[playerIndex] = currentPosition;
-        return newPositions;
-      });
-
-      setTimeout(() => {
-
-        let nextPosition = currentPosition;
   
-        for (let i = 1; i <= steps; i++) {
-          nextPosition = (nextPosition + 1) % fields.length;
-
-          setPlayerPositions((prevPositions) => {
-            const newPositions = [...prevPositions];
-            newPositions[playerIndex] = nextPosition;
-            return newPositions;
-          });
-
-          setActivePicture(newPositions[playerIndex] + 1);
-          const currentField = fields[nextPosition];
-          if (currentField.action) {
-            currentField.action();
-          }
-
-          setActivePicture(nextPosition + 1);
-
-          setPopupClass("lucky");
-          setPopupContent(
-            <>
-              <h1 className='title'>Szerencsemező</h1>
-              <Lucky
-                onClose={() => setPopupContent(null)}
-                currentPlayer={currentPlayer}
-                addPlayerMoney={addPlayerMoney}
-                reducePlayerMoney={reducePlayerMoney}
-                missRound={missRound}
-              />
-            </>
-          );
+      let nextPosition = (currentPosition + steps) % fields.length;
+  
+      setTimeout(() => {
+        setPlayerPositions((prevPositions) => {
+          const updatedPositions = [...prevPositions];
+          updatedPositions[playerIndex] = nextPosition;
+          return updatedPositions;
+        });
+  
+        const finalField = fields[nextPosition];
+        if (finalField.action) {
+          finalField.action();
         }
+  
+        setActivePicture(nextPosition + 1);
+  
+        setPopupClass("lucky");
+        setPopupContent(
+          <>
+            <h1 className='title'>Szerencsemező</h1>
+            <Lucky
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              addPlayerMoney={addPlayerMoney}
+              reducePlayerMoney={reducePlayerMoney}
+              missRound={missRound}
+            />
+          </>
+        );
       }, 1000);
+  
       return newPositions;
     });
   };
@@ -176,6 +145,14 @@ function App()
       return updatedMissed;
     });
   };
+
+  const sendToJail = (playerIndex) => {
+    setPlayerPositions((prevPositions) => {
+      const updatedPositions = [...prevPositions];
+      updatedPositions[playerIndex] = 27;
+      return updatedPositions;
+    })
+  }
   
   useEffect(() => {
     console.log("Current Player:", currentPlayer + 1);
@@ -211,7 +188,7 @@ function App()
 
     {id: 14, name: "Mezo 14", x: 18.9, y: 12},
     {id: 15, name: "Mezo 15", x: 26.4, y: 12},
-    {id: 16, name: "Mezo 16", x: 33.9, y: 12, action: () => {tpPlayerCar(currentPlayer, 10, playerHasCar)}},
+    {id: 16, name: "Mezo 16", x: 33.9, y: 12, action: () => {tpPlayerCar(currentPlayer, 10)}},
     {id: 17, name: "Mezo 17", x: 41.3, y: 12},
     {id: 18, name: "Mezo 18", x: 48.9, y: 12, isStop: true},
     {id: 19, name: "Mezo 19", x: 56.5, y: 12, action: () => reducePlayerMoney(currentPlayer, 15000)},
@@ -223,7 +200,7 @@ function App()
     {id: 25, name: "Mezo 25", x: 88.9, y: 45, isStop: true},
     {id: 26, name: "Mezo 26", x: 88.9, y: 64, action: () => rollDiceAgain()},
 
-    //{id: 32, name: "Börtön", x: 8, y: 80},
+    {id: 27, name: "Börtön", x: 10, y: 80},
   ]
 
   const [isThrowButtonDisabled, setIsThrowButtonDisabled] = useState(false);
@@ -231,6 +208,7 @@ function App()
   const [activePicture, setActivePicture] = useState(null);
   const [executedActions, setExecutedActions] = useState(new Array(fields.length).fill(false));
   const [popupClass, setPopupClass] = useState(null);
+  const [rentReduced, setRentReduced] = useState([false, false, false, false]);
 
   const movePlayer = (playerIndex, steps) => 
     {  
@@ -241,7 +219,35 @@ function App()
       {
         const newPositions = [...prevPositions];
         let newPosition = newPositions[playerIndex] + steps;
-        
+        if (newPositions[playerIndex] === 27 && steps !== 6) {
+          alert("Csak hatos dobással lehet kiszabadulni a börtönből!");
+          return prevPositions;
+        }
+        else if (newPositions[playerIndex] === 27 && steps === 6) {
+          newPosition = 9;
+        }
+
+        if (!rentReduced[playerIndex] && newPositions[playerIndex] >= 1 && newPositions[playerIndex] <= 6) {
+          console.log("Feltételek teljesültek! Pénzlevonás indul...");
+
+          console.log("Játékos pénze előtte:", playerMoney[currentPlayer]);
+          reducePlayerMoney(currentPlayer, 70000);
+          console.log("Játékos pénze utána:", playerMoney[currentPlayer]);
+          setRentReduced((prev) => {
+            if (!Array.isArray(prev)) return [false, false, false, false];
+            const updated = [...prev];
+            updated[playerIndex] = true;
+            return updated;
+          });
+        } else {
+          setRentReduced((prev) => {
+            if (!Array.isArray(prev)) return [false, false, false, false];
+            const updated = [...prev];
+            updated[playerIndex] = false;
+            return updated;
+          });
+        }
+
         const crossedStart = newPosition > 27;
         
         newPosition = newPosition % 27;
@@ -288,6 +294,22 @@ function App()
           </>
         );
       }
+
+      if (newPositions[playerIndex] === 5) 
+        {
+          setPopupClass("bankrobbery");
+          setPopupContent(
+            <>
+            <h1 className='b-title'>Bankrablás</h1>
+            <BankRobbery
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              addPlayerMoney={addPlayerMoney}
+              sendToJail={sendToJail}
+            />
+            </>
+          );
+        }
       
       if (newPositions[playerIndex] === 1 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17)
       {
@@ -338,6 +360,22 @@ function App()
         )
       }
 
+      if (newPositions[playerIndex] === 14)
+      {
+        setPopupClass("bobthebuilder");
+        setPopupContent(
+          <>
+          <Bobthebuilder
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer}
+            reducePlayerMoney={reducePlayerMoney}
+            playerMoney={playerMoney}
+            addItemToInventory={addItemToInventory}
+          />
+          </>
+        )
+      }
+
       if (newPositions[playerIndex] === 6)
       {
         setPopupClass("elzaandidea");
@@ -365,7 +403,8 @@ function App()
               currentPlayer={currentPlayer}
               reducePlayerMoney={reducePlayerMoney}
               playerMoney={playerMoney}
-              updatePlayerHasCar={updatePlayerHasCar}
+              playerHasCar={playerHasCar} 
+              setPlayerHasCar={setPlayerHasCar}
             />
           </>
         )
@@ -373,8 +412,10 @@ function App()
 
       if (newPositions[playerIndex] === 12) 
         {
+          setPopupClass("casino");
           setPopupContent(
             <>
+            <h1 className='title'>Casino</h1>
             <Casino
               onClose={() => setPopupContent(null)}
               currentPlayer={currentPlayer}

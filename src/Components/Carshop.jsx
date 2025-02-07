@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
+import App from "../App.jsx";
 
-const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, updatePlayerHasCar }) => {
+const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, setPlayerHasCar}) => {
+
+    const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(false);
+
     const handlePurchase = (price) => {
         if (playerHasCar[currentPlayer] === 0) {
             if (playerMoney[currentPlayer] >= price) {
+                setPlayerHasCar((prev) => {
+                    const updated = [...prev];
+                    updated[currentPlayer] = 1;
+                    return updated;
+                  });
                 reducePlayerMoney(currentPlayer, price);
-                updatePlayerHasCar(currentPlayer);
+                setIsCarButtonDisabled(true);
             } else {
                 alert("Nincs elég pénzed!");
+                setIsCarButtonDisabled(true);
             }
         } else {
             alert("Már van autód!");
+            setIsCarButtonDisabled(true);
         }
     };
 
@@ -19,7 +30,7 @@ const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playe
             <img className="carshop-image" src="../src/HQ Pictures/Auto.png"/>
             <button
                 className="CarButton"
-                disabled={playerHasCar[currentPlayer] === 1}
+                disabled={isCarButtonDisabled}
                 onClick={() => handlePurchase(1000000)}
             >
                 Vásárlás
