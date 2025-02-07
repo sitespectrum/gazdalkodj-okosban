@@ -18,6 +18,7 @@ import Bobthebuilder from './Components/Bobthebuilder.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 import { useContext } from 'react'
 import { moneyContext } from './main.jsx'
+import { useMemo } from 'react'
 
 export const purchaseableItems = [
   "Ház",
@@ -45,6 +46,14 @@ function App()
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
 
   const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
+
+  const isGameOver = useMemo(() => playerInventory.some((inventory) => purchaseableItems.every((item) => inventory.includes(item))), [playerInventory]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      alert("A játék véget ért!");
+    }
+  }, [isGameOver]);
 
   const reducePlayerMoney = (playerIndex, amount) => 
     {
