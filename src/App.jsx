@@ -16,6 +16,8 @@ import Carshop from './Components/Carshop.jsx'
 import BankRobbery from './Components/BankRobbery.jsx'
 import Bobthebuilder from './Components/Bobthebuilder.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
+import { useContext } from 'react'
+import { moneyContext } from './main.jsx'
 
 export const purchaseableItems = [
   "Ház",
@@ -32,12 +34,11 @@ export const purchaseableItems = [
 
 function App() 
 {
-  //const rollDice = () => Math.floor(Math.random() * 6) + 1;
-  const rollDice = () => 14;
+  const rollDice = () => Math.floor(Math.random() * 6) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
-  const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
+  const [playerMoney, setPlayerMoney] = useContext(moneyContext);
 
   const [popupContent, setPopupContent] = useState(null);
 
@@ -51,7 +52,7 @@ function App()
       const updatedMoney = [...prevMoney];
       updatedMoney[playerIndex] -= amount;
   
-      return updatedMoney;
+      return Array.from(updatedMoney);
     });
   };
 
@@ -294,19 +295,13 @@ function App()
       {
         setPopupClass("elza");
         setPopupContent(
-          <>
-          <div className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
-          <img src="./src/Logos/Elza logo.png" className='elza'/>
           <Elza
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer} 
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney}
-            playerMoney={playerMoney}
             playerInventory={playerInventory}
-            setPlayerMoney={setPlayerMoney}
           />
-          </>
         );
       }
 
@@ -363,8 +358,6 @@ function App()
       {
         setPopupClass("idea");
         setPopupContent(
-          <>
-          <img src="./src/Logos/Idea logo.png" className='idea-logo'/>
           <Idea 
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer}
@@ -372,7 +365,6 @@ function App()
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney} 
           />
-          </>
         )
       }
 
@@ -398,8 +390,6 @@ function App()
       {
         setPopupClass("elzaandidea");
         setPopupContent(
-          <>
-          <h1 className='eai-title'>Bevásárlóközpont</h1>
           <ElzaAndIdea
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer} 
@@ -407,7 +397,6 @@ function App()
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney}
           />
-          </>
         )
       }
 
@@ -433,18 +422,13 @@ function App()
         {
           setPopupClass("casino");
           setPopupContent(
-            <>
-            <h1 className='title'>Casino</h1>
             <Casino
               onClose={() => setPopupContent(null)}
               currentPlayer={currentPlayer}
               reducePlayerMoney={reducePlayerMoney}
               addPlayerMoney={addPlayerMoney}
-              playerMoney={playerMoney}
             >
-              <div key={currentPlayer} className='balance'>Egyenleg: {playerMoney[currentPlayer]} Ft</div>
             </Casino>
-            </>
           );
         }
 
@@ -509,7 +493,7 @@ function App()
             </div>
           </div>
         </> : <></>}
-        <CurrentPlayerPanel currentPlayer={currentPlayer} playerMoney={playerMoney[currentPlayer]} playerInventory={playerInventory[currentPlayer]} />
+        <CurrentPlayerPanel currentPlayer={currentPlayer} playerInventory={playerInventory[currentPlayer]} />
         <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
         <Fields/>
         <Players fields={fields} playerPositions={playerPositions} />

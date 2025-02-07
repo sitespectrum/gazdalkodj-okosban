@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { moneyContext } from "../main.jsx";
+import { formatMoney } from "./CurrentPlayerPanel.jsx";
 
-const Casino = ({ onClose, currentPlayer, playerMoney, reducePlayerMoney, addPlayerMoney }) =>{
+const Casino = ({ onClose, currentPlayer, reducePlayerMoney, addPlayerMoney }) =>{
+    const [playerMoney] = useContext(moneyContext);
+
     const [playerCards, setPlayerCards] = useState([]);
     const [dealerCards, setDealerCards] = useState([]);
     const [gameOver, setGameOver] = useState(false);
@@ -62,54 +66,60 @@ const Casino = ({ onClose, currentPlayer, playerMoney, reducePlayerMoney, addPla
     const getRandomCard = () => Math.floor(Math.random() * 11) + 1;
 
     return (
-      <div className="casino">
-        <h1 className="game-title">Blackjack</h1>
-          <input
-            type="number"
-            placeholder="Tét"
-            value={bet}
-            min="1"
-            max={playerMoney[currentPlayer]}
-            onChange={(e) => setBet(parseInt(e.target.value) || 1)}
-            className="bet"
-            disabled={gameStarted}
-          />
-        {!gameStarted ? (
-          <button className="game-start" onClick={startGame}>
-            Játék indítása
+      <>
+        <div className='casino-header'>
+          <h1 className='casino-title'>Casino</h1>
+          <h1 className='casino-balance'>Egyenleg: {formatMoney(playerMoney[currentPlayer])}</h1>
+        </div>
+        <div className="casino">
+          <h1 className="game-title">Blackjack</h1>
+            <input
+              type="number"
+              placeholder="Tét"
+              value={bet}
+              min="1"
+              max={playerMoney[currentPlayer]}
+              onChange={(e) => setBet(parseInt(e.target.value) || 1)}
+              className="bet"
+              disabled={gameStarted}
+            />
+          {!gameStarted ? (
+            <button className="game-start" onClick={startGame}>
+              Játék indítása
+            </button>
+          ) : (
+            <>
+              <div className="cards">
+                <p>Játékos kártyái: {playerCards.join(", ")} (Összeg: {getTotal(playerCards)})</p>
+                <p>
+                  Gép kártyái: {gameOver ? dealerCards.join(", ") : "??, " + dealerCards[1]} (Összeg:{" "}
+                  {gameOver ? getTotal(dealerCards) : "?"})
+                </p>
+              </div>
+              {!gameOver ? (
+                <>
+                  <button className="hit" onClick={hit}>
+                    Kártya kérés
+                  </button>
+                  <button className="stand" onClick={stand}>
+                    Passz
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="message">{message}</p>
+                  <button className="new-game" onClick={() => setGameStarted(false)}>
+                    Új játék
+                  </button>
+                </>
+              )}
+            </>
+          )}
+          <button className="casino-close" onClick={onClose}>
+            Bezárás
           </button>
-        ) : (
-          <>
-            <div className="cards">
-              <p>Játékos kártyái: {playerCards.join(", ")} (Összeg: {getTotal(playerCards)})</p>
-              <p>
-                Gép kártyái: {gameOver ? dealerCards.join(", ") : "??, " + dealerCards[1]} (Összeg:{" "}
-                {gameOver ? getTotal(dealerCards) : "?"})
-              </p>
-            </div>
-            {!gameOver ? (
-              <>
-                <button className="hit" onClick={hit}>
-                  Kártya kérés
-                </button>
-                <button className="stand" onClick={stand}>
-                  Passz
-                </button>
-              </>
-            ) : (
-              <>
-                <p className="message">{message}</p>
-                <button className="new-game" onClick={() => setGameStarted(false)}>
-                  Új játék
-                </button>
-              </>
-            )}
-          </>
-        )}
-        <button className="casino-close" onClick={onClose}>
-          Bezárás
-        </button>
-      </div>
+        </div>
+      </>
     );
   }
 

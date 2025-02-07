@@ -550,6 +550,31 @@ input
   margin-top: 13px;
 }
 
+.idea-header
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.idea-balance
+{
+  margin-top: 1rem;
+  margin-right: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 1.5vw;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
 .idea-close
 {
   background-color: white;
@@ -608,14 +633,33 @@ input
   font-weight: bold;
 }
 
+.eai-header
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .eai-title
 {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
-  margin-left: 140px;
-  margin-right: 140px;
   border-radius: 5px;
   color: white;
+  flex: 1;
+  padding: 0 0.5rem;
+
+}
+
+.eai-balance
+{
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
+  flex: 1;
+  padding: 0 0.5rem;
 }
 
 .eai-close
@@ -917,6 +961,35 @@ input
   box-shadow: 0 4px 20px black;
   font-weight: bold;
   text-align: center;
+}
+
+.casino-header
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.casino-title
+{
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
+  flex: 1;
+  padding: 0 0.5rem;
+
+}
+
+.casino-balance
+{
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
+  flex: 1;
+  padding: 0 0.5rem;
 }
 
 .game-title

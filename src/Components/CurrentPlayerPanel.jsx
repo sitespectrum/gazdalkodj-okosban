@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { moneyContext } from "../main.jsx";
 import { purchaseableItems } from "../App";
 
 export function formatMoney(
@@ -14,7 +16,9 @@ export function formatMoney(
 }
 
 
-export function CurrentPlayerPanel({ currentPlayer, playerMoney, playerInventory }) {
+export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
+    const [playerMoney] = useContext(moneyContext);
+
     return (
         <div className="player-panel">
             <div className="player-panel-header">
@@ -24,7 +28,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerMoney, playerInventory
                     {currentPlayer === 2 && <img className="player-panel-puppet" src="./src/Pictures/Puppets/Zöld bábú 1.png" alt="Zöld bábú 1" />}
                     {currentPlayer === 3 && <img className="player-panel-puppet" src="./src/Pictures/Puppets/Sárga bábú 1.png" alt="Sárga bábú 1" />}
                 </div>
-                <p>Játékos {currentPlayer + 1}: <strong>{formatMoney(playerMoney)}</strong></p>
+                <p>Játékos {currentPlayer + 1}: <strong>{formatMoney(playerMoney[currentPlayer])}</strong></p>
             </div>
             <div className="player-panel-inventory-container">
                 <p>Leltár</p>
@@ -33,12 +37,12 @@ export function CurrentPlayerPanel({ currentPlayer, playerMoney, playerInventory
                         <li className="player-panel-inventory-item" disabled={!playerInventory.includes(item)} key={item}>
                             {!playerInventory.includes(item) &&
                                 <div className="player-panel-inventory-item-disabled-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
                                 </div>
                             }
                             {playerInventory.includes(item) &&
                                 <div className="player-panel-inventory-item-enabled-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><path d="M20 6 9 17l-5-5" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
                                 </div>
                             }
 
