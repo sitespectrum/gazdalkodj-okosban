@@ -15,7 +15,21 @@ import Cheats from './Components/Cheats.jsx'
 import Carshop from './Components/Carshop.jsx'
 import BankRobbery from './Components/BankRobbery.jsx'
 import Bobthebuilder from './Components/Bobthebuilder.jsx'
+import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 
+export const purchaseableItems = [
+  "Ház",
+  "Sumasang 4K TV",
+  "GL előltöltős mosógép",
+  "Boss előltöltős szárítógép",
+  "Görénye alulfagyasztós hűtő",
+  "Kendi mosogatógép",
+  "Dájszon porszívó",
+  "Konyhabútor",
+  "Szobabútor",
+  "Fürdőszobabútor",
+
+]
 
 function App() 
 {
@@ -460,7 +474,7 @@ function App()
           src={`./src/HQ Pictures/${activePicture}. Mező.png`} 
           alt={`${activePicture}. Mező`} 
           className={`field-pic field-${activePicture}`}
-        />
+          />
       </div>
     ) : null;
   };
@@ -490,16 +504,7 @@ function App()
             </div>
           </div>
         </> : <></>}
-        <div className="inventory">
-          <p>Játékos {currentPlayer + 1}: {playerMoney[currentPlayer]} Ft</p>
-          <ul>
-            {playerInventory[currentPlayer].length > 0 ? (
-              playerInventory[currentPlayer].map((item, index) => <li key={index}>{item}</li>)
-            ) : (
-              <li>Nincs vásárolt termék</li>
-            )}
-          </ul>
-        </div>
+        <CurrentPlayerPanel currentPlayer={currentPlayer} playerMoney={playerMoney[currentPlayer]} playerInventory={playerInventory[currentPlayer]} />
         <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
         <Fields/>
         <Players fields={fields} playerPositions={playerPositions} />

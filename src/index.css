@@ -1083,21 +1083,113 @@ button
   border-radius: 5px;
 }
 
-.inventory
+.player-panel
 {
   position: fixed;
+  display: flex;
+  flex-direction: column;
   z-index: 30;
   top: 27%;
   left: 16.7%;
-  font-size: 1.2vw;
-  font-weight: bold;
+  font-size: 1.4rem;
   background-color: rgba(0, 0, 0, 0.5);
   width: 19%;
-  height: 41.3%;
-  padding: 10px;
+  height: 44.5%;
   color: white;
   text-align: center;
   border-radius: 10px;
+  gap: 0rem;
+}
+
+.player-panel-header
+{
+  display: flex;
+  gap: 1rem;
+  padding: 0rem 1rem;
+  align-items: center;
+  background-color: #00000055;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+:has(> .player-panel-puppet)
+{
+  height: 3rem;
+}
+
+.player-panel-puppet
+{
+  height: 100%;
+  object-fit: contain;
+}
+
+.player-panel-inventory-container
+{
+  overflow-y: auto;
+  height: 100%;
+}
+
+.player-panel-inventory
+{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  margin: 0;
+
+}
+
+.player-panel-inventory-container p
+{
+  margin: 0;
+  margin-top: 1rem;
+}
+
+.player-panel-inventory-item
+{
+  border-radius: 10px;
+  background-color: #00000055;
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  font-weight: normal;
+  font-size: 1.25rem;
+}
+
+.player-panel-inventory-item[disabled] {
+  opacity: 50%;
+}
+
+.player-panel-inventory-item-disabled-icon
+{
+  width: 2.5rem;
+  min-height: 2.5rem;
+  color: #fff;
+  background-color: #852828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.player-panel-inventory-item-enabled-icon
+{
+  width: 2.5rem;
+  min-height: 2.5rem;
+  color: #fff;
+  background-color: #288547;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.player-panel-inventory-item-name
+{
+  display: flex;
+  align-items: center;
 }
 
 ul
