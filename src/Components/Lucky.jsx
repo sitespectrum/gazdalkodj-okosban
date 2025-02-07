@@ -44,7 +44,7 @@ const Lucky = ({ onClose, currentPlayer, addPlayerMoney, reducePlayerMoney }) =>
     <div className="lucky">
         <div className={`luckycard-front ${flipped ? "animate" : ""}`}><p>Szerencsekártya</p></div>
         <div className={`luckycard-text ${flipped ? "animate" : ""}`}><p>{currentCard.text}</p></div>
-        <button className="flip-button" onClick={handleFlip}>Húzás</button>
+        <button disabled={flipped} className="flip-button" onClick={handleFlip}>Húzás</button>
         <button className="close-lucky" onClick={handleCardAction}>Bezárás</button>
     </div>
   );
