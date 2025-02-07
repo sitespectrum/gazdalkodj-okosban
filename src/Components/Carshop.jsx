@@ -3,7 +3,7 @@ import App from "../App.jsx";
 
 const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, setPlayerHasCar}) => {
 
-    const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(false);
+    const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(playerHasCar[currentPlayer]);
 
     const handlePurchase = (price) => {
         if (playerHasCar[currentPlayer] === 0) {

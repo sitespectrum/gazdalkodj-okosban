@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const Bobthebuilder = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, addItemToInventory }) => {
-    const [isBoButtonDisabled, setIsBoButtonDisabled] = useState(false);
+const Bobthebuilder = ({ onClose, currentPlayer, playerInventory, playerMoney, reducePlayerMoney, addItemToInventory }) => {
+    const [isBoButtonDisabled, setIsBoButtonDisabled] = useState(playerInventory[currentPlayer].includes("Ház"));
 
     const handlePurchase = (item, price) => {
         if (playerMoney[currentPlayer] >= price) {

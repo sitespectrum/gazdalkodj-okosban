@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
-const ElzaAndIdea = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventory}) => {
-  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(false);
-  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(false);
-  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(false);
-  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(false);
-  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(false);
-  const [isVButtonDisabled, setIsVButtonDisabled] = useState(false);
-  const [isKButtonDisabled, setIsKButtonDisabled] = useState(false);
-  const [isRButtonDisabled, setIsRButtonDisabled] = useState(false);
-  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(false);
+const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory}) => {
+  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(playerInventory[currentPlayer].includes("Sumasang 4K TV"));
+  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(playerInventory[currentPlayer].includes("GL előltöltős mosógép"));
+  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Boss előltöltős szárítógép"));
+  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Görénye alulfagyasztós hűtő"));
+  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(playerInventory[currentPlayer].includes("Kendi mosogatógép"));
+  const [isVButtonDisabled, setIsVButtonDisabled] = useState(playerInventory[currentPlayer].includes("Dájszon porszívó"));
+  const [isKButtonDisabled, setIsKButtonDisabled] = useState(playerInventory[currentPlayer].includes("Konyhabútor"));
+  const [isRButtonDisabled, setIsRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Szobabútor"));
+  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Fürdőszobabútor"));
 
   const handlePurchase = (item, price) => {
     reducePlayerMoney(currentPlayer, price);

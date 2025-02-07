@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-const Idea = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventory}) => {
-  const [isKButtonDisabled, setIsKButtonDisabled] = useState(false);
-  const [isRButtonDisabled, setIsRButtonDisabled] = useState(false);
-  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(false);
+const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory}) => {
+  const [isKButtonDisabled, setIsKButtonDisabled] = useState(playerInventory[currentPlayer].includes("Konyhabútor"));
+  const [isRButtonDisabled, setIsRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Szobabútor"));
+  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Fürdőszobabútor"));
 
   const handlePurchase = (item, price) => {
     reducePlayerMoney(currentPlayer, price);

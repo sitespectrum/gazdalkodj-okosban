@@ -28,7 +28,6 @@ export const purchaseableItems = [
   "Konyhabútor",
   "Szobabútor",
   "Fürdőszobabútor",
-
 ]
 
 function App() 
@@ -303,6 +302,7 @@ function App()
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney}
             playerMoney={playerMoney}
+            playerInventory={playerInventory}
             setPlayerMoney={setPlayerMoney}
           />
           </>
@@ -367,6 +367,7 @@ function App()
           <Idea 
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer}
+            playerInventory={playerInventory}
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney} 
           />
@@ -383,6 +384,7 @@ function App()
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer}
             reducePlayerMoney={reducePlayerMoney}
+            playerInventory={playerInventory}
             playerMoney={playerMoney}
             addItemToInventory={addItemToInventory}
           />
@@ -399,6 +401,7 @@ function App()
           <ElzaAndIdea
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer} 
+            playerInventory={playerInventory}
             addItemToInventory={addItemToInventory} 
             reducePlayerMoney={reducePlayerMoney}
           />

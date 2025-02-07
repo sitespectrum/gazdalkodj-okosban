@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { formatMoney } from "./CurrentPlayerPanel";
 
 const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
     const [isRobbing, setIsRobbing] = useState(false);
@@ -70,7 +71,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
                 <>
                     <h1 className="robbery">Bankrablás vége!</h1>
                     {escapeVisible ? (
-                        <p className="success">Sikeresen megszereztél {clickCount * 10000} Ft-ot!</p>
+                        <p className="success">Sikeresen megszereztél {formatMoney(clickCount * 10000)}-ot!</p>
                     ) : (
                         <p className="fail">Lebuktál! Börtönbe mész.</p>
                     )}

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-const Elza = ({ onClose, currentPlayer, reducePlayerMoney, addItemToInventory, playerMoney}) => {
-  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(false);
-  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(false);
-  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(false);
-  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(false);
-  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(false);
-  const [isVButtonDisabled, setIsVButtonDisabled] = useState(false);
+const Elza = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory, playerMoney}) => {
+  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(playerInventory[currentPlayer].includes('Sumasang 4K TV'));
+  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(playerInventory[currentPlayer].includes('GL előltöltős mosógép'));
+  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(playerInventory[currentPlayer].includes('Boss előltöltős szárítógép'));
+  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(playerInventory[currentPlayer].includes('Görénye alulfagyasztós hűtő'));
+  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(playerInventory[currentPlayer].includes('Kendi mosogatógép'));
+  const [isVButtonDisabled, setIsVButtonDisabled] = useState(playerInventory[currentPlayer].includes('Dájszon porszívó'));
 
   const handlePurchase = (item, price) => {
     if (playerMoney[currentPlayer] >= price) {
