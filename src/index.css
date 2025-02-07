@@ -407,8 +407,8 @@ input
   color: black;
   margin-top: 80px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .steelroad-close
@@ -438,17 +438,21 @@ input
 {
   position: absolute;
   width: 140px;
-  padding-left: 33px;
+  left: 95px;
   font-weight: bold;
   font-size: 1.2vw;
+  top: 10%;
 }
 
 .red
 {
   position: absolute;
-  width: 120px;
-  padding-left: 40px;
+  width: 140px;
+  left: 95px;
+  font-size: 1.2vw;
+  font-style: italic;
   color: red;
+  top: 25%;
 }
 
 .question
@@ -461,14 +465,14 @@ input
 
 .steelroad-yes
 {
+  position: absolute;
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
-  position: fixed;
-  left: 42.5%;
-  top: 58%;
-  width: 7%;
-  height: 4%;
+  left: 29%;
+  top: 78%;
+  width: 20%;
+  height: 15%;
   border-radius: 5px;
   background-color: #c6eef8;
   font-size: 17px;
@@ -476,14 +480,14 @@ input
 
 .steelroad-no
 {
+  position: absolute;
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
-  position: fixed;
-  left: 50.5%;
-  top: 58%;
-  width: 7%;
-  height: 4%;
+  left: 50%;
+  top: 78%;
+  width: 20%;
+  height: 15%;
   border-radius: 5px;
   background-color: #c6eef8;
   font-size: 17px;
@@ -671,6 +675,8 @@ input
   top: 22%;
   box-shadow: 0 4px 20px black;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
 }
 
 .CarButton
@@ -701,8 +707,7 @@ input
 .carshop-image
 {
   position: fixed;
-  left: 35%;
-  top: 35%;
+  margin-top: 110px;
 }
 
 .carshop-close
