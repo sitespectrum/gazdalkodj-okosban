@@ -3,14 +3,19 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
-export const moneyContext = createContext([[400000, 400000, 400000, 400000], (_) => {}]);
+export const moneyContext = createContext([[400000, 400000, 400000, 400000], (_) => { }]);
+export const alertContext = createContext(null);
 
 function Providers({ children }) {
   const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
+  const [alertContent, setAlertContent] = useState(null);
+  const [showAlertOnPopup, setShowAlertOnPopup] = useState(false);
 
   return (
     <moneyContext.Provider value={[playerMoney, setPlayerMoney]}>
-      {children}
+      <alertContext.Provider value={[alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup]}>
+        {children}
+      </alertContext.Provider>
     </moneyContext.Provider>
   );
 }

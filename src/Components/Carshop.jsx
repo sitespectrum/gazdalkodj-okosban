@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { formatMoney } from "./CurrentPlayerPanel.jsx";
+import { alertContext } from "../main.jsx";
 
 const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, setPlayerHasCar}) => {
 
     const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(playerHasCar[currentPlayer]);
+    const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
     const handlePurchase = (price) => {
         if (playerHasCar[currentPlayer] === 0) {
@@ -16,11 +18,13 @@ const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playe
                 reducePlayerMoney(currentPlayer, price);
                 setIsCarButtonDisabled(true);
             } else {
-                alert("Nincs elég pénzed!");
+                setAlertContent("Nincs elég pénzed!");
+                setShowAlertOnPopup(true);
                 setIsCarButtonDisabled(true);
             }
         } else {
-            alert("Már van autód!");
+            setAlertContent("Már van autód!");
+            setShowAlertOnPopup(true);
             setIsCarButtonDisabled(true);
         }
     };

@@ -17,7 +17,7 @@ import Insurance from './Components/Insurance.jsx'
 import Menu from './Components/Menu.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 import { useContext } from 'react'
-import { moneyContext } from './main.jsx'
+import { alertContext, moneyContext } from './main.jsx'
 import { useMemo } from 'react'
 
 export const purchaseableItems = [
@@ -45,6 +45,8 @@ function App()
 
   const [popupContent, setPopupContent] = useState(null);
 
+  const [alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup] = useContext(alertContext);
+
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
 
   const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
@@ -57,7 +59,7 @@ function App()
   
   useEffect(() => {
     if (winningPlayerIndex !== -1) {
-      alert(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert!`);
+      setAlertContent(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert!`);
       
       setPlayerMoney([400000, 400000, 400000, 400000]);
       setPlayerPositions([0, 0, 0, 0]);
@@ -197,7 +199,7 @@ function App()
   
     if (currentPlayer !== undefined && missedRounds.length > 0 && missedRounds[currentPlayer] >= round) {
       whosTurn();
-      alert(`Bábu ${currentPlayer + 1} most nem dobhat.`);  
+      setAlertContent(`Bábu ${currentPlayer + 1} most nem dobhat.`);  
     }
   }, [round, currentPlayer, missedRounds, playerMoney]);
 
@@ -248,7 +250,9 @@ function App()
 
   const movePlayer = (playerIndex, steps) => 
     {  
-    alert("Dobott szám: " + steps);
+    setAlertContent(
+      "Dobott szám: " + steps
+    )
     setIsThrowButtonDisabled(true);
   
     setPlayerPositions((prevPositions) =>
@@ -256,7 +260,7 @@ function App()
         const newPositions = [...prevPositions];
         let newPosition = newPositions[playerIndex] + steps;
         if (newPositions[playerIndex] === 27 && steps !== 6) {
-          alert("Csak hatos dobással lehet kiszabadulni a börtönből!");
+          setAlertContent("Csak hatos dobással lehet kiszabadulni a börtönből!");
           return prevPositions;
         }
         else if (newPositions[playerIndex] === 27 && steps === 6) {
@@ -524,10 +528,24 @@ function App()
           setIsMenuOpen(false)
         }} /> : <>
           <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
-          {popupContent ? <>
+          {popupContent && !(!showAlertOnPopup && alertContent) ? <>
             <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
               <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
                 {popupContent}
+              </div>
+            </div>
+          </> : <></>}
+          {alertContent ? <>
+            <div className={`alert-wrapper`} onClick={() => {
+                  setAlertContent(null)
+                  setShowAlertOnPopup(false)
+            }}>
+              <div className={`alert-content`} onClick={(e) => e.stopPropagation()}>
+                <span>{alertContent}</span>
+                <button onClick={() => {
+                  setAlertContent(null)
+                  setShowAlertOnPopup(false)
+                }}>Bezárás</button>
               </div>
             </div>
           </> : <></>}

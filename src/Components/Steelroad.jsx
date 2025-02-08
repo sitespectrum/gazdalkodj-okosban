@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { alertContext } from '../main.jsx';
 
 const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions, fields, reducePlayerMoney }) => {
   const [visitedStops, setVisitedStops] = useState(new Set());
+  const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
   const travelToNextStop = () => {
     setPlayerPositions((prevPositions) => {
@@ -51,7 +53,8 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
     const shouldFine = Math.random();
     if (shouldFine < 0.5) {
       reducePlayerMoney(currentPlayer, 40000);
-      alert(`Bábu ${currentPlayer + 1} büntetést kapott! 40000 Ft levonva.`);
+      setAlertContent(`Bábu ${currentPlayer + 1} büntetést kapott! 40000 Ft levonva.`);
+      setShowAlertOnPopup(true);
     }
 
 

@@ -1,9 +1,10 @@
 import React, { useState, useContext } from "react";
-import { moneyContext } from "../main.jsx";
+import { moneyContext, alertContext } from "../main.jsx";
 import { formatMoney } from "./CurrentPlayerPanel.jsx";
 
 const Casino = ({ onClose, currentPlayer, reducePlayerMoney, addPlayerMoney }) =>{
     const [playerMoney] = useContext(moneyContext);
+    const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
     const [playerCards, setPlayerCards] = useState([]);
     const [dealerCards, setDealerCards] = useState([]);
@@ -16,7 +17,8 @@ const Casino = ({ onClose, currentPlayer, reducePlayerMoney, addPlayerMoney }) =
 
     const startGame = () => {
       if (playerMoney[currentPlayer] < bet) {
-        setMessage("Nincs elég pénzed a tét megtételéhez!");
+        setAlertContent("Nincs elég pénzed a tét megtételéhez!");
+        setShowAlertOnPopup(true);
         return;
       }
 

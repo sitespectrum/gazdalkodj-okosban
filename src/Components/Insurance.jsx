@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { moneyContext } from '../main';
+import { moneyContext, alertContext } from '../main';
 import { formatMoney } from './CurrentPlayerPanel';
 
 const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) => {
@@ -9,6 +9,7 @@ const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) 
     const [playerHasTravelIns, setPlayerHasTravelIns] = useState(false);
 
     const [playerMoney] = useContext(moneyContext);
+    const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
     const handleCASCOPurchase = (price) => {
         if (playerMoney[currentPlayer] >= price && playerHasCar[currentPlayer] === 1) {
@@ -16,11 +17,13 @@ const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) 
         }
 
         else if (playerMoney[currentPlayer] <= price) {
-            alert("Nincs elég pénzed!");
+            setAlertContent("Nincs elég pénzed!");
+            setShowAlertOnPopup(true);
         }
 
         else if (playerHasCar[currentPlayer] === 0) {
-            alert("Nincs autód!");
+            setAlertContent("Nincs autód!");
+            setShowAlertOnPopup(true);
         }
     }
 
@@ -30,7 +33,8 @@ const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) 
         }
 
         else {
-            alert("Nincs elég pénzed!");
+            setAlertContent("Nincs elég pénzed!");
+            setShowAlertOnPopup(true);
         }
     }
 

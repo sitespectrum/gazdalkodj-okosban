@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { moneyContext } from '../main.jsx';
+import { moneyContext, alertContext } from '../main.jsx';
 import { formatMoney } from './CurrentPlayerPanel.jsx';
 
 const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory}) => {
   const [playerMoney] = useContext(moneyContext);
+  const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
   const [isKButtonDisabled, setIsKButtonDisabled] = useState(playerInventory[currentPlayer].includes("Konyhabútor"));
   const [isRButtonDisabled, setIsRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Szobabútor"));
@@ -16,7 +17,8 @@ const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
     }
 
     else {
-      alert("Nincs elég pénzed!");
+      setAlertContent("Nincs elég pénzed!");
+      setShowAlertOnPopup(true);
     }
   };
 

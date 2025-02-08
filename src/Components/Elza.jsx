@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react';
 import { formatMoney } from './CurrentPlayerPanel';
-import { moneyContext } from '../main.jsx';
+import { moneyContext, alertContext } from '../main.jsx';
 
 const Elza = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory }) => {
   const [playerMoney] = useContext(moneyContext);
+  const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
   const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(playerInventory[currentPlayer].includes('Sumasang 4K TV'));
   const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(playerInventory[currentPlayer].includes('GL előltöltős mosógép'));
@@ -19,7 +20,8 @@ const Elza = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
     }
 
     else {
-      alert("Nincs elég pénzed!");
+      setAlertContent("Nincs elég pénzed!");
+      setShowAlertOnPopup(true);
     }
   };
 

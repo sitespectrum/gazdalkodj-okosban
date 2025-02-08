@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
+import { alertContext } from "../main.jsx";
 
 const Bobthebuilder = ({ onClose, currentPlayer, playerInventory, playerMoney, reducePlayerMoney, addItemToInventory }) => {
     const [isBoButtonDisabled, setIsBoButtonDisabled] = useState(playerInventory[currentPlayer].includes("Ház"));
+    const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
     const handlePurchase = (item, price) => {
         if (playerMoney[currentPlayer] >= price) {
@@ -11,7 +13,8 @@ const Bobthebuilder = ({ onClose, currentPlayer, playerInventory, playerMoney, r
         } 
         
         else {
-            alert("Nincs elég pénzed!");
+            setAlertContent("Nincs elég pénzed!");
+            setShowAlertOnPopup(true);
             setIsBoButtonDisabled(true);
         }
     };
