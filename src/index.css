@@ -1225,14 +1225,14 @@ input::-webkit-inner-spin-button {
   z-index: 10000;
   color: black;
   width: 30%;
-  height: 35%;
-  top: -9px;
+  height: 55%;
+  top: -6px;
 }
 
 .insurance
 {
   position: absolute;
-  top: 90px;
+  top: 140px;
   left: 20px;
   right: 20px;
   bottom: 20px;
@@ -1275,6 +1275,8 @@ input::-webkit-inner-spin-button {
 
 .insBuyButton, .ins-close
 {
+  margin-top: auto;
+  margin-bottom: auto;
   background-color: #7a70b2;
   box-shadow: 0 4px 20px #6a4c91;
   padding: 10px;

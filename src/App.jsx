@@ -35,8 +35,7 @@ export const purchaseableItems = [
 
 function App() 
 {
-  //const rollDice = () => Math.floor(Math.random() * 6) + 1;
-  const rollDice = () => 24
+  const rollDice = () => Math.floor(Math.random() * 6) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
