@@ -13,6 +13,7 @@ import Cheats from './Components/Cheats.jsx'
 import Carshop from './Components/Carshop.jsx'
 import BankRobbery from './Components/BankRobbery.jsx'
 import Bobthebuilder from './Components/Bobthebuilder.jsx'
+import Insurance from './Components/Insurance.jsx'
 import Menu from './Components/Menu.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 import { useContext } from 'react'
@@ -34,7 +35,8 @@ export const purchaseableItems = [
 
 function App() 
 {
-  const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  //const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  const rollDice = () => 24
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
@@ -287,7 +289,7 @@ function App()
         
         if (crossedStart) {
           console.log(`Pénz hozzáadva a ${currentPlayer}. játékosnak`);
-          addPlayerMoney(currentPlayer, 150000);
+          addPlayerMoney(currentPlayer, 80000);
         }
         
         newPositions[playerIndex] = newPosition; 
@@ -338,7 +340,97 @@ function App()
             </>
           );
         }
-      
+
+      if (newPositions[playerIndex] === 6)
+        {
+          setPopupClass("elzaandidea");
+          setPopupContent(
+            <ElzaAndIdea
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer} 
+              playerInventory={playerInventory}
+              addItemToInventory={addItemToInventory} 
+              reducePlayerMoney={reducePlayerMoney}
+            />
+          )
+        }
+
+      if (newPositions[playerIndex] === 12) 
+        {
+          setPopupClass("casino");
+          setPopupContent(
+            <Casino
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              reducePlayerMoney={reducePlayerMoney}
+              addPlayerMoney={addPlayerMoney}
+            >
+            </Casino>
+          );
+        }
+
+      if (newPositions[playerIndex] === 14)
+        {
+          setPopupClass("bobthebuilder");
+          setPopupContent(
+            <>
+            <h1 className='bobthebuilder-title'>Házépítés</h1>
+            <Bobthebuilder
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              reducePlayerMoney={reducePlayerMoney}
+              playerInventory={playerInventory}
+              playerMoney={playerMoney}
+              addItemToInventory={addItemToInventory}
+            />
+            </>
+          )
+        }
+
+      if (newPositions[playerIndex] === 15)
+        {
+          setPopupClass("carshop");
+          setPopupContent(
+            <>
+              <Carshop
+                onClose={() => setPopupContent(null)}
+                currentPlayer={currentPlayer}
+                reducePlayerMoney={reducePlayerMoney}
+                playerMoney={playerMoney}
+                playerHasCar={playerHasCar} 
+                setPlayerHasCar={setPlayerHasCar}
+              />
+            </>
+          )
+        }
+
+      if (newPositions[playerIndex] === 20)
+        {
+          setPopupClass("idea");
+          setPopupContent(
+            <Idea 
+              onClose={() => setPopupContent(null)}
+              currentPlayer={currentPlayer}
+              playerInventory={playerInventory}
+              addItemToInventory={addItemToInventory} 
+              reducePlayerMoney={reducePlayerMoney} 
+            />
+          )
+        }
+
+      if (newPositions[playerIndex] === 24)
+      {
+        setPopupClass("insurance");
+        setPopupContent(
+          <Insurance
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer}
+            playerHasCar={playerHasCar}
+            reducePlayerMoney={reducePlayerMoney}
+          />
+        )
+      }
+
       if (newPositions[playerIndex] === 1 || newPositions[playerIndex] === 7 || newPositions[playerIndex] === 17)
       {
         setPopupClass("lucky");
@@ -372,83 +464,6 @@ function App()
         </>
         )
       }
-
-      if (newPositions[playerIndex] === 20)
-      {
-        setPopupClass("idea");
-        setPopupContent(
-          <Idea 
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            playerInventory={playerInventory}
-            addItemToInventory={addItemToInventory} 
-            reducePlayerMoney={reducePlayerMoney} 
-          />
-        )
-      }
-
-      if (newPositions[playerIndex] === 14)
-      {
-        setPopupClass("bobthebuilder");
-        setPopupContent(
-          <>
-          <h1 className='bobthebuilder-title'>Házépítés</h1>
-          <Bobthebuilder
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            reducePlayerMoney={reducePlayerMoney}
-            playerInventory={playerInventory}
-            playerMoney={playerMoney}
-            addItemToInventory={addItemToInventory}
-          />
-          </>
-        )
-      }
-
-      if (newPositions[playerIndex] === 6)
-      {
-        setPopupClass("elzaandidea");
-        setPopupContent(
-          <ElzaAndIdea
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer} 
-            playerInventory={playerInventory}
-            addItemToInventory={addItemToInventory} 
-            reducePlayerMoney={reducePlayerMoney}
-          />
-        )
-      }
-
-      if (newPositions[playerIndex] === 15)
-      {
-        setPopupClass("carshop");
-        setPopupContent(
-          <>
-            <Carshop
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              reducePlayerMoney={reducePlayerMoney}
-              playerMoney={playerMoney}
-              playerHasCar={playerHasCar} 
-              setPlayerHasCar={setPlayerHasCar}
-            />
-          </>
-        )
-      }
-
-      if (newPositions[playerIndex] === 12) 
-        {
-          setPopupClass("casino");
-          setPopupContent(
-            <Casino
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              reducePlayerMoney={reducePlayerMoney}
-              addPlayerMoney={addPlayerMoney}
-            >
-            </Casino>
-          );
-        }
 
       setActivePicture(newPositions[playerIndex] + 1);
       return newPositions;
