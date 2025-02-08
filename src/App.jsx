@@ -13,6 +13,7 @@ import Cheats from './Components/Cheats.jsx'
 import Carshop from './Components/Carshop.jsx'
 import BankRobbery from './Components/BankRobbery.jsx'
 import Bobthebuilder from './Components/Bobthebuilder.jsx'
+import Menu from './Components/Menu.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 import { useContext } from 'react'
 import { moneyContext } from './main.jsx'
@@ -45,13 +46,23 @@ function App()
 
   const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
 
-  const isGameOver = useMemo(() => playerInventory.some((inventory) => purchaseableItems.every((item) => inventory.includes(item))), [playerInventory]);
-
+  const winningPlayerIndex = useMemo(() => {
+    return playerInventory.findIndex((inventory) => 
+      purchaseableItems.every((item) => inventory.includes(item))
+    );
+  }, [playerInventory]);
+  
   useEffect(() => {
-    if (isGameOver) {
-      alert("A játék véget ért!");
+    if (winningPlayerIndex !== -1) {
+      alert(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert!`);
+      
+      setPlayerMoney([400000, 400000, 400000, 400000]);
+      setPlayerPositions([0, 0, 0, 0]);
+      setPlayerInventory([[], [], [], []]);
+      setPlayerHasCar([0, 0, 0, 0]);
     }
-  }, [isGameOver]);
+  }, [winningPlayerIndex]);
+  
 
   const reducePlayerMoney = (playerIndex, amount) => 
     {
@@ -158,7 +169,7 @@ function App()
 
   const [currentPlayer, setCurrentPlayer] = useState(0); 
   const [missedRounds, setMissedRounds] = useState([0, 0, 0, 0] || []);
-  const [round, setRound] = useState(1 || 0);  
+  const [round, setRound] = useState(1 || 0); 
 
   const missRound = (playerIndex) => {
     setMissedRounds((prevMissed) => {
@@ -339,6 +350,7 @@ function App()
               currentPlayer={currentPlayer}
               addPlayerMoney={addPlayerMoney}
               reducePlayerMoney={reducePlayerMoney}
+              playerMoney={playerMoney}
             />
           </>
         )
@@ -380,7 +392,7 @@ function App()
         setPopupClass("bobthebuilder");
         setPopupContent(
           <>
-          <h1 className='title'>Házépítés</h1>
+          <h1 className='bobthebuilder-title'>Házépítés</h1>
           <Bobthebuilder
             onClose={() => setPopupContent(null)}
             currentPlayer={currentPlayer}
@@ -412,7 +424,6 @@ function App()
         setPopupClass("carshop");
         setPopupContent(
           <>
-          <h1 className='car-title'>Autóvásárlás</h1>
             <Carshop
               onClose={() => setPopupContent(null)}
               currentPlayer={currentPlayer}

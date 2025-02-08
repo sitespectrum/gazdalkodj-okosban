@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import App from "../App.jsx";
+import { formatMoney } from "./CurrentPlayerPanel.jsx";
 
 const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, setPlayerHasCar}) => {
 
@@ -26,6 +26,11 @@ const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playe
     };
 
     return (
+        <>
+        <div className='car-header'>
+            <h1 className='car-title'>Autóvásárlás</h1>
+            <h1 className='car-balance'>Egyenleg: {formatMoney(playerMoney[currentPlayer])}</h1>
+        </div>
         <div className="carshop">
             <img className="carshop-image" src="../src/HQ Pictures/Auto.png"/>
             <button
@@ -39,6 +44,7 @@ const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playe
                 Bezárás
             </button>
         </div>
+        </>
     );
 };
 

@@ -620,7 +620,7 @@ input
 .elzaandidea
 {
   position: absolute;
-  top: 110px;
+  top: 140px;
   left: 20px;
   right: 20px;
   bottom: 20px;
@@ -647,7 +647,6 @@ input
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   color: white;
-  flex: 1;
   padding: 0 0.5rem;
 
 }
@@ -707,16 +706,16 @@ input
 
 .carshop
 {
-  position: fixed;
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   z-index: 30;
   background-color: white;
   padding: 30px;
   color: black;
   border-radius: 5px;
-  width: 35%;
-  height: 55%;
-  left: 30.5%;
-  top: 22%;
   box-shadow: 0 4px 20px black;
   font-weight: bold;
   display: flex;
@@ -738,14 +737,32 @@ input
   color: white;
 }
 
+.car-header
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
 .car-title
 {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
-  margin-left: 170px;
-  margin-right: 170px;
   border-radius: 5px;
   color: white;
+  flex: 1;
+  padding: 0 0.5rem;
+
+}
+
+.car-balance
+{
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+  color: white;
+  padding: 0 0.5rem;
 }
 
 .carshop-image
@@ -977,9 +994,7 @@ input
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   color: white;
-  flex: 1;
   padding: 0 0.5rem;
-
 }
 
 .casino-balance
@@ -1175,6 +1190,15 @@ input::-webkit-inner-spin-button {
   top: 40%;
   font-size: 17px;
   color: white;
+}
+
+.price
+{
+  position: absolute;
+  font-weight: bold;
+  text-align: center;
+  font-size: 25px;
+  margin-bottom: 160px;
 }
 
 .elza

@@ -18,6 +18,7 @@ const Bobthebuilder = ({ onClose, currentPlayer, playerInventory, playerMoney, r
 
     return (
         <div className="bobthebuilder">
+            <p className="price">Ár: 25 000 000 Ft</p>
             <button
                 className="BoButton"
                 disabled={isBoButtonDisabled}

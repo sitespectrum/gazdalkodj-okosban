@@ -12,7 +12,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
         if (isRobbing && countdown !== null) {
             let timer = setTimeout(() => {
                 setCountdown((prev) => prev - 1);
-            }, 800);
+            }, 500);
 
             if (countdown === 1) {
                 setEscapeVisible(true);
@@ -26,7 +26,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
 
     const handleStartRobbery = () => {
         setIsRobbing(true);
-        setCountdown(Math.floor(Math.random() * 6) + 10);
+        setCountdown(Math.floor(Math.random() * 6) + 20);
         setClickCount(0);
         setEscapeVisible(false);
     };
