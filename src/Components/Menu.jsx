@@ -1,8 +1,18 @@
-const Menu = ({onClose}) => {
+const Menu = ({ onClose }) => {
     return (
-        <div className="menu">
-            <button className="menu-close" onClick={onClose}>Bezárás</button>
-        </div>
+        <>
+            <div className="ss-hero-container">
+                <div className="ss-hero">
+                    <img src="/src/Logos/ss.png" className="ss-logo" />
+                </div>
+            </div>
+            <div className="menu">
+                <div className="menu-content">
+                    <h1>Gazdálkodj Okosban</h1>
+                    <button onClick={() => onClose()}>Kezdés</button>
+                </div>
+            </div>
+        </>
     )
 }
 

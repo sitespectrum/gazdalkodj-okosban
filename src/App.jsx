@@ -35,6 +35,8 @@ export const purchaseableItems = [
 
 function App() 
 {
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
+
   const rollDice = () => Math.floor(Math.random() * 6) + 1;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
@@ -517,16 +519,21 @@ function App()
   return (
     <div>
       <div className="game-board">
-        <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
-        {popupContent ? <>
-          <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
-            <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
-              {popupContent}
+        {isMenuOpen ? <Menu onClose={() => {
+          document.documentElement.requestFullscreen();
+          setIsMenuOpen(false)
+        }} /> : <>
+          <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
+          {popupContent ? <>
+            <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
+              <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
+                {popupContent}
+              </div>
             </div>
-          </div>
-        </> : <></>}
-        <CurrentPlayerPanel currentPlayer={currentPlayer} playerInventory={playerInventory[currentPlayer]} />
-        <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
+          </> : <></>}
+          <CurrentPlayerPanel currentPlayer={currentPlayer} playerInventory={playerInventory[currentPlayer]} />
+          <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
+        </>}
         <Fields/>
         <Players fields={fields} playerPositions={playerPositions} />
         {ActivatePictures()}
