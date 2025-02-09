@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { alertContext } from '../main.jsx';
+import { moneyContext } from '../main.jsx';
 
 const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions, fields, reducePlayerMoney, addPlayerMoney }) => {  
   const [visitedStops, setVisitedStops] = useState(new Set());
   const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
+  const [playerMoney] = useContext(moneyContext);
 
   const travelToNextStop = () => {
     setPlayerPositions((prevPositions) => {
@@ -32,7 +34,17 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
       return newPositions;
     });
 
-    reducePlayerMoney(currentPlayer, 3000);
+    if (playerMoney[currentPlayer] >= 3000)
+    {
+      reducePlayerMoney(currentPlayer, 3000);
+    }
+
+    else
+    {
+      setAlertContent("Nincs elég pénzed a jegyvásárláshoz!");
+      setShowAlertOnPopup(true);
+      canTravel = false;
+    }
     onClose();
   };
 
@@ -72,13 +84,11 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
       setAlertContent(`Bábu ${currentPlayer + 1} büntetést kapott! 40000 Ft levonva.`);
       setShowAlertOnPopup(true);
     }
-
-
     onClose();
   };
 
   const currentPosition = playerPositions[currentPlayer];
-  const canTravel = fields[currentPosition]?.isStop || false;
+  let canTravel = fields[currentPosition]?.isStop || false;
 
   const [time, setTime] = useState(new Date());
 
@@ -99,9 +109,9 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
             <p className='simple'>{earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })} - {earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}</p>    
             <p className='red'>{time.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })} - {time.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}</p>
             <p className='delay'>Biztosítóberendezési hiba miatti késés <br /> Pálya állapota miatti késés</p>
-            <p className='question'>Játékos {currentPlayer + 1}, szeretnél jegyet vásárolni és utazni?</p>
+            <p className='question'>Játékos {currentPlayer + 1}, szeretnél jegyet vásárolni?</p>
             <button className="steelroad-yes" onClick={travelToNextStop}>Igen</button>
-            <button className="steelroad-no" onClick={handleNoTicket}>Nem</button>
+            <button className="steelroad-no" onClick={handleNoTicket}>Bliccelek</button>
         </div>
       <button className="steelroad-close" onClick={onClose}>Bezárás</button>
     </div>

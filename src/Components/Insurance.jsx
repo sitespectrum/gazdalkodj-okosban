@@ -1,15 +1,20 @@
 import React, { useState, useContext } from 'react';
 import { moneyContext, alertContext } from '../main';
 import { formatMoney } from './CurrentPlayerPanel';
+import Lucky from './Lucky';
 
 const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) => {
     const [playerHasCASCO, setPlayerHasCASCO] = useState(false);
     const [playerHasAccIns, setPlayerHasAccIns] = useState(false);
     const [playerHasHomeIns, setPlayerHasHomeIns] = useState(false);
-    const [playerHasTravelIns, setPlayerHasTravelIns] = useState(false);
-
     const [playerMoney] = useContext(moneyContext);
     const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
+
+    <Lucky 
+      playerHasCASCO={playerHasCASCO}
+      playerHasAccIns={playerHasAccIns}
+      playerHasHomeIns={playerHasHomeIns}
+    />
 
     const handleCASCOPurchase = (price) => {
         if (playerMoney[currentPlayer] >= price && playerHasCar[currentPlayer] === 1) {
@@ -81,19 +86,6 @@ const Insurance = ({ currentPlayer, reducePlayerMoney, onClose, playerHasCar }) 
             }}
           >
             Lakásbiztosítás - 1 000 000 Ft
-          </button>
-        </p>
-
-        <p>
-          <button
-            className="insBuyButton"
-            disabled={playerHasTravelIns}
-            onClick={() => {
-              handlePurchase(30000);
-              setPlayerHasTravelIns(true);
-            }}
-          >
-            Utasbiztosítás - 30 000 Ft
           </button>
         </p>
         <button

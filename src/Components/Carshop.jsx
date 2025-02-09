@@ -38,6 +38,7 @@ const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerHasCar, setP
             <h1 className='car-balance'>Egyenleg: {formatMoney(playerMoney[currentPlayer])}</h1>
         </div>
         <div className="carshop">
+            <p className="price">Ár: 1 000 000 Ft</p>
             <img className="carshop-image" src="../src/HQ Pictures/Auto.png"/>
             <button
                 className="CarButton"

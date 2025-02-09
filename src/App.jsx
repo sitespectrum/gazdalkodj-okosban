@@ -59,12 +59,10 @@ function App()
   
   useEffect(() => {
     if (winningPlayerIndex !== -1) {
-      setAlertContent(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert!`);
-      
-      setPlayerMoney([400000, 400000, 400000, 400000]);
-      setPlayerPositions([0, 0, 0, 0]);
-      setPlayerInventory([[], [], [], []]);
-      setPlayerHasCar([0, 0, 0, 0]);
+      setAlertContent(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert! Az oldal pár másodpercen belül lefrissül.`);
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
     }
   }, [winningPlayerIndex]);
   
@@ -426,6 +424,7 @@ function App()
               addPlayerMoney={addPlayerMoney}
               reducePlayerMoney={reducePlayerMoney}
               playerMoney={playerMoney}
+              playerHasCar={playerHasCar}
             />
           </>
         )
