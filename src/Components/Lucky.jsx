@@ -3,7 +3,7 @@ import { moneyContext } from "../main.jsx";
 
 const Lucky = ({ onClose, currentPlayer, addPlayerMoney, reducePlayerMoney}) => {
 
-  const [playerMoney] = useContext(moneyContext);
+  const [playerMoney, setPlayerMoney] = useContext(moneyContext);
   const luckyCards = [
     {
       id: 1,
@@ -28,8 +28,14 @@ const Lucky = ({ onClose, currentPlayer, addPlayerMoney, reducePlayerMoney}) => 
     {
       id: 5,
       text: "Egy kétes megbízhatóságú weboldalon ingyen Sumasang P25 Ultrákat osztottak, neked csak meg kellett adnod a kártyaadataidat. Ellopták az összes pénzed.",
-      action: (currentPlayer, { reducePlayerMoney }) => reducePlayerMoney(currentPlayer, playerMoney[currentPlayer]),
-    }
+      action: () => {
+        setPlayerMoney((prevMoney) => {
+          const newMoney = [...prevMoney];
+          newMoney[currentPlayer] = 0;
+          return newMoney;
+        });
+      },    
+    },
   ];
 
   const [currentCard] = useState(

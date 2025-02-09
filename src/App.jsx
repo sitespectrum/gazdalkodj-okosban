@@ -205,7 +205,7 @@ function App()
 
   const fields = 
   [
-    {id: 0, name: "Start", x: 88.9, y: 80, action: () => addPlayerMoney(currentPlayer, 170000)},
+    {id: 0, name: "Start", x: 88.9, y: 80, action: () => addPlayerMoney(currentPlayer, 100000)},
 
     {id: 1, name: "Mezo 1", x: 71.5, y: 80},
     {id: 2, name: "Mezo 2", x: 64, y: 80, action: () => reducePlayerMoney(currentPlayer, 1500)},
@@ -246,7 +246,6 @@ function App()
   const [activePicture, setActivePicture] = useState(null);
   const [executedActions, setExecutedActions] = useState(new Array(fields.length).fill(false));
   const [popupClass, setPopupClass] = useState(null);
-  const [rentReduced, setRentReduced] = useState([false, false, false, false]);
 
   const movePlayer = (playerIndex, steps) => 
     {  
@@ -265,27 +264,6 @@ function App()
         }
         else if (newPositions[playerIndex] === 27 && steps === 6) {
           newPosition = 9;
-        }
-
-        if (!rentReduced[playerIndex] && newPositions[playerIndex] >= 1 && newPositions[playerIndex] <= 6) {
-          console.log("Feltételek teljesültek! Pénzlevonás indul...");
-
-          console.log("Játékos pénze előtte:", playerMoney[currentPlayer]);
-          reducePlayerMoney(currentPlayer, 70000);
-          console.log("Játékos pénze utána:", playerMoney[currentPlayer]);
-          setRentReduced((prev) => {
-            if (!Array.isArray(prev)) return [false, false, false, false];
-            const updated = [...prev];
-            updated[playerIndex] = true;
-            return updated;
-          });
-        } else {
-          setRentReduced((prev) => {
-            if (!Array.isArray(prev)) return [false, false, false, false];
-            const updated = [...prev];
-            updated[playerIndex] = false;
-            return updated;
-          });
         }
 
         const crossedStart = newPosition > 27;
@@ -461,7 +439,8 @@ function App()
         <img src="./src/Logos/MKV logo.png" className='steelroad-logo'/>
         <Steelroad onClose={() => setPopupContent(null)}
           currentPlayer={currentPlayer} 
-          reducePlayerMoney={reducePlayerMoney} 
+          reducePlayerMoney={reducePlayerMoney}
+          addPlayerMoney={addPlayerMoney}
           playerPositions={playerPositions} 
           setPlayerPositions={setPlayerPositions} 
           fields={fields}

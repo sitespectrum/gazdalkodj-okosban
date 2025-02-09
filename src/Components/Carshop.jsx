@@ -1,11 +1,13 @@
 import React, { useState, useContext } from "react";
 import { formatMoney } from "./CurrentPlayerPanel.jsx";
 import { alertContext } from "../main.jsx";
+import { moneyContext } from "../main.jsx";
 
-const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerMoney, playerHasCar, setPlayerHasCar}) => {
+const Carshop = ({ onClose, currentPlayer, reducePlayerMoney, playerHasCar, setPlayerHasCar}) => {
 
     const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(playerHasCar[currentPlayer]);
     const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
+    const [playerMoney] = useContext(moneyContext);
 
     const handlePurchase = (price) => {
         if (playerHasCar[currentPlayer] === 0) {

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { alertContext } from '../main.jsx';
 
-const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions, fields, reducePlayerMoney }) => {
+const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions, fields, reducePlayerMoney, addPlayerMoney }) => {  
   const [visitedStops, setVisitedStops] = useState(new Set());
   const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
 
   const travelToNextStop = () => {
     setPlayerPositions((prevPositions) => {
       const newPositions = [...prevPositions];
-      let nextStop = (newPositions[currentPlayer] + 1) % fields.length;
+      const previousPosition = newPositions[currentPlayer];
+      let nextStop = (previousPosition + 1) % fields.length;
       let attempts = 0;
 
       while (!fields[nextStop]?.isStop && attempts < fields.length) {
@@ -22,6 +23,11 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
       }
 
       newPositions[currentPlayer] = nextStop;
+
+      if (previousPosition > nextStop) {
+        addPlayerMoney(currentPlayer, 80000);
+      }
+
       setVisitedStops((prevVisited) => new Set([...prevVisited, nextStop]));
       return newPositions;
     });
@@ -33,8 +39,13 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
   const handleNoTicket = () => {
     setPlayerPositions((prevPositions) => {
       const newPositions = [...prevPositions];
+      const previousPosition = newPositions[currentPlayer];
       let nextStop = (newPositions[currentPlayer] + 1) % fields.length;
       let attempts = 0;
+
+      if (previousPosition > nextStop && previousPosition >= startFieldIndex) {
+        addPlayerMoney(currentPlayer, 80000);
+      }
 
       while (!fields[nextStop]?.isStop && attempts < fields.length) {
         nextStop = (nextStop + 1) % fields.length;
@@ -47,6 +58,11 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
       }
 
       newPositions[currentPlayer] = nextStop;
+
+      if (previousPosition > nextStop) {
+        addPlayerMoney(currentPlayer, 80000);
+      }
+
       return newPositions;
     });
 
