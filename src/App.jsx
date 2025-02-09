@@ -45,7 +45,7 @@ function App()
 
   const [popupContent, setPopupContent] = useState(null);
 
-  const [alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup] = useContext(alertContext);
+  const [alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup, showCloseButton, setShowCloseButton] = useContext(alertContext);
 
   const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
 
@@ -59,10 +59,15 @@ function App()
   
   useEffect(() => {
     if (winningPlayerIndex !== -1) {
-      setAlertContent(`A játék véget ért! A ${winningPlayerIndex + 1}. játékos nyert! Az oldal pár másodpercen belül lefrissül.`);
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
+      setShowCloseButton(false);
+      setAlertContent(
+        <>
+          A játék véget ért! A(z) <strong>{winningPlayerIndex + 1}. játékos nyert!</strong>
+          <button className='new-game-button' onClick={() => {
+            window.location.reload();
+          }}>Új játék</button>
+        </>
+      );
     }
   }, [winningPlayerIndex]);
   
@@ -161,6 +166,7 @@ function App()
               addPlayerMoney={addPlayerMoney}
               reducePlayerMoney={reducePlayerMoney}
               missRound={missRound}
+              playerHasCar={playerHasCar}
             />
           </>
         );
@@ -515,15 +521,17 @@ function App()
           </> : <></>}
           {alertContent ? <>
             <div className={`alert-wrapper`} onClick={() => {
-                  setAlertContent(null)
-                  setShowAlertOnPopup(false)
+                  if (showCloseButton) {
+                    setAlertContent(null)
+                    setShowAlertOnPopup(false)
+                  }
             }}>
               <div className={`alert-content`} onClick={(e) => e.stopPropagation()}>
                 <span>{alertContent}</span>
-                <button onClick={() => {
+                {showCloseButton && <button onClick={() => {
                   setAlertContent(null)
                   setShowAlertOnPopup(false)
-                }}>Bezárás</button>
+                }}>Bezárás</button>}
               </div>
             </div>
           </> : <></>}

@@ -10,10 +10,11 @@ function Providers({ children }) {
   const [playerMoney, setPlayerMoney] = useState([400000, 400000, 400000, 400000]);
   const [alertContent, setAlertContent] = useState(null);
   const [showAlertOnPopup, setShowAlertOnPopup] = useState(false);
+  const [showCloseButton, setShowCloseButton] = useState(true);
 
   return (
     <moneyContext.Provider value={[playerMoney, setPlayerMoney]}>
-      <alertContext.Provider value={[alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup]}>
+      <alertContext.Provider value={[alertContent, setAlertContent, showAlertOnPopup, setShowAlertOnPopup, showCloseButton, setShowCloseButton]}>
         {children}
       </alertContext.Provider>
     </moneyContext.Provider>

@@ -1631,6 +1631,7 @@ ul
   font-weight: medium;
   font-size: 1.5rem;
   margin: 1rem 2rem;
+  text-align: center;
 }
 
 .alert-content button {
@@ -1642,4 +1643,13 @@ ul
   border-radius: 5px;
   font-weight: bold;
   width: 100%;
+}
+
+.new-game-button {
+  display: block;
+  margin-top: 1.5rem;
+  margin-bottom: -1rem;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  width: calc(100% + 4rem) !important;
 }
