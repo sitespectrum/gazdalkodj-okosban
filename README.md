@@ -1,18 +1,12 @@
-# React + Vite
+A Gazdálkodj okosban egy React JS használatával fejlesztett társasjáték, a klasszikus "Gazdálkodj okosan" újragondolt változata. A cél változatlan: minden berendezést megszerezni és megvásárolni a házat, de mostmár "okosban" is lehet pénzt szerezni.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Újítások az eredeti játékhoz képest:
+Vasút – Jegyvásárlással szabályosan, vagy bliccelve kockázatosan utazhatsz.
+Bankrablás & szerencsejáték – Nagy nyeremény vagy börtön várhat rád.
+Börtön – Sikertelen rablás vagy szerencsekártya miatt kerülhetsz ide.
+Autóvásárlás – Gyorsabban haladhatsz a pályán.
 
-Currently, two official plugins are available:
+Játékmenet:
+A játékosok 1 és 6 közötti számot dobnak, lépnek, végrehajtják a mező akcióját, majd a "Kör vége" gombbal a következő játékos jön.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-vacsunóábáutrollingdáninedípvenjúbrékdóznámbjukenkollitvenjúfrípípöltálktúmáccsputdetsitizszlómosönjeifíllájkámásztronótindiósönej
-ready or not
-here i come
-you can't hide
-i found you
-lehetne újra február
-ezt tette az élet öröme
-bárhova mész
-a szeretet él
-és mégis forog a föld
+A játékot kivetítőhöz terveztük, így teljes képernyős nézetben ajánlott játszani.
