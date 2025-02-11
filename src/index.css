@@ -19,10 +19,14 @@ body
 .throwButton
 {
   width: 7%;
+  height: 5%;
   left: 65%;
-  top: 37%;
+  top: 42%;
   position: fixed;
-  cursor: pointer;
+  color: black;
+  font-size: 1.6vw;
+  border-radius: 7px;
+  background-color: white;
 }
 
 .nextPlayer
@@ -30,7 +34,7 @@ body
   width: 8%;
   height: 5%;
   left: 64.5%;
-  top: 55%;
+  top: 50%;
   position: fixed;
   color: black;
   font-size: 1.5vw;
@@ -1319,7 +1323,6 @@ input::-webkit-inner-spin-button {
 button
 {
   cursor: pointer;
-  font-weight: bold;
 }
 
 .sumasang p

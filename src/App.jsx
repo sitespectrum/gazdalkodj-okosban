@@ -511,7 +511,7 @@ function App()
           document.documentElement.requestFullscreen();
           setIsMenuOpen(false)
         }} /> : <>
-          <img src="./src/HQ Pictures/Throw Button.png" className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}/>
+          <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
           {popupContent && !(!showAlertOnPopup && alertContent) ? <>
             <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
               <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
