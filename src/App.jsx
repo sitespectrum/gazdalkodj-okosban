@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import { Board } from "./Board.jsx";
 import BankRobbery from "./Components/BankRobbery.jsx";
 import Bobthebuilder from "./Components/Bobthebuilder.jsx";
 import Carshop from "./Components/Carshop.jsx";
@@ -12,7 +13,6 @@ import Lucky from "./Components/Lucky.jsx";
 import Menu from "./Components/Menu.jsx";
 import Steelroad from "./Components/Steelroad.jsx";
 import "./Fields.css";
-import Fields from "./Fields.jsx";
 import Players from "./Players.jsx";
 import { alertContext, moneyContext } from "./main.jsx";
 
@@ -34,7 +34,7 @@ export function rollDice() {
 }
 
 function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
   const [playerMoney, setPlayerMoney] = useContext(moneyContext);
   const [popupContent, setPopupContent] = useState(null);
@@ -532,13 +532,13 @@ function App() {
     setIsThrowButtonDisabled(false);
   };
 
-  const ActivatePictures = () => {
+  const ActivePictures = () => {
     return activePicture !== null ? (
-      <div className="div">
+      <div className="w-full h-full flex p-4 items-center justify-center">
         <img
           src={`./src/HQ Pictures/${activePicture}. Mező.png`}
           alt={`${activePicture}. Mező`}
-          className={`field-pic field-${activePicture}`}
+          className="w-full h-full object-contain"
         />
       </div>
     ) : null;
@@ -560,85 +560,106 @@ function App() {
 
   return (
     <div>
-      <div className="game-board">
-        {isMenuOpen ? (
-          <Menu
-            onClose={() => {
-              document.documentElement.requestFullscreen();
-              setIsMenuOpen(false);
-            }}
-          />
-        ) : (
-          <>
-            <button
-              className="throwButton"
-              disabled={isThrowButtonDisabled}
-              onClick={() => movePlayer(currentPlayer, rollDice())}
-            >
-              Dobás
-            </button>
-            {popupContent && !(!showAlertOnPopup && alertContent) ? (
-              <>
-                <div
-                  className={`popup-wrapper-${popupClass}`}
-                  onClick={() => setPopupContent(null)}
-                >
-                  <div
-                    className={`popup-content-${popupClass}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {popupContent}
+      <Board>
+        <div className="w-full h-full bg-[#0862e1] flex justify-between">
+          {isMenuOpen ? (
+            <Menu
+              onClose={() => {
+                document.documentElement.requestFullscreen();
+                setIsMenuOpen(false);
+              }}
+            />
+          ) : (
+            <div className="flex w-full">
+              <div className="p-4 h-full flex-2/6">
+                <CurrentPlayerPanel
+                  currentPlayer={currentPlayer}
+                  playerInventory={playerInventory[currentPlayer]}
+                />
+              </div>
+              <div className="flex-2/6">
+                <ActivePictures />
+              </div>
+
+              <div className="flex-2/6 p-4">
+                <div className="flex flex-col bg-black/50 rounded-xl text-white text-lg h-full text-center">
+                  <div className="flex py-2 items-center justify-center bg-black/30 rounded-t-xl h-16">
+                    <strong>Irányítás</strong>
+                  </div>
+                  <div className="flex flex-col gap-8 justify-center h-full items-center">
+                    <button
+                      className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
+                      disabled={isThrowButtonDisabled}
+                      onClick={() => movePlayer(currentPlayer, rollDice())}
+                    >
+                      Dobás
+                    </button>
+
+                    <button
+                      className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
+                      onClick={() => whosTurn()}
+                    >
+                      Kör vége
+                    </button>
                   </div>
                 </div>
-              </>
-            ) : (
-              <></>
-            )}
-            {alertContent ? (
-              <>
-                <div
-                  className={`alert-wrapper`}
+              </div>
+            </div>
+          )}
+          <Players fields={fields} playerPositions={playerPositions} />
+        </div>
+      </Board>
+
+      {popupContent && !(!showAlertOnPopup && alertContent) ? (
+        <>
+          <div
+            className={`popup-wrapper-${popupClass}`}
+            onClick={() => setPopupContent(null)}
+          >
+            <div
+              className={`popup-content-${popupClass}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {popupContent}
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+
+      {alertContent ? (
+        <>
+          <div
+            className={`alert-wrapper`}
+            onClick={() => {
+              if (showCloseButton) {
+                setAlertContent(null);
+                setShowAlertOnPopup(false);
+              }
+            }}
+          >
+            <div
+              className={`alert-content`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span>{alertContent}</span>
+              {showCloseButton && (
+                <button
                   onClick={() => {
-                    if (showCloseButton) {
-                      setAlertContent(null);
-                      setShowAlertOnPopup(false);
-                    }
+                    setAlertContent(null);
+                    setShowAlertOnPopup(false);
                   }}
                 >
-                  <div
-                    className={`alert-content`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <span>{alertContent}</span>
-                    {showCloseButton && (
-                      <button
-                        onClick={() => {
-                          setAlertContent(null);
-                          setShowAlertOnPopup(false);
-                        }}
-                      >
-                        Bezárás
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
-            <CurrentPlayerPanel
-              currentPlayer={currentPlayer}
-              playerInventory={playerInventory[currentPlayer]}
-            />
-            <button className="nextPlayer" onClick={() => whosTurn()}>
-              Kör vége
-            </button>
-          </>
-        )}
-        <Fields />
-        <Players fields={fields} playerPositions={playerPositions} />
-        {ActivatePictures()}
-      </div>
+                  Bezárás
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

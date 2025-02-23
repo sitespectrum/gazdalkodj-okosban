@@ -15,33 +15,33 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
   const [playerMoney] = useContext(moneyContext);
 
   return (
-    <div className="player-panel">
-      <div className="player-panel-header">
-        <div>
+    <div className="flex flex-col bg-black/50 rounded-xl text-white text-lg h-full text-center">
+      <div className="flex gap-4 px-4 py-2 items-center bg-black/30 rounded-t-xl">
+        <div className="h-12">
           {currentPlayer === 0 && (
             <img
-              className="player-panel-puppet"
+              className="h-full object-contain"
               src="./src/Pictures/Puppets/Piros bábú 1.png"
               alt="Piros bábú 1"
             />
           )}
           {currentPlayer === 1 && (
             <img
-              className="player-panel-puppet"
+              className="h-full object-contain"
               src="./src/Pictures/Puppets/Kék bábú 1.png"
               alt="Kék bábú 1"
             />
           )}
           {currentPlayer === 2 && (
             <img
-              className="player-panel-puppet"
+              className="h-full object-contain"
               src="./src/Pictures/Puppets/Zöld bábú 1.png"
               alt="Zöld bábú 1"
             />
           )}
           {currentPlayer === 3 && (
             <img
-              className="player-panel-puppet"
+              className="h-full object-contain"
               src="./src/Pictures/Puppets/Sárga bábú 1.png"
               alt="Sárga bábú 1"
             />
@@ -52,13 +52,15 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
           <strong>{formatMoney(playerMoney[currentPlayer])}</strong>
         </p>
       </div>
-      <div className="player-panel-inventory-container">
-        <p>Leltár</p>
-        <ul className="player-panel-inventory">
+      <div className="overflow-y-auto h-full">
+        <p className="mt-4">Leltár</p>
+        <ul className="flex flex-col gap-2 !p-3">
           {purchaseableItems.map((item) => (
             <li
-              className="player-panel-inventory-item"
-              disabled={!playerInventory.includes(item)}
+              className={
+                "rounded-xl bg-black/30 flex items-stretch gap-2 text-xl" +
+                (playerInventory.includes(item) ? "" : " opacity-50")
+              }
               key={item}
             >
               {!playerInventory.includes(item) && (
