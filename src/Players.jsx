@@ -1,16 +1,14 @@
-const Players = ({fields, playerPositions }) => 
-  {
-    const playerImages = 
-    [
-      "./src/Pictures/Puppets/Piros bábú 1.png",
-      "./src/Pictures/Puppets/Kék bábú 1.png",
-      "./src/Pictures/Puppets/Zöld bábú 1.png",
-      "./src/Pictures/Puppets/Sárga bábú 1.png",
-    ];
-  
-    return (
-      <div className="players">
-        {playerPositions.map((position, index) => {
+const Players = ({ fields, playerPositions }) => {
+  const playerImages = [
+    "./src/Pictures/Puppets/Piros bábú 1.png",
+    "./src/Pictures/Puppets/Kék bábú 1.png",
+    "./src/Pictures/Puppets/Zöld bábú 1.png",
+    "./src/Pictures/Puppets/Sárga bábú 1.png",
+  ];
+
+  return (
+    <div className="players">
+      {playerPositions.map((position, index) => {
         const field = fields[position];
         return (
           <img
@@ -27,9 +25,8 @@ const Players = ({fields, playerPositions }) =>
           />
         );
       })}
-      </div>
-    );
-  };
-  
-  export default Players;
-  
+    </div>
+  );
+};
+
+export default Players;

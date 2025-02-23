@@ -1,22 +1,33 @@
-import React, { useState, useContext } from 'react';
-import { moneyContext, alertContext } from '../main.jsx';
-import { formatMoney } from './CurrentPlayerPanel.jsx';
+import React, { useState, useContext } from "react";
+import { moneyContext, alertContext } from "../main.jsx";
+import { formatMoney } from "./CurrentPlayerPanel.jsx";
 
-const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory}) => {
+const Idea = ({
+  onClose,
+  currentPlayer,
+  playerInventory,
+  reducePlayerMoney,
+  addItemToInventory,
+}) => {
   const [playerMoney] = useContext(moneyContext);
-  const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
+  const [_, setAlertContent, __, setShowAlertOnPopup] =
+    useContext(alertContext);
 
-  const [isKButtonDisabled, setIsKButtonDisabled] = useState(playerInventory[currentPlayer].includes("Konyhabútor"));
-  const [isRButtonDisabled, setIsRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Szobabútor"));
-  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Fürdőszobabútor"));
+  const [isKButtonDisabled, setIsKButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Konyhabútor")
+  );
+  const [isRButtonDisabled, setIsRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Szobabútor")
+  );
+  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Fürdőszobabútor")
+  );
 
   const handlePurchase = (item, price) => {
     if (playerMoney[currentPlayer] >= price) {
       reducePlayerMoney(currentPlayer, price);
       addItemToInventory(currentPlayer, item);
-    }
-
-    else {
+    } else {
       setAlertContent("Nincs elég pénzed!");
       setShowAlertOnPopup(true);
     }
@@ -24,9 +35,11 @@ const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
 
   return (
     <>
-      <div className='idea-header'>
-        <img src="./src/Logos/Idea logo.png" className='idea-logo'/>
-        <div className='idea-balance'>Egyenleg: {formatMoney(playerMoney[currentPlayer])}</div>
+      <div className="idea-header">
+        <img src="./src/Logos/Idea logo.png" className="idea-logo" />
+        <div className="idea-balance">
+          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+        </div>
       </div>
       <div className="idea">
         <p>
@@ -35,7 +48,7 @@ const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
             className="buyButton"
             disabled={isKButtonDisabled}
             onClick={() => {
-              handlePurchase('Konyhabútor', 549990);
+              handlePurchase("Konyhabútor", 549990);
               setIsKButtonDisabled(true);
             }}
           >
@@ -48,7 +61,7 @@ const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
             className="buyButton"
             disabled={isRButtonDisabled}
             onClick={() => {
-              handlePurchase('Szobabútor', 999990);
+              handlePurchase("Szobabútor", 999990);
               setIsRButtonDisabled(true);
             }}
           >
@@ -61,7 +74,7 @@ const Idea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
             className="buyButton"
             disabled={isBRButtonDisabled}
             onClick={() => {
-              handlePurchase('Fürdőszobabútor', 349990);
+              handlePurchase("Fürdőszobabútor", 349990);
               setIsBRButtonDisabled(true);
             }}
           >

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-body
-{
+body {
   font-family: "Inter", Arial, Helvetica, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -18,8 +17,7 @@ body
   -moz-osx-font-smoothing: grayscale;
 }
 
-.throwButton
-{
+.throwButton {
   width: 7%;
   height: 5%;
   left: 65%;
@@ -31,8 +29,7 @@ body
   background-color: white;
 }
 
-.nextPlayer
-{
+.nextPlayer {
   width: 8%;
   height: 5%;
   left: 64.5%;
@@ -69,8 +66,7 @@ button:disabled {
   transition: left 1s ease, top 1s ease;
 }
 
-.field-pic 
-{
+.field-pic {
   position: absolute;
   z-index: 20;
   top: 27%;
@@ -78,46 +74,39 @@ button:disabled {
   width: 15%;
 }
 
-.field-1
-{
+.field-1 {
   width: 25%;
   left: 37.5%;
 }
 
-.field-10
-{
+.field-10 {
   width: 25%;
   left: 37.5%;
 }
 
-.field-14
-{
+.field-14 {
   width: 25%;
   left: 37.5%;
 }
 
-.field-24
-{
+.field-24 {
   width: 25%;
   left: 37.5%;
 }
 
-.field-12
-{
+.field-12 {
   width: 24%;
   rotate: -90deg;
   left: 38%;
 }
 
-.field-26
-{
+.field-26 {
   width: 24%;
   rotate: -90deg;
   left: 38%;
 }
 
-.playermoney
-{
+.playermoney {
   position: fixed;
   left: 65%;
   top: 30%;
@@ -125,42 +114,37 @@ button:disabled {
   font-size: 1.5vw;
 }
 
-.cheats
-{
+.cheats {
   display: none;
   z-index: 30;
   position: fixed;
   background-color: black;
-  padding: 30px;  
+  padding: 30px;
   border-radius: 10px;
   left: 43%;
   top: 38%;
 }
 
-.close
-{
+.close {
   color: gray;
   background-color: black;
   font-weight: bold;
   border-radius: 5px;
 }
 
-.submit
-{
+.submit {
   color: grey;
   margin-left: 33%;
   background-color: black;
 }
 
-input
-{
+input {
   padding: 5px;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.sumasang
-{
+.sumasang {
   position: absolute;
   top: 110px;
   left: 20px;
@@ -201,8 +185,7 @@ input
   height: 75%;
 }
 
-.lucky
-{
+.lucky {
   position: absolute;
   top: 90px;
   left: 20px;
@@ -243,8 +226,7 @@ input
   height: 75%;
 }
 
-.luckycard-front
-{
+.luckycard-front {
   position: relative;
   margin-left: auto;
   margin-right: auto;
@@ -264,8 +246,7 @@ input
   z-index: 10001;
 }
 
-.luckycard-text
-{
+.luckycard-text {
   position: relative;
   margin-left: auto;
   margin-right: auto;
@@ -290,8 +271,7 @@ input
   justify-content: center;
 }
 
-.flip-button
-{
+.flip-button {
   background-color: #a0ecff;
   width: 8%;
   height: 5%;
@@ -307,8 +287,7 @@ input
   font-weight: bold;
 }
 
-.close-lucky
-{
+.close-lucky {
   background-color: #a0ecff;
   width: 8%;
   height: 5%;
@@ -325,18 +304,33 @@ input
 }
 
 @keyframes slide-left {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(-190px); }
-  100% { transform: translateX(0); z-index: 10000; }
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-190px);
+  }
+  100% {
+    transform: translateX(0);
+    z-index: 10000;
+  }
 }
 
 @keyframes slide-right {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(190px); }
-  100% { transform: translateX(0); z-index: 10001; }
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(190px);
+  }
+  100% {
+    transform: translateX(0);
+    z-index: 10001;
+  }
 }
 
-.luckycard-front, .luckycard-text {
+.luckycard-front,
+.luckycard-text {
   transition: z-index 0s 0.5s;
 }
 
@@ -375,8 +369,7 @@ input
   height: 60%;
 }
 
-.steelroad
-{
+.steelroad {
   position: absolute;
   top: 110px;
   left: 20px;
@@ -392,13 +385,11 @@ input
   justify-content: center;
 }
 
-.steelroad h2
-{
+.steelroad h2 {
   text-align: center;
 }
 
-.steelroad-text
-{
+.steelroad-text {
   position: absolute;
   left: 10px;
   right: 10px;
@@ -413,8 +404,7 @@ input
   justify-content: center;
 }
 
-.steelroad-close
-{
+.steelroad-close {
   position: absolute;
   background-color: lightblue;
   border: 1.5px solid black;
@@ -427,8 +417,7 @@ input
   margin-top: 50%;
 }
 
-.delay
-{
+.delay {
   position: absolute;
   width: 280px;
   top: 15%;
@@ -436,8 +425,7 @@ input
   color: red;
 }
 
-.simple
-{
+.simple {
   position: absolute;
   width: 140px;
   left: 95px;
@@ -446,8 +434,7 @@ input
   top: 10%;
 }
 
-.red
-{
+.red {
   position: absolute;
   width: 140px;
   left: 95px;
@@ -457,16 +444,14 @@ input
   top: 25%;
 }
 
-.question
-{
+.question {
   position: absolute;
   margin-top: 15%;
   text-align: center;
   font-weight: bold;
 }
 
-.steelroad-yes
-{
+.steelroad-yes {
   position: absolute;
   color: black;
   font-weight: bold;
@@ -480,8 +465,7 @@ input
   font-size: 17px;
 }
 
-.steelroad-no
-{
+.steelroad-no {
   position: absolute;
   color: black;
   font-weight: bold;
@@ -495,8 +479,7 @@ input
   font-size: 17px;
 }
 
-.steelroad-logo
-{
+.steelroad-logo {
   margin-left: 44%;
   width: 11%;
   margin-top: 10px;
@@ -527,10 +510,9 @@ input
   color: black;
   width: 40%;
   height: 55%;
-} 
+}
 
-.idea
-{
+.idea {
   position: fixed;
   z-index: 30;
   background-color: #007cc1;
@@ -545,23 +527,20 @@ input
   font-weight: bold;
 }
 
-.idea-logo
-{
+.idea-logo {
   margin-left: 8px;
   width: 28%;
   margin-top: 13px;
 }
 
-.idea-header
-{
+.idea-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.idea-balance
-{
+.idea-balance {
   margin-top: 1rem;
   margin-right: 1.5rem;
   background-color: rgba(0, 0, 0, 0.5);
@@ -577,8 +556,7 @@ input
   padding-right: 5px;
 }
 
-.idea-close
-{
+.idea-close {
   background-color: white;
   width: 8%;
   height: 5%;
@@ -619,8 +597,7 @@ input
   height: 75%;
 }
 
-.elzaandidea
-{
+.elzaandidea {
   position: absolute;
   top: 140px;
   left: 20px;
@@ -635,26 +612,22 @@ input
   font-weight: bold;
 }
 
-.eai-header
-{
+.eai-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.eai-title
-{
+.eai-title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   color: white;
   padding: 0 0.5rem;
-
 }
 
-.eai-balance
-{
+.eai-balance {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -663,8 +636,7 @@ input
   padding: 0 0.5rem;
 }
 
-.eai-close
-{
+.eai-close {
   background-color: #fbd914;
   width: 8%;
   height: 5%;
@@ -706,8 +678,7 @@ input
   height: 75%;
 }
 
-.carshop
-{
+.carshop {
   position: absolute;
   top: 90px;
   left: 20px;
@@ -724,8 +695,7 @@ input
   justify-content: center;
 }
 
-.CarButton
-{
+.CarButton {
   background-color: #c22133;
   width: 8%;
   height: 5%;
@@ -739,27 +709,23 @@ input
   color: white;
 }
 
-.car-header
-{
+.car-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.car-title
-{
+.car-title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   color: white;
   flex: 1;
   padding: 0 0.5rem;
-
 }
 
-.car-balance
-{
+.car-balance {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -767,14 +733,12 @@ input
   padding: 0 0.5rem;
 }
 
-.carshop-image
-{
+.carshop-image {
   position: fixed;
   margin-top: 110px;
 }
 
-.carshop-close
-{
+.carshop-close {
   background-color: #c22133;
   width: 8%;
   height: 5%;
@@ -832,9 +796,7 @@ input
   justify-content: center;
 }
 
-
-.b-title
-{
+.b-title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   margin-left: 140px;
@@ -843,16 +805,14 @@ input
   color: white;
 }
 
-.robbery-question
-{
+.robbery-question {
   text-align: center;
-  font-size: 1.40vw;
+  font-size: 1.4vw;
   font-weight: bold;
   margin-top: -100px;
 }
 
-.robbery-yes
-{
+.robbery-yes {
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
@@ -866,8 +826,7 @@ input
   font-size: 17px;
 }
 
-.robbery-no
-{
+.robbery-no {
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
@@ -881,20 +840,18 @@ input
   font-size: 17px;
 }
 
-.robbery
-{
+.robbery {
   margin-top: -20px;
   font-size: 40px;
 }
 
-.fail, .success
-{
+.fail,
+.success {
   font-size: 20px;
   margin-top: -15px;
 }
 
-.robBtn
-{
+.robBtn {
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
@@ -908,8 +865,7 @@ input
   font-size: 17px;
 }
 
-.escape
-{
+.escape {
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
@@ -923,8 +879,7 @@ input
   font-size: 17px;
 }
 
-.robbery-close
-{
+.robbery-close {
   color: black;
   font-weight: bold;
   border: 1.5px solid black;
@@ -965,8 +920,7 @@ input
   height: 75%;
 }
 
-.casino
-{
+.casino {
   position: absolute;
   top: 90px;
   left: 20px;
@@ -982,16 +936,14 @@ input
   text-align: center;
 }
 
-.casino-header
-{
+.casino-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.casino-title
-{
+.casino-title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -999,8 +951,7 @@ input
   padding: 0 0.5rem;
 }
 
-.casino-balance
-{
+.casino-balance {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -1009,13 +960,11 @@ input
   padding: 0 0.5rem;
 }
 
-.game-title
-{
+.game-title {
   text-align: center;
 }
 
-.casino-close
-{
+.casino-close {
   background-color: #c22133;
   width: 20%;
   height: 8%;
@@ -1029,8 +978,7 @@ input
   color: white;
 }
 
-.game-start
-{
+.game-start {
   background-color: #c22133;
   width: 20%;
   height: 8%;
@@ -1044,8 +992,7 @@ input
   color: white;
 }
 
-.hit
-{
+.hit {
   background-color: #c22133;
   width: 20%;
   height: 8%;
@@ -1059,8 +1006,7 @@ input
   color: white;
 }
 
-.stand
-{
+.stand {
   background-color: #c22133;
   width: 20%;
   height: 8%;
@@ -1074,13 +1020,11 @@ input
   color: white;
 }
 
-.message
-{
+.message {
   text-align: center;
 }
 
-.bet
-{
+.bet {
   text-align: center;
   right: auto;
   width: 90px;
@@ -1092,12 +1036,11 @@ input
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.new-game
-{
+.new-game {
   background-color: #c22133;
   width: 20%;
   height: 8%;
@@ -1111,8 +1054,7 @@ input::-webkit-inner-spin-button {
   color: white;
 }
 
-.cards
-{
+.cards {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
@@ -1144,10 +1086,9 @@ input::-webkit-inner-spin-button {
   width: 30%;
   height: 35%;
   top: -9px;
-} 
+}
 
-.bobthebuilder
-{
+.bobthebuilder {
   position: absolute;
   top: 90px;
   left: 20px;
@@ -1164,8 +1105,7 @@ input::-webkit-inner-spin-button {
   align-items: center;
 }
 
-.BoButton
-{
+.BoButton {
   background-color: #e7a402;
   width: 20%;
   height: 15%;
@@ -1179,8 +1119,7 @@ input::-webkit-inner-spin-button {
   color: white;
 }
 
-.bobthebuilder-close
-{
+.bobthebuilder-close {
   background-color: #e7a402;
   width: 20%;
   height: 15%;
@@ -1194,8 +1133,7 @@ input::-webkit-inner-spin-button {
   color: white;
 }
 
-.price
-{
+.price {
   position: absolute;
   font-weight: bold;
   text-align: center;
@@ -1231,8 +1169,7 @@ input::-webkit-inner-spin-button {
   top: -6px;
 }
 
-.insurance
-{
+.insurance {
   position: absolute;
   top: 140px;
   left: 20px;
@@ -1248,16 +1185,14 @@ input::-webkit-inner-spin-button {
   text-align: center;
 }
 
-.ins-header
-{
+.ins-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
-.ins-title
-{
+.ins-title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -1265,8 +1200,7 @@ input::-webkit-inner-spin-button {
   padding: 0 0.5rem;
 }
 
-.ins-balance
-{
+.ins-balance {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 5px;
@@ -1275,8 +1209,8 @@ input::-webkit-inner-spin-button {
   padding: 0 0.5rem;
 }
 
-.insBuyButton, .ins-close
-{
+.insBuyButton,
+.ins-close {
   margin-top: auto;
   margin-bottom: auto;
   background-color: #7a70b2;
@@ -1288,15 +1222,13 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
 }
 
-.elza
-{
+.elza {
   margin-left: 10px;
   width: 28%;
   margin-top: 10px;
 }
 
-.sumasang-close
-{
+.sumasang-close {
   background-color: #a1c900;
   width: 8%;
   height: 5%;
@@ -1309,8 +1241,7 @@ input::-webkit-inner-spin-button {
   font-size: 17px;
 }
 
-.lucky-close
-{
+.lucky-close {
   background-color: #a1c900;
   width: 8%;
   height: 5%;
@@ -1322,20 +1253,17 @@ input::-webkit-inner-spin-button {
   top: 75%;
 }
 
-button
-{
+button {
   cursor: pointer;
 }
 
-.sumasang p
-{
+.sumasang p {
   font-weight: bold;
   font-size: 1.3vw;
   margin-left: 35px;
 }
 
-.buyButton
-{
+.buyButton {
   position: absolute;
   left: 84%;
   padding-left: 10px;
@@ -1348,8 +1276,7 @@ button
   border-radius: 5px;
 }
 
-.player-panel
-{
+.player-panel {
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -1366,8 +1293,7 @@ button
   gap: 0rem;
 }
 
-.player-panel-header
-{
+.player-panel-header {
   display: flex;
   gap: 1rem;
   padding: 0rem 1rem;
@@ -1377,41 +1303,34 @@ button
   border-top-right-radius: 10px;
 }
 
-:has(> .player-panel-puppet)
-{
+:has(> .player-panel-puppet) {
   height: 3rem;
 }
 
-.player-panel-puppet
-{
+.player-panel-puppet {
   height: 100%;
   object-fit: contain;
 }
 
-.player-panel-inventory-container
-{
+.player-panel-inventory-container {
   overflow-y: auto;
   height: 100%;
 }
 
-.player-panel-inventory
-{
+.player-panel-inventory {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
   margin: 0;
-
 }
 
-.player-panel-inventory-container p
-{
+.player-panel-inventory-container p {
   margin: 0;
   margin-top: 1rem;
 }
 
-.player-panel-inventory-item
-{
+.player-panel-inventory-item {
   border-radius: 10px;
   background-color: #00000055;
   display: flex;
@@ -1425,8 +1344,7 @@ button
   opacity: 50%;
 }
 
-.player-panel-inventory-item-disabled-icon
-{
+.player-panel-inventory-item-disabled-icon {
   width: 2.5rem;
   min-height: 2.5rem;
   color: #fff;
@@ -1438,8 +1356,7 @@ button
   border-bottom-left-radius: 10px;
 }
 
-.player-panel-inventory-item-enabled-icon
-{
+.player-panel-inventory-item-enabled-icon {
   width: 2.5rem;
   min-height: 2.5rem;
   color: #fff;
@@ -1451,20 +1368,17 @@ button
   border-bottom-left-radius: 10px;
 }
 
-.player-panel-inventory-item-name
-{
+.player-panel-inventory-item-name {
   display: flex;
   align-items: center;
 }
 
-ul
-{
+ul {
   list-style-type: none;
   padding: 0;
 }
 
-.balance
-{
+.balance {
   position: fixed;
   left: 48.8%;
   top: 14%;
@@ -1484,8 +1398,7 @@ ul
   padding-right: 5px;
 }
 
-.title
-{
+.title {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.5);
   margin-left: 170px;

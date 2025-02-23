@@ -1,28 +1,51 @@
-import React, { useState, useContext } from 'react';
-import { moneyContext, alertContext } from '../main.jsx';
-import { formatMoney } from './CurrentPlayerPanel.jsx';
+import React, { useState, useContext } from "react";
+import { moneyContext, alertContext } from "../main.jsx";
+import { formatMoney } from "./CurrentPlayerPanel.jsx";
 
-const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addItemToInventory}) => {
+const ElzaAndIdea = ({
+  onClose,
+  currentPlayer,
+  playerInventory,
+  reducePlayerMoney,
+  addItemToInventory,
+}) => {
   const [playerMoney] = useContext(moneyContext);
-  const [_, setAlertContent, __, setShowAlertOnPopup] = useContext(alertContext);
+  const [_, setAlertContent, __, setShowAlertOnPopup] =
+    useContext(alertContext);
 
-  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(playerInventory[currentPlayer].includes("Sumasang 4K TV"));
-  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(playerInventory[currentPlayer].includes("GL előltöltős mosógép"));
-  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Boss előltöltős szárítógép"));
-  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Görénye alulfagyasztós hűtő"));
-  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(playerInventory[currentPlayer].includes("Kendi mosogatógép"));
-  const [isVButtonDisabled, setIsVButtonDisabled] = useState(playerInventory[currentPlayer].includes("Dájszon porszívó"));
-  const [isKButtonDisabled, setIsKButtonDisabled] = useState(playerInventory[currentPlayer].includes("Konyhabútor"));
-  const [isRButtonDisabled, setIsRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Szobabútor"));
-  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(playerInventory[currentPlayer].includes("Fürdőszobabútor"));
+  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Sumasang 4K TV")
+  );
+  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("GL előltöltős mosógép")
+  );
+  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Boss előltöltős szárítógép")
+  );
+  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Görénye alulfagyasztós hűtő")
+  );
+  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Kendi mosogatógép")
+  );
+  const [isVButtonDisabled, setIsVButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Dájszon porszívó")
+  );
+  const [isKButtonDisabled, setIsKButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Konyhabútor")
+  );
+  const [isRButtonDisabled, setIsRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Szobabútor")
+  );
+  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(
+    playerInventory[currentPlayer].includes("Fürdőszobabútor")
+  );
 
   const handlePurchase = (item, price) => {
     if (playerMoney[currentPlayer] >= price) {
       reducePlayerMoney(currentPlayer, price);
       addItemToInventory(currentPlayer, item);
-    }
-
-    else {
+    } else {
       setAlertContent("Nincs elég pénzed!");
       setShowAlertOnPopup(true);
     }
@@ -30,9 +53,11 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
 
   return (
     <>
-      <div className='eai-header'>
-        <h1 className='eai-title'>Bevásárlóközpont</h1>
-        <h1 className='eai-balance'>Egyenleg: {formatMoney(playerMoney[currentPlayer])}</h1>
+      <div className="eai-header">
+        <h1 className="eai-title">Bevásárlóközpont</h1>
+        <h1 className="eai-balance">
+          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+        </h1>
       </div>
       <div className="elzaandidea">
         <p>
@@ -41,7 +66,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isTVButtonDisabled}
             onClick={() => {
-              handlePurchase('Sumasang 4K TV', 119990);
+              handlePurchase("Sumasang 4K TV", 119990);
               setIsTVButtonDisabled(true);
             }}
           >
@@ -54,7 +79,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isWMButtonDisabled}
             onClick={() => {
-              handlePurchase('GL előltöltős mosógép', 99990);
+              handlePurchase("GL előltöltős mosógép", 99990);
               setIsWMButtonDisabled(true);
             }}
           >
@@ -67,7 +92,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isDRButtonDisabled}
             onClick={() => {
-              handlePurchase('Boss előltöltős szárítógép', 129990);
+              handlePurchase("Boss előltöltős szárítógép", 129990);
               setIsDRButtonDisabled(true);
             }}
           >
@@ -80,7 +105,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isFRButtonDisabled}
             onClick={() => {
-              handlePurchase('Görénye alulfagyasztós hűtő', 84990);
+              handlePurchase("Görénye alulfagyasztós hűtő", 84990);
               setIsFRButtonDisabled(true);
             }}
           >
@@ -93,7 +118,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isDWButtonDisabled}
             onClick={() => {
-              handlePurchase('Kendi mosogatógép', 109990);
+              handlePurchase("Kendi mosogatógép", 109990);
               setIsDWButtonDisabled(true);
             }}
           >
@@ -106,7 +131,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isVButtonDisabled}
             onClick={() => {
-              handlePurchase('Dájszon porszívó', 124990);
+              handlePurchase("Dájszon porszívó", 124990);
               setIsVButtonDisabled(true);
             }}
           >
@@ -119,7 +144,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isKButtonDisabled}
             onClick={() => {
-              handlePurchase('Konyhabútor', 549990);
+              handlePurchase("Konyhabútor", 549990);
               setIsKButtonDisabled(true);
             }}
           >
@@ -132,7 +157,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isRButtonDisabled}
             onClick={() => {
-              handlePurchase('Szobabútor', 999990);
+              handlePurchase("Szobabútor", 999990);
               setIsRButtonDisabled(true);
             }}
           >
@@ -145,7 +170,7 @@ const ElzaAndIdea = ({ onClose, currentPlayer, playerInventory, reducePlayerMone
             className="buyButton"
             disabled={isBRButtonDisabled}
             onClick={() => {
-              handlePurchase('Fürdőszobabútor', 349990);
+              handlePurchase("Fürdőszobabútor", 349990);
               setIsBRButtonDisabled(true);
             }}
           >
