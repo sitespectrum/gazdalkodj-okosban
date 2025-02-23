@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import './Fields.css'
 import Fields from './Fields.jsx'
 import Players from './Players.jsx'
