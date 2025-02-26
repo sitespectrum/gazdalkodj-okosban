@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { moneyContext } from "../main.jsx";
-import { purchaseableItems } from "../App";
-
+import { PURCHASEABLE_ITEMS } from "../constants.js";
 export function formatMoney(value, locale = "hu-HU", currency = "HUF") {
   const formatter = new Intl.NumberFormat(locale, {
     style: "currency",
@@ -55,7 +54,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
       <div className="overflow-y-auto h-full">
         <p className="mt-4">Leltár</p>
         <ul className="flex flex-col gap-2 !p-3">
-          {purchaseableItems.map((item) => (
+          {PURCHASEABLE_ITEMS.map((item) => (
             <li
               className={
                 "rounded-xl bg-black/30 flex items-stretch gap-2 text-xl" +

@@ -15,26 +15,14 @@ import Steelroad from "./Components/Steelroad.jsx";
 import "./Fields.css";
 import Players from "./Players.jsx";
 import { alertContext, moneyContext } from "./main.jsx";
-
-export const purchaseableItems = [
-  "Ház",
-  "Sumasang 4K TV",
-  "GL előltöltős mosógép",
-  "Boss előltöltős szárítógép",
-  "Görénye alulfagyasztós hűtő",
-  "Kendi mosogatógép",
-  "Dájszon porszívó",
-  "Konyhabútor",
-  "Szobabútor",
-  "Fürdőszobabútor",
-];
+import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./constants.js";
 
 export function rollDice() {
   return Math.floor(Math.random() * 6) + 1;
 }
 
 function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(IS_MENU_OPEN);
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
   const [playerMoney, setPlayerMoney] = useContext(moneyContext);
   const [popupContent, setPopupContent] = useState(null);
@@ -53,7 +41,7 @@ function App() {
 
   const winningPlayerIndex = useMemo(() => {
     return playerInventory.findIndex((inventory) =>
-      purchaseableItems.every((item) => inventory.includes(item))
+      PURCHASEABLE_ITEMS.every((item) => inventory.includes(item))
     );
   }, [playerInventory]);
 
