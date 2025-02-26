@@ -1,6 +1,65 @@
+import React, { useEffect, useRef } from 'react';
+
 export function Board({ children }) {
   const bigTileSize = "15rem";
   const aspectRatio = "16 / 9";
+
+  const firstFieldRef = useRef(null);
+  const lastFieldRef = useRef(null);
+
+  useEffect(() => {
+    const debugSizing = true;
+    const threshold = 0.0001;
+
+    const getDifference = () => {
+      if (!firstFieldRef.current || !lastFieldRef.current) {
+        return;
+      }
+
+      const firstFieldSize = firstFieldRef.current.getBoundingClientRect().width;
+      const lastFieldSize = lastFieldRef.current.getBoundingClientRect().height;
+
+      return firstFieldSize - lastFieldSize;
+    }
+
+    const handleResize = async () => {
+      if (!firstFieldRef.current || !lastFieldRef.current) {
+        return;
+      }
+
+      for (let i = 0; i < 10; i++) {
+        // if positive, we need to zoom out
+        // if negative, we need to zoom in
+        const difference = getDifference();
+
+        if (Math.abs(difference) < threshold) {
+          if (debugSizing) {
+            console.log("[sizing] difference is less than threshold");
+          }
+          break;
+        }
+
+        const step = difference / 32;
+
+        const currentSize = parseFloat(document.documentElement.style.fontSize || "16");
+        const newSize = currentSize - step;
+
+        if (debugSizing) {
+          console.log("[sizing] iteration", i, {
+            difference,
+            step,
+            currentSize,
+            newSize,
+          });
+        }
+        document.documentElement.style.fontSize = `${newSize}px`;
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center">
@@ -29,7 +88,7 @@ export function Board({ children }) {
                 alt="Start"
               />
             </div>
-            <div className="board-cell row-start-5 col-start-10">
+            <div ref={firstFieldRef} className="board-cell row-start-5 col-start-10">
               <MandatoryField />
             </div>
             <div className="board-cell row-start-5 col-start-9">
@@ -95,7 +154,7 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-4 col-start-11">26</div>
+            <div className="board-cell row-start-4 col-start-11" ref={lastFieldRef}>26</div>
             <div className="row-start-2 row-end-5 col-start-2 col-end-11">
               {children}
             </div>
