@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { formatMoney } from "./CurrentPlayerPanel";
 
 const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
-  const [isRobbing, setIsRobbing] = useState(true);
+  const [isRobbing, setIsRobbing] = useState(false);
   const [countdown, setCountdown] = useState(null);
   const [clickCount, setClickCount] = useState(0);
   const [escapeVisible, setEscapeVisible] = useState(false);
-  const [gameOver, setGameOver] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
     if (isRobbing && countdown !== null) {
