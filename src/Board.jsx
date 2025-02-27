@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 export function Board({ children }) {
   const bigTileSize = "15rem";
@@ -16,15 +16,34 @@ export function Board({ children }) {
         return;
       }
 
-      const firstFieldSize = firstFieldRef.current.getBoundingClientRect().width;
+      const firstFieldSize =
+        firstFieldRef.current.getBoundingClientRect().width;
       const lastFieldSize = lastFieldRef.current.getBoundingClientRect().height;
 
       return firstFieldSize - lastFieldSize;
-    }
+    };
 
     const handleResize = async () => {
       if (!firstFieldRef.current || !lastFieldRef.current) {
         return;
+      }
+
+      if (
+        firstFieldRef.current.getBoundingClientRect().height /
+          firstFieldRef.current.getBoundingClientRect().width >
+        3
+      ) {
+        const currentSize = parseFloat(
+          document.documentElement.style.fontSize || "16"
+        );
+        const newSize = currentSize / 2;
+        document.documentElement.style.fontSize = `${newSize}px`;
+        if (debugSizing) {
+          console.log(
+            "[sizing] initial font size is too big, halved it to",
+            newSize
+          );
+        }
       }
 
       for (let i = 0; i < 10; i++) {
@@ -34,14 +53,19 @@ export function Board({ children }) {
 
         if (Math.abs(difference) < threshold) {
           if (debugSizing) {
-            console.log("[sizing] difference is less than threshold");
+            console.log(
+              "[sizing] difference is less than threshold:",
+              difference
+            );
           }
           break;
         }
 
         const step = difference / 32;
 
-        const currentSize = parseFloat(document.documentElement.style.fontSize || "16");
+        const currentSize = parseFloat(
+          document.documentElement.style.fontSize || "16"
+        );
         const newSize = currentSize - step;
 
         if (debugSizing) {
@@ -57,8 +81,8 @@ export function Board({ children }) {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -88,7 +112,10 @@ export function Board({ children }) {
                 alt="Start"
               />
             </div>
-            <div ref={firstFieldRef} className="board-cell row-start-5 col-start-10">
+            <div
+              ref={firstFieldRef}
+              className="board-cell row-start-5 col-start-10"
+            >
               <MandatoryField />
             </div>
             <div className="board-cell row-start-5 col-start-9">
@@ -154,7 +181,12 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-4 col-start-11" ref={lastFieldRef}>26</div>
+            <div
+              className="board-cell row-start-4 col-start-11"
+              ref={lastFieldRef}
+            >
+              26
+            </div>
             <div className="row-start-2 row-end-5 col-start-2 col-end-11">
               {children}
             </div>
