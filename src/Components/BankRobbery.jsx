@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { formatMoney } from "./CurrentPlayerPanel";
 
 const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
-  const [isRobbing, setIsRobbing] = useState(false);
+  const [isRobbing, setIsRobbing] = useState(true);
   const [countdown, setCountdown] = useState(null);
   const [clickCount, setClickCount] = useState(0);
   const [escapeVisible, setEscapeVisible] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState(true);
 
   useEffect(() => {
     if (isRobbing && countdown !== null) {
@@ -53,48 +53,70 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
   };
 
   return (
-    <div className="bankrobbery">
-      {!isRobbing ? (
-        <>
-          <p className="robbery-question">Akarsz bankot rabolni?</p>
-          <button className="robbery-yes" onClick={handleStartRobbery}>
-            Igen
-          </button>
-          <button className="robbery-no" onClick={onClose}>
-            Nem
-          </button>
-        </>
-      ) : !gameOver ? (
-        <>
-          <h1 className="robbery">Bankrablás!</h1>
-          <p className="description">
-            Kattints minél többször a pénzszerzéshez!
-          </p>
-          <button className="robBtn" onClick={handleClick}>
-            💰 Rablás ({clickCount})
-          </button>
-          {escapeVisible && (
-            <button className="escape" onClick={handleEscape}>
-              🚨 Menekülés!
+    <>
+      <h1 className="text-center font-semibold text-3xl bg-black/50 text-white rounded-xl p-2">
+        Bankrablás
+      </h1>
+      <div className="bg-white rounded-xl p-12 px-20 gap-12 text-black font-bold flex flex-col items-center justify-center shadow-2xl">
+        {!isRobbing ? (
+          <>
+            <p className="text-center text-3xl">Akarsz bankot rabolni?</p>
+            <div className="flex gap-6">
+              <button
+                className="bg-white font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
+                onClick={handleStartRobbery}
+              >
+                Igen
+              </button>
+              <button
+                className="bg-white font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
+                onClick={onClose}
+              >
+                Nem
+              </button>
+            </div>
+          </>
+        ) : !gameOver ? (
+          <>
+            <h1 className="text-3xl font-bold">Bankrablás!</h1>
+            <p className="text-xl">Kattints minél többször a pénzszerzéshez!</p>
+            <div className="flex flex-col gap-4">
+              <button
+                className={`bg-[#c6eef8] text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black ${
+                  escapeVisible ? "opacity-100" : "opacity-0"
+                }`}
+                onClick={handleEscape}
+              >
+                🚨 Menekülés!
+              </button>
+              <button
+                className="bg-[#c6eef8] text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
+                onClick={handleClick}
+              >
+                💰 Rablás ({clickCount})
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold pb-12">Bankrablás vége!</h1>
+            {escapeVisible ? (
+              <p className="text-2xl">
+                Sikeresen megszereztél {formatMoney(clickCount * 10000)}-ot!
+              </p>
+            ) : (
+              <p className="text-2xl">Lebuktál! Börtönbe mész.</p>
+            )}
+            <button
+              className="bg-white -mt-6 font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
+              onClick={onClose}
+            >
+              Bezárás
             </button>
-          )}
-        </>
-      ) : (
-        <>
-          <h1 className="robbery">Bankrablás vége!</h1>
-          {escapeVisible ? (
-            <p className="success">
-              Sikeresen megszereztél {formatMoney(clickCount * 10000)}-ot!
-            </p>
-          ) : (
-            <p className="fail">Lebuktál! Börtönbe mész.</p>
-          )}
-          <button className="robbery-close" onClick={onClose}>
-            Bezárás
-          </button>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

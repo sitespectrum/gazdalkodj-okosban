@@ -360,15 +360,12 @@ function App() {
       if (newPositions[playerIndex] === 5) {
         setPopupClass("bankrobbery");
         setPopupContent(
-          <>
-            <h1 className="b-title">Bankrablás</h1>
-            <BankRobbery
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              addPlayerMoney={addPlayerMoney}
-              sendToJail={sendToJail}
-            />
-          </>
+          <BankRobbery
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer}
+            addPlayerMoney={addPlayerMoney}
+            sendToJail={sendToJail}
+          />
         );
       }
 

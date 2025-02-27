@@ -63,7 +63,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
               key={item}
             >
               {!playerInventory.includes(item) && (
-                <div className="player-panel-inventory-item-disabled-icon">
+                <div className="w-10 h-10 min-w-10 text-white bg-[#852828] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -81,7 +81,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
                 </div>
               )}
               {playerInventory.includes(item) && (
-                <div className="player-panel-inventory-item-enabled-icon">
+                <div className="w-10 h-10 min-w-10 text-white bg-[#288547] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -98,7 +98,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
                 </div>
               )}
 
-              <div className="player-panel-inventory-item-name">{item}</div>
+              <div className="flex items-center">{item}</div>
             </li>
           ))}
         </ul>

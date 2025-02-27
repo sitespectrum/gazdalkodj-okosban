@@ -17,40 +17,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.throwButton {
-  width: 7%;
-  height: 5%;
-  left: 65%;
-  top: 42%;
-  position: fixed;
-  color: black;
-  font-size: 1.6vw;
-  border-radius: 7px;
-  background-color: white;
-}
-
-.nextPlayer {
-  width: 8%;
-  height: 5%;
-  left: 64.5%;
-  top: 50%;
-  position: fixed;
-  color: black;
-  font-size: 1.5vw;
-  border-radius: 7px;
-  background-color: white;
-}
-
 button:disabled {
   background-color: grey;
   color: white;
   cursor: not-allowed;
-}
-
-.board {
-  height: 95%;
-  display: block;
-  margin: auto;
 }
 
 .player {
@@ -719,131 +689,12 @@ input {
 }
 
 .popup-content-bankrobbery {
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
   position: relative;
   background-color: #21abe3;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 10000;
   color: black;
-  width: 40%;
-  height: 60%;
-}
-
-.bankrobbery {
-  position: absolute;
-  top: 88px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  background-color: white;
-  color: black;
-  border-radius: 5px;
-  box-shadow: 0 4px 20px black;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.b-title {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin-left: 140px;
-  margin-right: 140px;
-  border-radius: 5px;
-  color: white;
-}
-
-.robbery-question {
-  text-align: center;
-  font-size: 1.4vw;
-  font-weight: bold;
-  margin-top: -100px;
-}
-
-.robbery-yes {
-  color: black;
-  font-weight: bold;
-  border: 1.5px solid black;
-  position: fixed;
-  left: 42.5%;
-  top: 55%;
-  width: 7%;
-  height: 4%;
-  border-radius: 5px;
-  background-color: #c6eef8;
-  font-size: 17px;
-}
-
-.robbery-no {
-  color: black;
-  font-weight: bold;
-  border: 1.5px solid black;
-  position: fixed;
-  left: 50.5%;
-  top: 55%;
-  width: 7%;
-  height: 4%;
-  border-radius: 5px;
-  background-color: #c6eef8;
-  font-size: 17px;
-}
-
-.robbery {
-  margin-top: -20px;
-  font-size: 40px;
-}
-
-.fail,
-.success {
-  font-size: 20px;
-  margin-top: -15px;
-}
-
-.robBtn {
-  color: black;
-  font-weight: bold;
-  border: 1.5px solid black;
-  position: fixed;
-  margin: auto;
-  margin-top: 320px;
-  width: 10%;
-  height: 4%;
-  border-radius: 5px;
-  background-color: #c6eef8;
-  font-size: 17px;
-}
-
-.escape {
-  color: black;
-  font-weight: bold;
-  border: 1.5px solid black;
-  position: fixed;
-  margin: auto;
-  margin-top: 150px;
-  width: 10%;
-  height: 4%;
-  border-radius: 5px;
-  background-color: #c6eef8;
-  font-size: 17px;
-}
-
-.robbery-close {
-  color: black;
-  font-weight: bold;
-  border: 1.5px solid black;
-  position: fixed;
-  margin: auto;
-  margin-top: 320px;
-  width: 7%;
-  height: 4%;
-  border-radius: 5px;
-  background-color: #c6eef8;
-  font-size: 17px;
 }
 
 .popup-wrapper-casino {
@@ -1229,35 +1080,6 @@ button {
   border-radius: 5px;
 }
 
-.player-panel-inventory-item-disabled-icon {
-  width: 2.5rem;
-  min-height: 2.5rem;
-  color: #fff;
-  background-color: #852828;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.player-panel-inventory-item-enabled-icon {
-  width: 2.5rem;
-  min-height: 2.5rem;
-  color: #fff;
-  background-color: #288547;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.player-panel-inventory-item-name {
-  display: flex;
-  align-items: center;
-}
-
 .balance {
   position: fixed;
   left: 48.8%;
@@ -1373,6 +1195,7 @@ button {
 }
 
 .alert-content {
+  @apply rounded-2xl;
   max-width: 30rem;
   display: flex;
   flex-direction: column;
@@ -1381,7 +1204,6 @@ button {
   gap: 0.5rem;
   position: relative;
   background: white;
-  border-radius: 10px;
   padding: 1rem;
 
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -1397,12 +1219,12 @@ button {
 }
 
 .alert-content button {
+  @apply rounded-xl;
   background-color: black;
   color: white;
   border: none;
   padding: 1rem;
   font-size: 1.2rem;
-  border-radius: 5px;
   font-weight: bold;
   width: 100%;
 }
