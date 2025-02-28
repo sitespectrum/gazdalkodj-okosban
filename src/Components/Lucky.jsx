@@ -218,20 +218,44 @@ const Lucky = ({
   };
 
   return (
-    <div className="lucky">
-      <div className={`luckycard-front ${flipped ? "animate" : ""}`}>
-        <p>Szerencsekártya</p>
+    <>
+      <h1 className="text-center font-semibold text-3xl bg-black/50 text-white rounded-xl p-2">
+        Szerencsemező
+      </h1>
+      <div className="bg-[lightblue] shadow-[0_0_1.5rem_rgba(0,0,0,0.5)] rounded-xl p-12 px-20 flex flex-col gap-12 justify-center items-center">
+        <div className="relative aspect-video h-56">
+          <div
+            className={`luckycard-front p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-2 shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
+              flipped ? "animate" : ""
+            }`}
+          >
+            <p>Szerencsekártya</p>
+          </div>
+          <div
+            className={`luckycard-text p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-2 shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
+              flipped ? "animate" : ""
+            }`}
+          >
+            <p>{currentCard.text}</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-4">
+          <button
+            disabled={flipped}
+            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-2 border-black text-lg font-semibold"
+            onClick={handleFlip}
+          >
+            Húzás
+          </button>
+          <button
+            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-2 border-black text-lg font-semibold"
+            onClick={handleCardAction}
+          >
+            Bezárás
+          </button>
+        </div>
       </div>
-      <div className={`luckycard-text ${flipped ? "animate" : ""}`}>
-        <p>{currentCard.text}</p>
-      </div>
-      <button disabled={flipped} className="flip-button" onClick={handleFlip}>
-        Húzás
-      </button>
-      <button className="close-lucky" onClick={handleCardAction}>
-        Bezárás
-      </button>
-    </div>
+    </>
   );
 };
 

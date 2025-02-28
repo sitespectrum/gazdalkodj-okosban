@@ -2,7 +2,6 @@ import { StrictMode, createContext, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
-import { Board } from "./Board.jsx";
 
 export const moneyContext = createContext([
   [400000, 400000, 400000, 400000],
@@ -36,11 +35,18 @@ function Providers({ children }) {
   );
 }
 
-createRoot(document.getElementById("root")).render(
+const container = document.getElementById("root");
+let root = container._reactRootContainer;
+
+if (!root) {
+  root = createRoot(container);
+  container._reactRootContainer = root;
+}
+
+root.render(
   <StrictMode>
     <Providers>
       <App />
-      {/* <Board /> */}
     </Providers>
   </StrictMode>
 );

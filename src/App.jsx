@@ -459,17 +459,14 @@ function App() {
       ) {
         setPopupClass("lucky");
         setPopupContent(
-          <>
-            <h1 className="title">Szerencsemező</h1>
-            <Lucky
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              addPlayerMoney={addPlayerMoney}
-              reducePlayerMoney={reducePlayerMoney}
-              playerMoney={playerMoney}
-              playerHasCar={playerHasCar}
-            />
-          </>
+          <Lucky
+            onClose={() => setPopupContent(null)}
+            currentPlayer={currentPlayer}
+            addPlayerMoney={addPlayerMoney}
+            reducePlayerMoney={reducePlayerMoney}
+            playerMoney={playerMoney}
+            playerHasCar={playerHasCar}
+          />
         );
       }
 
