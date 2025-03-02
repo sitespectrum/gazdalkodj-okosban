@@ -225,14 +225,14 @@ const Lucky = ({
       <div className="bg-[lightblue] shadow-[0_0_1.5rem_rgba(0,0,0,0.5)] rounded-xl p-12 px-20 flex flex-col gap-12 justify-center items-center">
         <div className="relative aspect-video h-56">
           <div
-            className={`luckycard-front p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-2 shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
+            className={`luckycard-front p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-[0.15rem] shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
               flipped ? "animate" : ""
             }`}
           >
             <p>Szerencsekártya</p>
           </div>
           <div
-            className={`luckycard-text p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-2 shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
+            className={`luckycard-text p-4 text-center absolute top-0 left-0 w-full font-semibold bg-[#fff77e] border-[0.15rem] shadow-xl shadow-black/20 border-black rounded-xl text-xl h-full flex justify-center items-center ${
               flipped ? "animate" : ""
             }`}
           >
@@ -242,13 +242,13 @@ const Lucky = ({
         <div className="flex flex-col gap-4">
           <button
             disabled={flipped}
-            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-2 border-black text-lg font-semibold"
+            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-[0.15rem] border-black text-lg font-semibold"
             onClick={handleFlip}
           >
             Húzás
           </button>
           <button
-            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-2 border-black text-lg font-semibold"
+            className="bg-[#a0ecff] rounded-lg py-2.5 px-6 border-[0.15rem] border-black text-lg font-semibold"
             onClick={handleCardAction}
           >
             Bezárás
