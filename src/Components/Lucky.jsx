@@ -1,51 +1,45 @@
-import React, { useState, useContext } from "react";
-import { moneyContext } from "../main.jsx";
+//@ts-check
+import React, { useState } from "react";
+import { useCurrentPlayer } from "../hooks/use-current-player.js";
+import { usePopup } from "../hooks/use-popup.js";
 
-const Lucky = ({
-  onClose,
-  currentPlayer,
-  addPlayerMoney,
-  reducePlayerMoney,
-  playerHasCASCO,
-  playerHasAccIns,
-  playerHasHomeIns,
-  playerHasCar,
-}) => {
-  const [playerMoney, setPlayerMoney] = useContext(moneyContext);
+/** @typedef {{
+ * id: number,
+ * text: string,
+ * action: () => void
+ * }} LuckyCard */
+
+export default function Lucky() {
+  const { player, updatePlayer } = useCurrentPlayer();
+  const { closePopup } = usePopup();
+
+  /** @type {LuckyCard[]} */
   const luckyCards = [
     {
       id: 1,
       text: "Tipszmixen 100 000 forintot nyertél.",
-      action: (currentPlayer, { addPlayerMoney }) =>
-        addPlayerMoney(currentPlayer, 100000),
+      action: () => updatePlayer({ ...player, money: player.money + 100_000 }),
     },
     {
       id: 2,
       text: "Étteremben ebédeltél, fizess 20 000 Ft-ot.",
-      action: (currentPlayer, { reducePlayerMoney }) =>
-        reducePlayerMoney(currentPlayer, 20000),
+      action: () => updatePlayer({ ...player, money: player.money - 20_000 }),
     },
     {
       id: 3,
       text: "Szeretsz focizni, ezért meglepted magad egy 20 000 Ft értékű Pumba cipővel.",
-      action: (currentPlayer, { reducePlayerMoney }) =>
-        reducePlayerMoney(currentPlayer, 20000),
+      action: () => updatePlayer({ ...player, money: player.money - 20_000 }),
     },
     {
       id: 4,
       text: "Munkahelyeden túlóráztál, ezért kapsz 60 000 forintot.",
-      action: (currentPlayer, { addPlayerMoney }) =>
-        addPlayerMoney(currentPlayer, 60000),
+      action: () => updatePlayer({ ...player, money: player.money + 60_000 }),
     },
     {
       id: 5,
       text: "Egy kétes megbízhatóságú weboldalon ingyen Sumasang P25 Ultrákat osztottak, neked csak meg kellett adnod a kártyaadataidat. Ellopták az összes pénzed.",
       action: () => {
-        setPlayerMoney((prevMoney) => {
-          const newMoney = [...prevMoney];
-          newMoney[currentPlayer] = 0;
-          return newMoney;
-        });
+        updatePlayer({ ...player, money: 0 });
       },
     },
     {
@@ -72,23 +66,23 @@ const Lucky = ({
     {
       id: 9,
       text: "Vettél munkába menet egy kaparós sorsjegyet 5000 Forintért. ÉS MILYEN JÓL TETTED! LEKAPARTAD A FŐDÍJAT, AMI 25 000 000 FT!",
-      action: (currentPlayer, { addPlayerMoney }) =>
-        addPlayerMoney(currentPlayer, 25000000),
+      action: () =>
+        updatePlayer({ ...player, money: player.money + 25_000_000 }),
     },
     {
       id: 10,
       text: "Adóztál.",
-      action: (currentPlayer, { reducePlayerMoney }) =>
-        reducePlayerMoney(currentPlayer, playerMoney[currentPlayer] * 0.45),
+      action: () => updatePlayer({ ...player, money: player.money * 0.45 }),
     },
   ];
 
-  let [currentCard] = useState();
+  /** @type {[LuckyCard | undefined, React.Dispatch<React.SetStateAction<LuckyCard | undefined>>]} */
+  let [currentCard, setCurrentCard] = useState();
 
   const chance = Math.floor(Math.random() * 1000) + 1;
 
-  switch (playerHasCar[currentPlayer]) {
-    case 1: {
+  switch (player.hasCar) {
+    case true: {
       //Lottó
       if (chance >= 1 && chance <= 10) {
         currentCard = luckyCards[8];
@@ -140,7 +134,7 @@ const Lucky = ({
       }
     }
 
-    case 0: {
+    case false: {
       //Lottó
       if (chance >= 1 && chance <= 10) {
         currentCard = luckyCards[8];
@@ -189,26 +183,26 @@ const Lucky = ({
   }
 
   const CASCOCard = () => {
-    if (!playerHasCASCO) {
-      reducePlayerMoney(currentPlayer, 60000);
+    if (!player.hasCASCO) {
+      updatePlayer({ ...player, money: player.money - 60_000 });
     }
   };
 
   const AccInsCard = () => {
-    if (!playerHasAccIns) {
-      reducePlayerMoney(currentPlayer, 50000);
+    if (!player.hasAccIns) {
+      updatePlayer({ ...player, money: player.money - 50_000 });
     }
   };
 
   const HouseInsCard = () => {
-    if (!playerHasHomeIns) {
-      reducePlayerMoney(currentPlayer, 500000);
+    if (!player.hasHomeIns) {
+      updatePlayer({ ...player, money: player.money - 500_000 });
     }
   };
 
   const handleCardAction = () => {
-    currentCard.action(currentPlayer, { addPlayerMoney, reducePlayerMoney });
-    onClose();
+    currentCard?.action();
+    closePopup();
   };
 
   const [flipped, setFlipped] = useState(false);
@@ -236,7 +230,7 @@ const Lucky = ({
               flipped ? "animate" : ""
             }`}
           >
-            <p>{currentCard.text}</p>
+            <p>{currentCard?.text}</p>
           </div>
         </div>
         <div className="flex flex-col gap-4">
@@ -257,6 +251,4 @@ const Lucky = ({
       </div>
     </>
   );
-};
-
-export default Lucky;
+}

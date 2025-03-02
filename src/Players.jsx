@@ -1,19 +1,19 @@
-const Players = ({ fields, playerPositions }) => {
-  const playerImages = [
-    "./src/Pictures/Puppets/Piros bábú 1.png",
-    "./src/Pictures/Puppets/Kék bábú 1.png",
-    "./src/Pictures/Puppets/Zöld bábú 1.png",
-    "./src/Pictures/Puppets/Sárga bábú 1.png",
-  ];
+//@ts-check
+import React from "react";
+import { useGameState } from "./hooks/use-game-state";
+import { FIELDS } from "./lib/fields-config";
+
+const Players = () => {
+  const [gameState] = useGameState();
 
   return (
     <div className="players">
-      {playerPositions.map((position, index) => {
-        const field = fields[position];
+      {gameState.players.map((player, index) => {
+        const field = FIELDS[player.position];
         return (
           <img
             key={index}
-            src={playerImages[index]}
+            src={player.image}
             alt={`Bábu ${index + 1}`}
             className="player"
             style={{

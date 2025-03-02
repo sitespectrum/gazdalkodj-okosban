@@ -1,54 +1,40 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+//@ts-check
+import React, { useEffect, useMemo, useState } from "react";
 import { Board } from "./Board.jsx";
-import BankRobbery from "./Components/BankRobbery.jsx";
-import Bobthebuilder from "./Components/Bobthebuilder.jsx";
-import Carshop from "./Components/Carshop.jsx";
-import Casino from "./Components/Casino.jsx";
 import { CurrentPlayerPanel } from "./Components/CurrentPlayerPanel.jsx";
-import Elza from "./Components/Elza.jsx";
-import ElzaAndIdea from "./Components/ElzaAndIdea.jsx";
-import Idea from "./Components/Idea.jsx";
-import Insurance from "./Components/Insurance.jsx";
-import Lucky from "./Components/Lucky.jsx";
 import Menu from "./Components/Menu.jsx";
-import Steelroad from "./Components/Steelroad.jsx";
 import "./Fields.css";
 import Players from "./Players.jsx";
-import { alertContext, moneyContext } from "./main.jsx";
-import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./constants.js";
+import { useAlert } from "./hooks/use-alert.js";
+import { useCurrentPlayer } from "./hooks/use-current-player.js";
+import { useGameState } from "./hooks/use-game-state.js";
+import { usePopup } from "./hooks/use-popup.js";
+import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./lib/constants.js";
+import { FIELDS } from "./lib/fields-config.jsx";
 
-export function rollDice() {
-  return Math.floor(Math.random() * 6) + 1;
-}
-
-function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(IS_MENU_OPEN);
-  const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
-  const [playerMoney, setPlayerMoney] = useContext(moneyContext);
-  const [popupContent, setPopupContent] = useState(null);
-
-  const [
-    alertContent,
-    setAlertContent,
-    showAlertOnPopup,
-    setShowAlertOnPopup,
+export default function App() {
+  const [gameState, setGameState] = useGameState();
+  const { player, updatePlayer } = useCurrentPlayer();
+  const { popupClass, popupContent, openPopup, closePopup } = usePopup();
+  const {
+    content: alertContent,
+    showOnPopup: showAlertOnPopup,
     showCloseButton,
-    setShowCloseButton,
-  ] = useContext(alertContext);
+    showAlert,
+    closeAlert,
+  } = useAlert();
 
-  const [playerInventory, setPlayerInventory] = useState([[], [], [], []]);
-  const [playerHasCar, setPlayerHasCar] = useState([0, 0, 0, 0]);
+  const [isMenuOpen, setIsMenuOpen] = useState(IS_MENU_OPEN);
 
   const winningPlayerIndex = useMemo(() => {
-    return playerInventory.findIndex((inventory) =>
-      PURCHASEABLE_ITEMS.every((item) => inventory.includes(item))
+    return gameState.players.findIndex((player) =>
+      PURCHASEABLE_ITEMS.every((item) => player.inventory.includes(item))
     );
-  }, [playerInventory]);
+  }, [gameState.players]);
 
   useEffect(() => {
     if (winningPlayerIndex !== -1) {
-      setShowCloseButton(false);
-      setAlertContent(
+      showAlert(
         <>
           A játék véget ért! A(z){" "}
           <strong>{winningPlayerIndex + 1}. játékos nyert!</strong>
@@ -60,485 +46,210 @@ function App() {
           >
             Új játék
           </button>
-        </>
+        </>,
+        { showCloseButton: false }
       );
     }
   }, [winningPlayerIndex]);
 
-  const reducePlayerMoney = (playerIndex, amount) => {
-    setPlayerMoney((prevMoney) => {
-      const updatedMoney = [...prevMoney];
-      updatedMoney[playerIndex] -= amount;
+  /** @param {number} steps */
+  async function movePlayer(steps) {
+    showAlert(`Dobott szám: ${steps}`);
 
-      return Array.from(updatedMoney);
-    });
-  };
+    const oldPlayer = player;
+    const playerIndex = gameState.currentPlayer;
+    console.log("playerIndex", playerIndex);
+    let currentState = gameState;
 
-  const addPlayerMoney = (playerIndex, amount) => {
-    setPlayerMoney((prevMoney) => {
-      const updatedMoney = [...prevMoney];
-      updatedMoney[playerIndex] += amount;
+    if (player.inJail) {
+      if (steps === 6) {
+        setGameState((prevGameState) => {
+          prevGameState.players[prevGameState.currentPlayer].inJail = false;
+          prevGameState.players[prevGameState.currentPlayer].position =
+            9 + steps;
+          currentState = prevGameState;
+          return prevGameState;
+        });
+      } else {
+        showAlert("Csak hatos dobással lehet kiszabadulni a börtönből!");
+      }
+    }
 
-      return updatedMoney;
-    });
-  };
-
-  const addItemToInventory = (playerIndex, item) => {
-    setPlayerInventory((prevInventory) => {
-      const updatedInventory = [...prevInventory];
-      updatedInventory[playerIndex] = [...updatedInventory[playerIndex], item];
-      return updatedInventory;
-    });
-  };
-
-  const rollDiceAgain = () => {
-    setIsThrowButtonDisabled(false);
-    rollDice();
-  };
-
-  const tpPlayerCar = (playerIndex, steps) => {
-    if (playerHasCar[playerIndex] === 1) {
-      setPlayerPositions((prevPositions) => {
-        const newPositions = [...prevPositions];
-        let currentPosition = newPositions[playerIndex];
-
-        let nextPosition = (currentPosition + steps) % fields.length;
-
-        setTimeout(() => {
-          setPlayerPositions((prevPositions) => {
-            const updatedPositions = [...prevPositions];
-            updatedPositions[playerIndex] = nextPosition;
-            return updatedPositions;
-          });
-
-          const finalField = fields[nextPosition];
-          if (finalField.action) {
-            finalField.action();
-          }
-
-          setActivePicture(nextPosition + 1);
-        }, 1000);
-
-        return newPositions;
+    if (!player.inJail) {
+      setGameState((prevGameState) => {
+        prevGameState.players[prevGameState.currentPlayer].position =
+          (prevGameState.players[prevGameState.currentPlayer].position +
+            steps) %
+          27;
+        currentState = prevGameState;
+        return prevGameState;
       });
     }
-  };
 
-  const tpPlayerPlane = (playerIndex, steps) => {
-    setPlayerPositions((prevPositions) => {
-      const newPositions = [...prevPositions];
-      let currentPosition = newPositions[playerIndex];
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      let nextPosition = (currentPosition + steps) % fields.length;
+    const newField =
+      FIELDS[currentState.players[currentState.currentPlayer].position];
 
-      setTimeout(() => {
-        setPlayerPositions((prevPositions) => {
-          const updatedPositions = [...prevPositions];
-          updatedPositions[playerIndex] = nextPosition;
-          return updatedPositions;
-        });
+    const crossedStart =
+      oldPlayer.position >
+        currentState.players[currentState.currentPlayer].position &&
+      !oldPlayer.inJail;
 
-        const finalField = fields[nextPosition];
-        if (finalField.action) {
-          finalField.action();
-        }
+    console.log("oldPlayer", oldPlayer);
+    console.log("currentState", currentState);
+    console.log("crossedStart", crossedStart);
 
-        setActivePicture(nextPosition + 1);
-
-        setPopupClass("lucky");
-        setPopupContent(
-          <>
-            <h1 className="title">Szerencsemező</h1>
-            <Lucky
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              addPlayerMoney={addPlayerMoney}
-              reducePlayerMoney={reducePlayerMoney}
-              missRound={missRound}
-              playerHasCar={playerHasCar}
-            />
-          </>
-        );
-      }, 1000);
-
-      return newPositions;
-    });
-  };
-
-  const [currentPlayer, setCurrentPlayer] = useState(0);
-  const [missedRounds, setMissedRounds] = useState([0, 0, 0, 0] || []);
-  const [round, setRound] = useState(1 || 0);
-
-  const missRound = (playerIndex) => {
-    setMissedRounds((prevMissed) => {
-      const updatedMissed = [...prevMissed];
-      updatedMissed[playerIndex] = round + 1;
-      return updatedMissed;
-    });
-  };
-
-  const sendToJail = (playerIndex) => {
-    setPlayerPositions((prevPositions) => {
-      const updatedPositions = [...prevPositions];
-      updatedPositions[playerIndex] = 27;
-      return updatedPositions;
-    });
-  };
-
-  useEffect(() => {
-    console.log("Current Player:", currentPlayer + 1);
-    console.log("Missed Rounds:", missedRounds);
-    console.log("Current Round:", round);
-
-    if (
-      currentPlayer !== undefined &&
-      missedRounds.length > 0 &&
-      missedRounds[currentPlayer] >= round
-    ) {
-      whosTurn();
-      setAlertContent(`Bábu ${currentPlayer + 1} most nem dobhat.`);
-    }
-  }, [round, currentPlayer, missedRounds, playerMoney]);
-
-  const fields = [
-    {
-      id: 0,
-      name: "Start",
-      x: 88.9,
-      y: 80,
-      action: () => addPlayerMoney(currentPlayer, 100000),
-    },
-
-    { id: 1, name: "Mezo 1", x: 71.5, y: 80 },
-    {
-      id: 2,
-      name: "Mezo 2",
-      x: 64,
-      y: 80,
-      action: () => reducePlayerMoney(currentPlayer, 1500),
-    },
-    { id: 3, name: "Mezo 3", x: 56.5, y: 80 },
-    { id: 4, name: "Mezo 4", x: 48.9, y: 80, isStop: true },
-    { id: 5, name: "Mezo 5", x: 41.3, y: 80 },
-    { id: 6, name: "Mezo 6", x: 33.9, y: 80 },
-    { id: 7, name: "Mezo 7", x: 26.4, y: 80 },
-    {
-      id: 8,
-      name: "Mezo 8",
-      x: 18.9,
-      y: 80,
-      action: () => reducePlayerMoney(currentPlayer, 1500),
-    },
-
-    { id: 9, name: "Mezo 9", x: 4, y: 88 },
-
-    {
-      id: 10,
-      name: "Mezo 10",
-      x: 8,
-      y: 63,
-      action: () => reducePlayerMoney(currentPlayer, 5000),
-    },
-    { id: 11, name: "Mezo 11", x: 8, y: 45, isStop: true },
-    { id: 12, name: "Mezo 12", x: 8, y: 28 },
-
-    {
-      id: 13,
-      name: "Mezo 13",
-      x: 8,
-      y: 12,
-      action: () => {
-        tpPlayerPlane(currentPlayer, 4);
-      },
-    },
-
-    { id: 14, name: "Mezo 14", x: 18.9, y: 12 },
-    { id: 15, name: "Mezo 15", x: 26.4, y: 12 },
-    {
-      id: 16,
-      name: "Mezo 16",
-      x: 33.9,
-      y: 12,
-      action: () => {
-        tpPlayerCar(currentPlayer, 10);
-      },
-    },
-    { id: 17, name: "Mezo 17", x: 41.3, y: 12 },
-    { id: 18, name: "Mezo 18", x: 48.9, y: 12, isStop: true },
-    {
-      id: 19,
-      name: "Mezo 19",
-      x: 56.5,
-      y: 12,
-      action: () => reducePlayerMoney(currentPlayer, 15000),
-    },
-    { id: 20, name: "Mezo 20", x: 64, y: 12 },
-    { id: 21, name: "Mezo 21", x: 71.5, y: 12 },
-    {
-      id: 22,
-      name: "Mezo 22",
-      x: 79.2,
-      y: 12,
-      action: () => reducePlayerMoney(currentPlayer, 10000),
-    },
-    {
-      id: 23,
-      name: "Mezo 23",
-      x: 88.9,
-      y: 12,
-      action: () => missRound(currentPlayer),
-    },
-    { id: 24, name: "Mezo 24", x: 88.9, y: 28 },
-    { id: 25, name: "Mezo 25", x: 88.9, y: 45, isStop: true },
-    { id: 26, name: "Mezo 26", x: 88.9, y: 64, action: () => rollDiceAgain() },
-
-    { id: 27, name: "Börtön", x: 10, y: 80 },
-  ];
-
-  const [isThrowButtonDisabled, setIsThrowButtonDisabled] = useState(false);
-  //const [isNextButtonDisabled, setIsNextButtonDisabled] = useState(false);
-  const [activePicture, setActivePicture] = useState(null);
-  const [executedActions, setExecutedActions] = useState(
-    new Array(fields.length).fill(false)
-  );
-  const [popupClass, setPopupClass] = useState(null);
-
-  const movePlayer = (playerIndex, steps) => {
-    setAlertContent("Dobott szám: " + steps);
-    setIsThrowButtonDisabled(true);
-
-    setPlayerPositions((prevPositions) => {
-      const newPositions = [...prevPositions];
-      let newPosition = newPositions[playerIndex] + steps;
-      if (newPositions[playerIndex] === 27 && steps !== 6) {
-        setAlertContent("Csak hatos dobással lehet kiszabadulni a börtönből!");
-        return prevPositions;
-      } else if (newPositions[playerIndex] === 27 && steps === 6) {
-        newPosition = 9;
-      }
-
-      const crossedStart = newPosition > 27;
-
-      newPosition = newPosition % 27;
-
-      if (crossedStart) {
-        console.log(`Pénz hozzáadva a ${currentPlayer}. játékosnak`);
-        addPlayerMoney(currentPlayer, 80000);
-      }
-
-      newPositions[playerIndex] = newPosition;
-      setPlayerPositions(newPositions);
-
-      const currentField = fields[newPosition];
-
-      if (currentField?.action) {
-        setExecutedActions((prev) => {
-          const updated = [...prev];
-
-          if (!updated[newPosition]) {
-            updated[newPosition] = true;
-            currentField.action();
-          }
-
-          return updated;
-        });
-      }
-
-      if (newPositions[playerIndex] === 3) {
-        setPopupClass("elza");
-        setPopupContent(
-          <Elza
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            addItemToInventory={addItemToInventory}
-            reducePlayerMoney={reducePlayerMoney}
-            playerInventory={playerInventory}
-          />
-        );
-      }
-
-      if (newPositions[playerIndex] === 5) {
-        setPopupClass("bankrobbery");
-        setPopupContent(
-          <BankRobbery
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            addPlayerMoney={addPlayerMoney}
-            sendToJail={sendToJail}
-          />
-        );
-      }
-
-      if (newPositions[playerIndex] === 6) {
-        setPopupClass("elzaandidea");
-        setPopupContent(
-          <ElzaAndIdea
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            playerInventory={playerInventory}
-            addItemToInventory={addItemToInventory}
-            reducePlayerMoney={reducePlayerMoney}
-          />
-        );
-      }
-
-      if (newPositions[playerIndex] === 12) {
-        setPopupClass("casino");
-        setPopupContent(
-          <Casino
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            reducePlayerMoney={reducePlayerMoney}
-            addPlayerMoney={addPlayerMoney}
-          ></Casino>
-        );
-      }
-
-      if (newPositions[playerIndex] === 14) {
-        setPopupClass("bobthebuilder");
-        setPopupContent(
-          <>
-            <h1 className="bobthebuilder-title">Házépítés</h1>
-            <Bobthebuilder
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              reducePlayerMoney={reducePlayerMoney}
-              playerInventory={playerInventory}
-              playerMoney={playerMoney}
-              addItemToInventory={addItemToInventory}
-            />
-          </>
-        );
-      }
-
-      if (newPositions[playerIndex] === 15) {
-        setPopupClass("carshop");
-        setPopupContent(
-          <>
-            <Carshop
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              reducePlayerMoney={reducePlayerMoney}
-              playerMoney={playerMoney}
-              playerHasCar={playerHasCar}
-              setPlayerHasCar={setPlayerHasCar}
-            />
-          </>
-        );
-      }
-
-      if (newPositions[playerIndex] === 20) {
-        setPopupClass("idea");
-        setPopupContent(
-          <Idea
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            playerInventory={playerInventory}
-            addItemToInventory={addItemToInventory}
-            reducePlayerMoney={reducePlayerMoney}
-          />
-        );
-      }
-
-      if (newPositions[playerIndex] === 24) {
-        setPopupClass("insurance");
-        setPopupContent(
-          <Insurance
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            playerHasCar={playerHasCar}
-            reducePlayerMoney={reducePlayerMoney}
-          />
-        );
-      }
-
-      if (
-        newPositions[playerIndex] === 1 ||
-        newPositions[playerIndex] === 7 ||
-        newPositions[playerIndex] === 17
-      ) {
-        setPopupClass("lucky");
-        setPopupContent(
-          <Lucky
-            onClose={() => setPopupContent(null)}
-            currentPlayer={currentPlayer}
-            addPlayerMoney={addPlayerMoney}
-            reducePlayerMoney={reducePlayerMoney}
-            playerMoney={playerMoney}
-            playerHasCar={playerHasCar}
-          />
-        );
-      }
-
-      if (
-        newPositions[playerIndex] === 4 ||
-        newPositions[playerIndex] === 11 ||
-        newPositions[playerIndex] === 18 ||
-        newPositions[playerIndex] === 25
-      ) {
-        setPopupClass("steelroad");
-        setPopupContent(
-          <>
-            <img src="./src/Logos/MKV logo.png" className="steelroad-logo" />
-            <Steelroad
-              onClose={() => setPopupContent(null)}
-              currentPlayer={currentPlayer}
-              reducePlayerMoney={reducePlayerMoney}
-              addPlayerMoney={addPlayerMoney}
-              playerPositions={playerPositions}
-              setPlayerPositions={setPlayerPositions}
-              fields={fields}
-            />
-          </>
-        );
-      }
-
-      setActivePicture(newPositions[playerIndex] + 1);
-      return newPositions;
-    });
-  };
-
-  const resetExecutedActions = () => {
-    setExecutedActions(new Array(fields.length).fill(false));
-  };
-
-  const whosTurn = () => {
-    resetExecutedActions();
-    const nextPlayer = (currentPlayer + 1) % 4;
-
-    if (nextPlayer === 0) {
-      setRound((prevRound) => prevRound + 1);
+    if (crossedStart && newField.id !== 0) {
+      setGameState((prevGameState) => {
+        prevGameState.players[prevGameState.currentPlayer].money += 150_000;
+        return prevGameState;
+      });
     }
 
-    setCurrentPlayer(nextPlayer);
-    setIsThrowButtonDisabled(false);
-  };
+    newField.action?.({
+      currentPlayer: currentState.players[currentState.currentPlayer],
+      updateCurrentPlayer: updatePlayer,
+      gameState: currentState,
+      updateGameState: setGameState,
+      playerIndex: playerIndex,
+      openPopup: openPopup,
+    });
 
-  const ActivePictures = () => {
-    return activePicture !== null ? (
-      <div className="w-full h-full flex p-4 items-center justify-center">
-        <img
-          src={`./src/HQ Pictures/${activePicture}. Mező.png`}
-          alt={`${activePicture}. Mező`}
-          className="w-full h-full object-contain"
-        />
-      </div>
-    ) : null;
-  };
+    console.log(newField);
 
-  /*
-  const handleSubmit = (event, prevPositions, playerIndex) => {
-    event.preventDefault(); 
-  
-    const cheatCode = parseInt(document.querySelector(".cheatInput").value, 10);
-    
-    if (!isNaN(cheatCode)) {
-      const newPositions = [...prevPositions];
-      newPositions[playerIndex] += cheatCode;
-      console.log("New Positions:", newPositions);
+    // setPlayerPositions((prevPositions) => {
+    //   const newPositions = [...prevPositions];
+    //   let newPosition = newPositions[playerIndex] + steps;
+    //   if (newPositions[playerIndex] === 27 && steps !== 6) {
+    //     showAlert("Csak hatos dobással lehet kiszabadulni a börtönből!");
+    //     return prevPositions;
+    //   } else if (newPositions[playerIndex] === 27 && steps === 6) {
+    //     newPosition = 9;
+    //   }
+
+    //   const crossedStart = newPosition > 27;
+
+    //   newPosition = newPosition % 27;
+
+    //   if (crossedStart) {
+    //     console.log(`Pénz hozzáadva a ${player.name}. játékosnak`);
+    //     updatePlayer({ ...player, money: player.money + 80_000 });
+    //   }
+
+    //   newPositions[playerIndex] = newPosition;
+    //   setPlayerPositions(newPositions);
+
+    //   const currentField = FIELDS[newPosition];
+
+    //   currentField.action?.({
+    //     currentPlayer: player,
+    //     updateCurrentPlayer: updatePlayer,
+    //     gameState: gameState,
+    //     updateGameState: setGameState,
+    //   });
+
+    //   if (newPositions[playerIndex] === 3) {
+    //     setPopupClass("elza");
+    //     setPopupContent(<Elza onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 5) {
+    //     setPopupClass("bankrobbery");
+    //     setPopupContent(<BankRobbery onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 6) {
+    //     setPopupClass("elzaandidea");
+    //     setPopupContent(<ElzaAndIdea onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 12) {
+    //     setPopupClass("casino");
+    //     setPopupContent(<Casino onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 14) {
+    //     setPopupClass("bobthebuilder");
+    //     setPopupContent(
+    //       <>
+    //         <h1 className="bobthebuilder-title">Házépítés</h1>
+    //         <Bobthebuilder onClose={() => setPopupContent(null)} />
+    //       </>
+    //     );
+    //   }
+
+    //   if (newPositions[playerIndex] === 15) {
+    //     setPopupClass("carshop");
+    //     setPopupContent(<Carshop onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 20) {
+    //     setPopupClass("idea");
+    //     setPopupContent(<Idea onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (newPositions[playerIndex] === 24) {
+    //     setPopupClass("insurance");
+    //     setPopupContent(<Insurance onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (
+    //     newPositions[playerIndex] === 1 ||
+    //     newPositions[playerIndex] === 7 ||
+    //     newPositions[playerIndex] === 17
+    //   ) {
+    //     setPopupClass("lucky");
+    //     setPopupContent(<Lucky onClose={() => setPopupContent(null)} />);
+    //   }
+
+    //   if (
+    //     newPositions[playerIndex] === 4 ||
+    //     newPositions[playerIndex] === 11 ||
+    //     newPositions[playerIndex] === 18 ||
+    //     newPositions[playerIndex] === 25
+    //   ) {
+    //     setPopupClass("steelroad");
+    //     setPopupContent(
+    //       <>
+    //         <img src="./src/Logos/MKV logo.png" className="steelroad-logo" />
+    //         <Steelroad onClose={() => setPopupContent(null)} />
+    //       </>
+    //     );
+    //   }
+
+    //   return newPositions;
+    // });
+  }
+
+  function rollDice() {
+    // return 5;
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  function handleDiceRoll() {
+    const steps = rollDice();
+    updatePlayer((prevPlayer) => ({ ...prevPlayer, canRollDice: false }));
+    movePlayer(steps);
+  }
+
+  function handleEndTurn() {
+    // can leave hospital
+    if (player.inHospital === "healed") {
+      updatePlayer({ ...player, inHospital: "no" });
     }
-  };
-  */
+    // can roll dice
+    if (player.inHospital !== "arrived") {
+      updatePlayer({ ...player, canRollDice: true });
+    } else {
+      // arrived to hospital, will be healed next turn
+      updatePlayer({ ...player, inHospital: "healed" });
+    }
+    setGameState((prevGameState) => ({
+      ...prevGameState,
+      currentPlayer: (prevGameState.currentPlayer + 1) % 4,
+    }));
+  }
 
   return (
     <div>
@@ -554,10 +265,7 @@ function App() {
           ) : (
             <div className="flex w-full">
               <div className="p-4 h-full flex-2/6">
-                <CurrentPlayerPanel
-                  currentPlayer={currentPlayer}
-                  playerInventory={playerInventory[currentPlayer]}
-                />
+                <CurrentPlayerPanel />
               </div>
               <div className="flex-2/6">
                 <ActivePictures />
@@ -571,15 +279,15 @@ function App() {
                   <div className="flex flex-col gap-8 justify-center h-full items-center">
                     <button
                       className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
-                      disabled={isThrowButtonDisabled}
-                      onClick={() => movePlayer(currentPlayer, rollDice())}
+                      disabled={!player.canRollDice}
+                      onClick={() => handleDiceRoll()}
                     >
                       Dobás
                     </button>
 
                     <button
                       className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
-                      onClick={() => whosTurn()}
+                      onClick={() => handleEndTurn()}
                     >
                       Kör vége
                     </button>
@@ -588,7 +296,7 @@ function App() {
               </div>
             </div>
           )}
-          <Players fields={fields} playerPositions={playerPositions} />
+          <Players />
         </div>
       </Board>
 
@@ -596,7 +304,7 @@ function App() {
         <>
           <div
             className={`popup-wrapper-${popupClass}`}
-            onClick={() => setPopupContent(null)}
+            onClick={() => closePopup()}
           >
             <div
               className={`popup-content-${popupClass}`}
@@ -616,8 +324,7 @@ function App() {
             className={`alert-wrapper`}
             onClick={() => {
               if (showCloseButton) {
-                setAlertContent(null);
-                setShowAlertOnPopup(false);
+                closeAlert();
               }
             }}
           >
@@ -629,8 +336,7 @@ function App() {
               {showCloseButton && (
                 <button
                   onClick={() => {
-                    setAlertContent(null);
-                    setShowAlertOnPopup(false);
+                    closeAlert();
                   }}
                 >
                   Bezárás
@@ -646,4 +352,16 @@ function App() {
   );
 }
 
-export default App;
+function ActivePictures() {
+  const { player } = useCurrentPlayer();
+
+  return player.position ? (
+    <div className="w-full h-full flex p-4 items-center justify-center">
+      <img
+        src={`./src/HQ Pictures/${player.position + 1}. Mező.png`}
+        alt={`${player.position + 1}. Mező`}
+        className="w-full h-full object-contain"
+      />
+    </div>
+  ) : null;
+}

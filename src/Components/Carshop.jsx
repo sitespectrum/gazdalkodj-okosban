@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
-import { formatMoney } from "./CurrentPlayerPanel.jsx";
-import { alertContext } from "../main.jsx";
-import { moneyContext } from "../main.jsx";
+import { formatMoney } from "../lib/utils.js";
+import { alertContext } from "../lib/contexts.js";
 
 const Carshop = ({
   onClose,

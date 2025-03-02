@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { alertContext } from "../main.jsx";
+import { alertContext } from "../lib/contexts.js";
 
 const Bobthebuilder = ({
   onClose,

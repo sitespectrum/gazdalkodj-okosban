@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
-import { moneyContext, alertContext } from "../main.jsx";
-import { formatMoney } from "./CurrentPlayerPanel.jsx";
+import React, { useContext, useState } from "react";
+import { alertContext } from "../lib/contexts.js";
+import { formatMoney } from "../lib/utils.js";
 
 const Idea = ({
   onClose,

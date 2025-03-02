@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { alertContext } from "../main.jsx";
-import { moneyContext } from "../main.jsx";
+import { alertContext } from "../lib/contexts.js";
 
 const Steelroad = ({
   onClose,

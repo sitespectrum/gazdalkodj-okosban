@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { formatMoney } from "./CurrentPlayerPanel";
+//@ts-check
+import React, { useEffect, useState } from "react";
+import { useCurrentPlayer } from "../hooks/use-current-player.js";
+import { usePopup } from "../hooks/use-popup.js";
+import { formatMoney } from "../lib/utils.js";
 
-const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
+export default function BankRobbery() {
+  const { player, updatePlayer } = useCurrentPlayer();
+  const { closePopup } = usePopup();
+
   const [isRobbing, setIsRobbing] = useState(false);
-  const [countdown, setCountdown] = useState(null);
+  /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
+  const [countdown, setCountdown] = useState(
+    /** @type {number | null} */ (null)
+  );
   const [clickCount, setClickCount] = useState(0);
   const [escapeVisible, setEscapeVisible] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -11,7 +20,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
   useEffect(() => {
     if (isRobbing && countdown !== null) {
       let timer = setTimeout(() => {
-        setCountdown((prev) => prev - 1);
+        setCountdown((prev) => (prev ?? 0) - 1);
       }, 500);
 
       if (countdown === 1) {
@@ -39,7 +48,10 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
 
   const handleEscape = () => {
     if (isRobbing && escapeVisible) {
-      addPlayerMoney(currentPlayer, clickCount * 10000);
+      updatePlayer({
+        ...player,
+        money: player.money + clickCount * 10000,
+      });
       setGameOver(true);
     }
   };
@@ -47,7 +59,12 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
   const handleFail = () => {
     if (!gameOver) {
       setEscapeVisible(false);
-      sendToJail(currentPlayer);
+
+      updatePlayer({
+        ...player,
+        inJail: true,
+        position: 27,
+      });
       setGameOver(true);
     }
   };
@@ -70,7 +87,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
               </button>
               <button
                 className="bg-white font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
-                onClick={onClose}
+                onClick={closePopup}
               >
                 Nem
               </button>
@@ -109,7 +126,7 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
             )}
             <button
               className="bg-white -mt-6 font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
-              onClick={onClose}
+              onClick={closePopup}
             >
               Bezárás
             </button>
@@ -118,6 +135,4 @@ const Bank = ({ onClose, currentPlayer, addPlayerMoney, sendToJail }) => {
       </div>
     </>
   );
-};
-
-export default Bank;
+}

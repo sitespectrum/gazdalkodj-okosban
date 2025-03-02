@@ -1,54 +1,24 @@
-import { useContext } from "react";
-import { moneyContext } from "../main.jsx";
-import { PURCHASEABLE_ITEMS } from "../constants.js";
-export function formatMoney(value, locale = "hu-HU", currency = "HUF") {
-  const formatter = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currency,
-    minimumFractionDigits: 0,
-  });
-  return formatter.format(value);
-}
+//@ts-check
+import React from "react";
+import { useCurrentPlayer } from "../hooks/use-current-player.js";
+import { PURCHASEABLE_ITEMS } from "../lib/constants.js";
+import { formatMoney } from "../lib/utils.js";
 
-export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
-  const [playerMoney] = useContext(moneyContext);
+export function CurrentPlayerPanel() {
+  const { player } = useCurrentPlayer();
 
   return (
     <div className="flex flex-col bg-black/50 rounded-xl text-white text-lg h-full text-center">
       <div className="flex gap-4 px-4 py-2 items-center bg-black/30 rounded-t-xl">
         <div className="h-12">
-          {currentPlayer === 0 && (
-            <img
-              className="h-full object-contain"
-              src="./src/Pictures/Puppets/Piros bábú 1.png"
-              alt="Piros bábú 1"
-            />
-          )}
-          {currentPlayer === 1 && (
-            <img
-              className="h-full object-contain"
-              src="./src/Pictures/Puppets/Kék bábú 1.png"
-              alt="Kék bábú 1"
-            />
-          )}
-          {currentPlayer === 2 && (
-            <img
-              className="h-full object-contain"
-              src="./src/Pictures/Puppets/Zöld bábú 1.png"
-              alt="Zöld bábú 1"
-            />
-          )}
-          {currentPlayer === 3 && (
-            <img
-              className="h-full object-contain"
-              src="./src/Pictures/Puppets/Sárga bábú 1.png"
-              alt="Sárga bábú 1"
-            />
-          )}
+          <img
+            className="h-full object-contain"
+            src={player.image}
+            alt={`${player.name} ikonja`}
+          />
         </div>
         <p>
-          Játékos {currentPlayer + 1}:{" "}
-          <strong>{formatMoney(playerMoney[currentPlayer])}</strong>
+          {player.name}: <strong>{formatMoney(player.money)}</strong>
         </p>
       </div>
       <div className="overflow-y-auto h-full">
@@ -58,11 +28,11 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
             <li
               className={
                 "rounded-xl bg-black/30 flex items-stretch gap-2 text-xl" +
-                (playerInventory.includes(item) ? "" : " opacity-50")
+                (player.inventory.includes(item) ? "" : " opacity-50")
               }
               key={item}
             >
-              {!playerInventory.includes(item) && (
+              {!player.inventory.includes(item) && (
                 <div className="w-10 h-10 min-w-10 text-white bg-[#852828] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +50,7 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
                   </svg>
                 </div>
               )}
-              {playerInventory.includes(item) && (
+              {player.inventory.includes(item) && (
                 <div className="w-10 h-10 min-w-10 text-white bg-[#288547] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

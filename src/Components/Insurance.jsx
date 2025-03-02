@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
-import { moneyContext, alertContext } from "../main";
-import { formatMoney } from "./CurrentPlayerPanel";
+import { alertContext } from "../lib/contexts.js";
+import { formatMoney } from "../lib/utils.js";
 import Lucky from "./Lucky";
 
 const Insurance = ({
