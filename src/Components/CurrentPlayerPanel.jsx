@@ -66,8 +66,8 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
                 <div className="w-10 h-10 min-w-10 text-white bg-[#852828] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="1.5rem"
+                    height="1.5rem"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -84,8 +84,8 @@ export function CurrentPlayerPanel({ currentPlayer, playerInventory }) {
                 <div className="w-10 h-10 min-w-10 text-white bg-[#288547] flex items-center justify-center rounded-l-xl">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="1.5rem"
+                    height="1.5rem"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
