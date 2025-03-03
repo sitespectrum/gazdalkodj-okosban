@@ -56,67 +56,68 @@ export default function App() {
   async function movePlayer(steps) {
     showAlert(`Dobott szám: ${steps}`);
 
-    const oldPlayer = player;
     const playerIndex = gameState.currentPlayer;
+    const oldPlayer = gameState.players[playerIndex];
     console.log("playerIndex", playerIndex);
-    let currentState = gameState;
 
-    if (player.inJail) {
-      if (steps === 6) {
-        setGameState((prevGameState) => {
-          prevGameState.players[prevGameState.currentPlayer].inJail = false;
-          prevGameState.players[prevGameState.currentPlayer].position =
-            9 + steps;
-          currentState = prevGameState;
-          return prevGameState;
-        });
-      } else {
-        showAlert("Csak hatos dobással lehet kiszabadulni a börtönből!");
+    if (gameState.players[playerIndex].inJail && steps !== 6) {
+      showAlert(
+        `Csak hatos dobással lehet kiszabadulni a börtönből! (Dobott szám: ${steps})`
+      );
+      return;
+    }
+
+    setGameState(
+      (prevGameState) => {
+        if (prevGameState.players[playerIndex].inJail) {
+          if (steps === 6) {
+            prevGameState.players[playerIndex].inJail = false;
+            prevGameState.players[playerIndex].position = 9 + steps;
+            return prevGameState;
+          }
+        } else {
+          prevGameState.players[playerIndex].position =
+            (prevGameState.players[playerIndex].position + steps) % 27;
+        }
+
+        return {
+          ...prevGameState,
+        };
+      },
+      (newGameState) => {
+        const newField = FIELDS[newGameState.players[playerIndex].position];
+
+        const crossedStart =
+          oldPlayer.position > newGameState.players[playerIndex].position &&
+          !oldPlayer.inJail;
+
+        if (crossedStart && newField.id !== 0) {
+          newGameState.players[playerIndex].money += 150_000;
+        }
+
+        setGameState(
+          (prevGameState) => {
+            if (crossedStart && newField.id !== 0) {
+              prevGameState.players[playerIndex].money += 150_000;
+            }
+
+            return {
+              ...prevGameState,
+            };
+          },
+          (newGameState) => {
+            newField.action?.({
+              currentPlayer: newGameState.players[playerIndex],
+              updateCurrentPlayer: updatePlayer,
+              gameState: newGameState,
+              updateGameState: setGameState,
+              playerIndex: playerIndex,
+              openPopup: openPopup,
+            });
+          }
+        );
       }
-    }
-
-    if (!player.inJail) {
-      setGameState((prevGameState) => {
-        prevGameState.players[prevGameState.currentPlayer].position =
-          (prevGameState.players[prevGameState.currentPlayer].position +
-            steps) %
-          27;
-        currentState = prevGameState;
-        return prevGameState;
-      });
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    const newField =
-      FIELDS[currentState.players[currentState.currentPlayer].position];
-
-    const crossedStart =
-      oldPlayer.position >
-        currentState.players[currentState.currentPlayer].position &&
-      !oldPlayer.inJail;
-
-    console.log("oldPlayer", oldPlayer);
-    console.log("currentState", currentState);
-    console.log("crossedStart", crossedStart);
-
-    if (crossedStart && newField.id !== 0) {
-      setGameState((prevGameState) => {
-        prevGameState.players[prevGameState.currentPlayer].money += 150_000;
-        return prevGameState;
-      });
-    }
-
-    newField.action?.({
-      currentPlayer: currentState.players[currentState.currentPlayer],
-      updateCurrentPlayer: updatePlayer,
-      gameState: currentState,
-      updateGameState: setGameState,
-      playerIndex: playerIndex,
-      openPopup: openPopup,
-    });
-
-    console.log(newField);
+    );
 
     // setPlayerPositions((prevPositions) => {
     //   const newPositions = [...prevPositions];

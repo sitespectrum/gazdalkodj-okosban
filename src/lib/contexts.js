@@ -5,7 +5,7 @@ import { DEFAULT_GAME_STATE } from "./constants";
 /** @typedef {import('./types').GameState} GameState */
 /** @typedef {[string, React.Dispatch<React.SetStateAction<string>>, any, React.Dispatch<React.SetStateAction<any>>]} PopupContext */
 /** @typedef {[any, React.Dispatch<React.SetStateAction<any>>, boolean, React.Dispatch<React.SetStateAction<boolean>>, boolean, React.Dispatch<React.SetStateAction<boolean>>]} AlertContext */
-/** @typedef {[GameState, React.Dispatch<React.SetStateAction<GameState>>]} GameStateContext */
+/** @typedef {import('./types').CallbackState<GameState>} GameStateContext */
 
 /** @type {React.Context<PopupContext>} */
 export const popupContext = createContext(["", (_) => {}, null, (_) => {}]);

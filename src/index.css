@@ -81,7 +81,7 @@ input {
 }
 
 .popup-content-elza {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[42rem];
   background: linear-gradient(to bottom, white, #bae2fc);
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 10000;

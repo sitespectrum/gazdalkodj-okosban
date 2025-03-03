@@ -18,8 +18,8 @@ const Players = () => {
             className="player"
             style={{
               position: "absolute",
-              left: `${field.x}%`,
-              top: `${field.y}%`,
+              left: `${field?.x}%`,
+              top: `${field?.y}%`,
               width: "2%",
             }}
           />

@@ -32,7 +32,14 @@ export interface FieldActionProps {
   currentPlayer: Player;
   updateCurrentPlayer: React.Dispatch<React.SetStateAction<Player>>;
   gameState: GameState;
-  updateGameState: React.Dispatch<React.SetStateAction<GameState>>;
+  updateGameState: CallbackStateAction<GameState>;
   playerIndex: number;
   openPopup: (popupName: string, content: React.ReactNode) => void;
 }
+
+export type CallbackState<T> = [T, CallbackStateAction<T>];
+
+export type CallbackStateAction<T> = (
+  newValueOrUpdater: T | ((prevState: T) => T),
+  callback?: (newState: T) => void
+) => void;

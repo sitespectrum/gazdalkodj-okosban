@@ -3,8 +3,10 @@ import { useState } from "react";
 import { popupContext, alertContext, gameStateContext } from "./contexts.js";
 import { DEFAULT_GAME_STATE } from "./constants.js";
 import React from "react";
+import { useCallbackState } from "../hooks/use-callback-state.js";
 
 /** @typedef {import('./types').GameState} GameState */
+/** @typedef {import('./types').CallbackState<GameState>} CallbackGameState */
 
 export function Providers({ children }) {
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
@@ -19,8 +21,8 @@ export function Providers({ children }) {
   /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
   const [showCloseButton, setShowCloseButton] = useState(true);
 
-  /** @type {[GameState, React.Dispatch<React.SetStateAction<GameState>>]} */
-  const [gameState, setGameState] = useState(DEFAULT_GAME_STATE);
+  /** @type {CallbackGameState} */
+  const [gameState, setGameState] = useCallbackState(DEFAULT_GAME_STATE);
 
   return (
     <popupContext.Provider
