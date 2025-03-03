@@ -89,16 +89,20 @@ export default function App() {
 
         const crossedStart =
           oldPlayer.position > newGameState.players[playerIndex].position &&
+          newGameState.players[playerIndex].position !== 0 &&
           !oldPlayer.inJail;
-
-        if (crossedStart && newField.id !== 0) {
-          newGameState.players[playerIndex].money += 150_000;
-        }
 
         setGameState(
           (prevGameState) => {
             if (crossedStart && newField.id !== 0) {
               prevGameState.players[playerIndex].money += 150_000;
+            }
+
+            if (
+              (crossedStart || oldPlayer.position === 0) &&
+              !oldPlayer.inventory.includes("Ház")
+            ) {
+              prevGameState.players[playerIndex].money -= 70_000;
             }
 
             return {
