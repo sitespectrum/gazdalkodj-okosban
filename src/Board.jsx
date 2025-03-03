@@ -131,13 +131,17 @@ export function Board({ children }) {
               <FieldFourSouthStation />
             </div>
             <div className="board-cell row-start-5 col-start-5">
-              Bank robbery
+              <FieldFiveBankRobbery />
             </div>
             <div className="board-cell row-start-5 col-start-4">
-              Elza and idea
+              <FieldSixShoppingCenter />
             </div>
-            <div className="board-cell row-start-5 col-start-3">lucky 2</div>
-            <div className="board-cell row-start-5 col-start-2">smoking</div>
+            <div className="board-cell row-start-5 col-start-3">
+              <FieldSevenLucky />
+            </div>
+            <div className="board-cell row-start-5 col-start-2">
+              <FieldEightSmoking />
+            </div>
             <div className="board-cell row-start-5 rounded-bl-xl !p-0">
               <img
                 className="rounded-bl-xl"
@@ -145,7 +149,11 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-4">movie theater</div>
+            <div className="board-cell row-start-4 rotated-tile-container">
+              <div className="rotated-tile-left">
+                <FieldTenMovieTheater />
+              </div>
+            </div>
             <div className="board-cell row-start-3 overflow-hidden">
               <img
                 className="h-full w-full object-cover"
@@ -153,7 +161,11 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-2">casino</div>
+            <div className="board-cell row-start-2 rotated-tile-container">
+              <div className="rotated-tile-left">
+                <FieldTwelveCasino />
+              </div>
+            </div>
             <div className="board-cell rounded-tl-xl !p-0">
               <img
                 className="rounded-tl-xl"
@@ -161,15 +173,33 @@ export function Board({ children }) {
                 alt="14. Mező"
               />
             </div>
-            <div className="board-cell">bob the builder</div>
-            <div className="board-cell">car shop</div>
-            <div className="board-cell">car travel</div>
-            <div className="board-cell">lucky 3</div>
-            <div className="board-cell">north station</div>
-            <div className="board-cell">abidas</div>
-            <div className="board-cell">idea</div>
-            <div className="board-cell">bank 4</div>
-            <div className="board-cell">abc</div>
+            <div className="board-cell">
+              <FieldFourteenBobTheBuilder />
+            </div>
+            <div className="board-cell">
+              <FieldFifteenCarShop />
+            </div>
+            <div className="board-cell">
+              <FieldSixteenCarTravel />
+            </div>
+            <div className="board-cell">
+              <FieldSeventeenLucky />
+            </div>
+            <div className="board-cell">
+              <FieldEighteenNorthStation />
+            </div>
+            <div className="board-cell">
+              <FieldNineteenAbidas />
+            </div>
+            <div className="board-cell">
+              <FieldTwentyIdea />
+            </div>
+            <div className="board-cell">
+              <FieldTwentyOneBank />
+            </div>
+            <div className="board-cell">
+              <FieldTwentyTwoABC />
+            </div>
             <div className="board-cell rounded-tr-xl !p-0">
               <img
                 className="rounded-tr-xl"
@@ -177,7 +207,11 @@ export function Board({ children }) {
                 alt="24. Mező"
               />
             </div>
-            <div className="board-cell row-start-2 col-start-11">insurance</div>
+            <div className="board-cell rotated-tile-container">
+              <div className="rotated-tile-right">
+                <FieldTwentyFourInsurance />
+              </div>
+            </div>
             <div className="board-cell row-start-3 col-start-11 rotate-180 overflow-hidden">
               <img
                 className="h-full w-full object-cover "
@@ -186,10 +220,12 @@ export function Board({ children }) {
               />
             </div>
             <div
-              className="board-cell row-start-4 col-start-11"
+              className="board-cell row-start-4 col-start-11 rotated-tile-container"
               ref={lastFieldRef}
             >
-              roll again
+              <div className="rotated-tile-right">
+                <FieldTwentySixRollAgain />
+              </div>
             </div>
             <div className="row-start-2 row-end-5 col-start-2 col-end-11">
               {children}
@@ -205,8 +241,14 @@ function MandatoryField() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
       <div className="py-1 bg-[#bc354a] font-semibold">Kötelező mező</div>
-      <div></div>
-      <div className="text-[0.65rem] text-center bg-[#bc354a] pt-4 px-1">
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/mandatory.png"
+          alt="Madnatory field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#bc354a] pt-3 px-1">
         Ha még nincs ingatlanod, fizess lakbért.
         <br />
         <span className="font-semibold">Körönként 70 000 Ft</span>
@@ -219,8 +261,14 @@ function FieldOneLucky() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
       <div className="py-1 bg-[#a0ecff] font-semibold">1.</div>
-      <div></div>
-      <div className="text-[0.65rem] text-center bg-[#a0ecff] pt-4 px-1">
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          alt="Lucky field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#a0ecff] pt-3 px-1">
         <span className="font-semibold">Szerencsemező</span>
       </div>
     </div>
@@ -231,8 +279,14 @@ function FieldTwoTrash() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
       <div className="py-1 bg-[#52ae47] font-semibold">2.</div>
-      <div></div>
-      <div className="text-[0.65rem] text-center bg-[#52ae47] pt-4 px-1">
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/2.png"
+          alt="Trash field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#52ae47] pt-3 px-1">
         Szemeteltél.
         <br />
         <span className="font-semibold">Fizess 1 500 Ft-ot</span>
@@ -245,8 +299,14 @@ function FieldThreeElectronics() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
       <div className="py-1 bg-[#cac9c9] font-semibold">3.</div>
-      <div></div>
-      <div className="text-[0.65rem] text-center bg-[#cac9c9] pt-4 px-1">
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/3.png"
+          alt="Electronics field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#cac9c9] pt-3 px-1">
         <span className="font-semibold">Műszaki bolt</span>
         <br />
         Árak a megjelenő ablakban
@@ -258,14 +318,348 @@ function FieldThreeElectronics() {
 function FieldFourSouthStation() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#a0ecff] font-semibold">4.</div>
-      <div></div>
-      <div className="text-[0.65rem] text-center bg-[#a0ecff] pt-4 px-1">
+      <div className="py-1 bg-[#fac65c] font-semibold">4.</div>
+      <div>
+        <img
+          className="w-full h-full object-cover"
+          src="./src/Pictures/CroppedFieldPics/4.png"
+          alt="South station field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#fac65c] pt-3 px-1">
         <span className="font-semibold">Déli pályaudvar</span>
         <br />
         Használatával kockázatmentesen utazhatsz.
         <br />
         Árak a menüben.
+      </div>
+    </div>
+  );
+}
+
+function FieldFiveBankRobbery() {
+  return (
+    <div className="grid h-full grid-rows-[13%_87%] text-center text-black bg-white">
+      <div className="py-1 bg-[#21abe3] font-semibold">5.</div>
+      <div>
+        <img
+          className="w-full h-full object-cover"
+          src="./src/Pictures/CroppedFieldPics/5.png"
+          alt="Bank robbery field picture"
+        />
+      </div>
+    </div>
+  );
+}
+
+function FieldSixShoppingCenter() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-[#f2f2f1]">
+      <div className="py-1 bg-[#f8d91a] font-semibold">6.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/6.png"
+          alt="Shopping center field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#f8d91a] pt-3 px-1">
+        <span className="font-semibold">Áruház</span>
+        <br />
+        Árak a megjelenő ablakban
+      </div>
+    </div>
+  );
+}
+
+function FieldSevenLucky() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-white">
+      <div className="py-1 bg-[#a0ecff] font-semibold">7.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          alt="Lucky field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#a0ecff] pt-3 px-1">
+        <span className="font-semibold">Szerencsemező</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldEightSmoking() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-[#f2f2f1]">
+      <div className="py-1 bg-[#c6c6c6] font-semibold">8.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/8.png"
+          alt="Smoking field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#c6c6c6] pt-3 px-1">
+        A dohányzás bármilyen formája káros az egészségre. Hogy ezt jól az
+        eszedbe vésd,
+        <span className="font-semibold"> fizess 1 500 Ft-ot</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldTenMovieTheater() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-white">
+      <div className="py-1 bg-[#fefce5] font-semibold">10.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/10.png"
+          alt="Movie theater field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#fefce5] pt-3 px-1">
+        Moziba mentél.
+        <br />
+        <span className="font-semibold">Fizess 5 000 Ft-ot</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldTwelveCasino() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-white">
+      <div className="py-1 bg-[#921914] font-semibold">12.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/12.png"
+          alt="Casino field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#921914] pt-3 px-1">
+        <span className="font-semibold">Kaszinó</span>
+        <br />
+        Részletek a megjelenő ablakban.
+      </div>
+    </div>
+  );
+}
+
+function FieldFourteenBobTheBuilder() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-white">
+      <div className="py-1 bg-[#e7a402] font-semibold">14.</div>
+      <div>
+        <img
+          className="pt-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/14.png"
+          alt="Bob the Builder field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#e7a402] pt-3 px-1">
+        <span className="font-semibold">Lakásépítés</span>
+        <br />
+        Ezen a mezőn tudod megvásárolni a lakásodat.
+        <br />
+        Részletek a megjelenő ablakban.
+      </div>
+    </div>
+  );
+}
+
+function FieldFifteenCarShop() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-[#e7e6e6]">
+      <div className="py-1 bg-[#c21f34] font-semibold">15.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/15.png"
+          alt="Car shop field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#c21f34] pt-3 px-1">
+        <span className="font-semibold">Autószalon</span>
+        <br />
+        Ha még nincs autód, akkor itt megveheted.
+      </div>
+    </div>
+  );
+}
+
+function FieldSixteenCarTravel() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-[#dadbda]">
+      <div className="py-1 bg-black font-semibold">16.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/16.png"
+          alt="Car travel field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-black pt-3 px-1">
+        Ha van autód, akkor erre a mezőre lépve
+        <span className="font-semibold"> átutazhatsz 10 mezőt.</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldSeventeenLucky() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-white">
+      <div className="py-1 bg-[#a0ecff] font-semibold">17.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          alt="Lucky field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#a0ecff] pt-3 px-1">
+        <span className="font-semibold">Szerencsemező</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldEighteenNorthStation() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-white">
+      <div className="py-1 bg-[#fac65c] font-semibold">18.</div>
+      <div>
+        <img
+          className="w-full h-full object-cover"
+          src="./src/Pictures/CroppedFieldPics/18.png"
+          alt="North station field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#fac65c] pt-3 px-1">
+        <span className="font-semibold">Északi pályaudvar</span>
+        <br />
+        Használatával kockázatmentesen utazhatsz.
+        <br />
+        Árak a menüben.
+      </div>
+    </div>
+  );
+}
+
+function FieldNineteenAbidas() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-white">
+      <div className="py-1 bg-black font-semibold">19.</div>
+      <div>
+        <img
+          className="p-6 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/19.png"
+          alt="Abidas field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-black pt-3 px-1">
+        Mivel adsz a megjelenésedre, ruhákat vásárolsz.
+        <br />
+        <span className="font-semibold">Fizess 15 000 Ft-ot</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldTwentyIdea() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-[#e7e6e6]">
+      <div className="py-1 bg-[#c6c6c6] font-semibold">20.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/20.png"
+          alt="Furniture shop field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#c6c6c6] pt-3 px-1">
+        <span className="font-semibold">Bútorbolt</span>
+        <br />
+        Árak a megjelenő ablakban.
+      </div>
+    </div>
+  );
+}
+
+function FieldTwentyOneBank() {
+  return (
+    <div className="field-grid-bottom text-center text-black bg-[#030405]">
+      <div className="py-1 bg-[#f9eb1b] font-semibold">21.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/21.png"
+          alt="Bank field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#f9eb1b] pt-3 px-1">
+        Terveid megvalósításához választhatsz kedvező kölcsöneint közül.
+      </div>
+    </div>
+  );
+}
+
+function FieldTwentyTwoABC() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-white">
+      <div className="py-1 bg-[#e61e28] font-semibold">22.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/22.png"
+          alt="Food shop field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#e61e28] pt-3 px-1">
+        Élelmiszert vásároltál.
+        <br />
+        <span className="font-semibold">Fizess 10 000 Ft-ot</span>
+      </div>
+    </div>
+  );
+}
+
+function FieldTwentyFourInsurance() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-[#6a4c91]">
+      <div className="py-1 bg-[#7a70b2] font-semibold">24.</div>
+      <div>
+        <img
+          className="p-5 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/24.png"
+          alt="Insurance field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#7a70b2] pt-3 px-2">
+        Biztosítások árai a megjelenő ablakban.
+      </div>
+    </div>
+  );
+}
+
+function FieldTwentySixRollAgain() {
+  return (
+    <div className="field-grid-bottom text-center text-white bg-white">
+      <div className="py-1 bg-[#737373] font-semibold">26.</div>
+      <div>
+        <img
+          className="p-2 w-full h-full object-contain"
+          src="./src/Pictures/CroppedFieldPics/26.png"
+          alt="Roll again field picture"
+        />
+      </div>
+      <div className="text-[0.65rem] text-center bg-[#737373] pt-3 px-1">
+        <span className="font-semibold">Dobhatsz mégegyszer</span>
       </div>
     </div>
   );

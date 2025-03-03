@@ -1045,13 +1045,26 @@ button {
 }
 
 .board-cell {
-  @apply min-w-4 min-h-4 bg-white text-black text-sm;
+  @apply min-w-4 min-h-4 text-black text-sm;
 }
 
 .field-grid-bottom {
   @apply text-sm;
   height: 100%;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 13% 40% 47%;
+  grid-template-rows: 13% 45% 42%;
+}
+
+.rotated-tile-container {
+  @apply relative overflow-hidden;
+}
+
+.rotated-tile-left {
+  @apply rotate-90 absolute w-[64%] h-[158%] left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2;
+}
+
+.rotated-tile-right {
+  @apply -rotate-90 absolute w-[64%] h-[158%] left-1/2 -translate-x-1/2 -translate-y-1/2 top-1/2;
 }
