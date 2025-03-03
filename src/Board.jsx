@@ -130,10 +130,14 @@ export function Board({ children }) {
             <div className="board-cell row-start-5 col-start-6">
               <FieldFourSouthStation />
             </div>
-            <div className="board-cell row-start-5 col-start-5">5</div>
-            <div className="board-cell row-start-5 col-start-4">6</div>
-            <div className="board-cell row-start-5 col-start-3">7</div>
-            <div className="board-cell row-start-5 col-start-2">8</div>
+            <div className="board-cell row-start-5 col-start-5">
+              Bank robbery
+            </div>
+            <div className="board-cell row-start-5 col-start-4">
+              Elza and idea
+            </div>
+            <div className="board-cell row-start-5 col-start-3">lucky 2</div>
+            <div className="board-cell row-start-5 col-start-2">smoking</div>
             <div className="board-cell row-start-5 rounded-bl-xl !p-0">
               <img
                 className="rounded-bl-xl"
@@ -141,7 +145,7 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-4">10</div>
+            <div className="board-cell row-start-4">movie theater</div>
             <div className="board-cell row-start-3 overflow-hidden">
               <img
                 className="h-full w-full object-cover"
@@ -149,7 +153,7 @@ export function Board({ children }) {
                 alt="10. Mező"
               />
             </div>
-            <div className="board-cell row-start-2">12</div>
+            <div className="board-cell row-start-2">casino</div>
             <div className="board-cell rounded-tl-xl !p-0">
               <img
                 className="rounded-tl-xl"
@@ -157,15 +161,15 @@ export function Board({ children }) {
                 alt="14. Mező"
               />
             </div>
-            <div className="board-cell">14</div>
-            <div className="board-cell">15</div>
-            <div className="board-cell">16</div>
-            <div className="board-cell">17</div>
-            <div className="board-cell">18</div>
-            <div className="board-cell">19</div>
-            <div className="board-cell">20</div>
-            <div className="board-cell">21</div>
-            <div className="board-cell">22</div>
+            <div className="board-cell">bob the builder</div>
+            <div className="board-cell">car shop</div>
+            <div className="board-cell">car travel</div>
+            <div className="board-cell">lucky 3</div>
+            <div className="board-cell">north station</div>
+            <div className="board-cell">abidas</div>
+            <div className="board-cell">idea</div>
+            <div className="board-cell">bank 4</div>
+            <div className="board-cell">abc</div>
             <div className="board-cell rounded-tr-xl !p-0">
               <img
                 className="rounded-tr-xl"
@@ -173,7 +177,7 @@ export function Board({ children }) {
                 alt="24. Mező"
               />
             </div>
-            <div className="board-cell row-start-2 col-start-11">24</div>
+            <div className="board-cell row-start-2 col-start-11">insurance</div>
             <div className="board-cell row-start-3 col-start-11 rotate-180 overflow-hidden">
               <img
                 className="h-full w-full object-cover "
@@ -185,7 +189,7 @@ export function Board({ children }) {
               className="board-cell row-start-4 col-start-11"
               ref={lastFieldRef}
             >
-              26
+              roll again
             </div>
             <div className="row-start-2 row-end-5 col-start-2 col-end-11">
               {children}
