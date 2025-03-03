@@ -25,8 +25,6 @@ export function useAlert() {
       showCloseButton: true,
     }
   ) => {
-    console.log("showAlert", content);
-    console.log(options);
     setContent(content);
     setShowOnPopup(options.showOnPopup ?? false);
     setShowCloseButton(options.showCloseButton ?? true);
