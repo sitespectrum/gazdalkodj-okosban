@@ -67,6 +67,11 @@ export default function App() {
       return;
     }
 
+    const isStartingGame =
+      oldPlayer.position === 0 &&
+      oldPlayer.money === 400_000 &&
+      oldPlayer.inventory.length === 0;
+
     setGameState(
       (prevGameState) => {
         if (prevGameState.players[playerIndex].inJail) {
@@ -100,7 +105,8 @@ export default function App() {
 
             if (
               (crossedStart || oldPlayer.position === 0) &&
-              !oldPlayer.inventory.includes("Ház")
+              !oldPlayer.inventory.includes("Ház") &&
+              !isStartingGame
             ) {
               prevGameState.players[playerIndex].money -= 70_000;
             }
