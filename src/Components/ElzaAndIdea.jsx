@@ -1,188 +1,116 @@
-import React, { useState, useContext } from "react";
-import { alertContext } from "../lib/contexts.js";
+//@ts-check
+import React, { useState } from "react";
+import { useAlert } from "../hooks/use-alert.js";
+import { useCurrentPlayer } from "../hooks/use-current-player.js";
+import { usePopup } from "../hooks/use-popup.js";
 import { formatMoney } from "../lib/utils.js";
 
-const ElzaAndIdea = ({
-  onClose,
-  currentPlayer,
-  playerInventory,
-  reducePlayerMoney,
-  addItemToInventory,
-}) => {
-  const [playerMoney] = useContext(moneyContext);
-  const [_, setAlertContent, __, setShowAlertOnPopup] =
-    useContext(alertContext);
+const shopItems = [
+  {
+    name: "Sumasang 4K TV",
+    price: 119_990,
+  },
+  {
+    name: "GL előltöltős mosógép",
+    price: 99_990,
+  },
+  {
+    name: "Boss előltöltős szárítógép",
+    price: 129_990,
+  },
+  {
+    name: "Görénye alulfagyasztós hűtő",
+    price: 84_990,
+  },
+  {
+    name: "Kendi mosogatógép",
+    price: 109_990,
+  },
+  {
+    name: "Dájszon porszívó",
+    price: 124_990,
+  },
+  {
+    name: "Konyhabútor",
+    price: 549_990,
+  },
+  {
+    name: "Szobabútor",
+    price: 999_990,
+  },
+  {
+    name: "Fürdőszobabútor",
+    price: 349_990,
+  },
+];
 
-  const [isTVButtonDisabled, setIsTVButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Sumasang 4K TV")
-  );
-  const [isWMButtonDisabled, setIsWMButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("GL előltöltős mosógép")
-  );
-  const [isDRButtonDisabled, setIsDRButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Boss előltöltős szárítógép")
-  );
-  const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Görénye alulfagyasztós hűtő")
-  );
-  const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Kendi mosogatógép")
-  );
-  const [isVButtonDisabled, setIsVButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Dájszon porszívó")
-  );
-  const [isKButtonDisabled, setIsKButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Konyhabútor")
-  );
-  const [isRButtonDisabled, setIsRButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Szobabútor")
-  );
-  const [isBRButtonDisabled, setIsBRButtonDisabled] = useState(
-    playerInventory[currentPlayer].includes("Fürdőszobabútor")
+export default function ElzaAndIdea() {
+  const { player, updatePlayer } = useCurrentPlayer();
+  const { showAlert } = useAlert();
+  const { closePopup } = usePopup();
+
+  /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
+  const [disabledItems, setDisabledItems] = useState(
+    /** @type {string[]} */ ([])
   );
 
   const handlePurchase = (item, price) => {
-    if (playerMoney[currentPlayer] >= price) {
-      reducePlayerMoney(currentPlayer, price);
-      addItemToInventory(currentPlayer, item);
+    if (player.money >= price) {
+      updatePlayer({
+        ...player,
+        money: player.money - price,
+        inventory: [...player.inventory, item],
+      });
     } else {
-      setAlertContent("Nincs elég pénzed!");
-      setShowAlertOnPopup(true);
+      showAlert("Nincs elég pénzed!", {
+        showOnPopup: true,
+      });
     }
   };
 
   return (
     <>
-      <div className="eai-header">
-        <h1 className="eai-title">Bevásárlóközpont</h1>
-        <h1 className="eai-balance">
-          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+      <div className="flex gap-6 items-center justify-between">
+        <h1 className="flex-1 text-center text-2xl bg-black/50 font-semibold text-white rounded-xl p-2">
+          Bevásárlóközpont
+        </h1>
+        <h1 className="flex-1 text-center text-2xl bg-black/50 font-semibold text-white rounded-xl p-2">
+          Egyenleg: {formatMoney(player.money)}
         </h1>
       </div>
-      <div className="elzaandidea">
-        <p>
-          Sumasang 4K TV - 119 990 Ft
-          <button
-            className="buyButton"
-            disabled={isTVButtonDisabled}
-            onClick={() => {
-              handlePurchase("Sumasang 4K TV", 119990);
-              setIsTVButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          GL előltöltős mosógép - 99 990 Ft
-          <button
-            className="buyButton"
-            disabled={isWMButtonDisabled}
-            onClick={() => {
-              handlePurchase("GL előltöltős mosógép", 99990);
-              setIsWMButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Boss előltöltős szárítógép - 129 990 Ft
-          <button
-            className="buyButton"
-            disabled={isDRButtonDisabled}
-            onClick={() => {
-              handlePurchase("Boss előltöltős szárítógép", 129990);
-              setIsDRButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Görénye alulfagyasztós hűtő - 84 990 Ft
-          <button
-            className="buyButton"
-            disabled={isFRButtonDisabled}
-            onClick={() => {
-              handlePurchase("Görénye alulfagyasztós hűtő", 84990);
-              setIsFRButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Kendi mosogatógép - 109 990 Ft
-          <button
-            className="buyButton"
-            disabled={isDWButtonDisabled}
-            onClick={() => {
-              handlePurchase("Kendi mosogatógép", 109990);
-              setIsDWButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Dájszon porszívó - 124 990 Ft
-          <button
-            className="buyButton"
-            disabled={isVButtonDisabled}
-            onClick={() => {
-              handlePurchase("Dájszon porszívó", 124990);
-              setIsVButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Konyhabútor - 549 990 Ft
-          <button
-            className="buyButton"
-            disabled={isKButtonDisabled}
-            onClick={() => {
-              handlePurchase("Konyhabútor", 549990);
-              setIsKButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Szobabútor - 999 990 Ft
-          <button
-            className="buyButton"
-            disabled={isRButtonDisabled}
-            onClick={() => {
-              handlePurchase("Szobabútor", 999990);
-              setIsRButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <p>
-          Fürdőszobabútor - 349 990 Ft
-          <button
-            className="buyButton"
-            disabled={isBRButtonDisabled}
-            onClick={() => {
-              handlePurchase("Fürdőszobabútor", 349990);
-              setIsBRButtonDisabled(true);
-            }}
-          >
-            Vásárlás
-          </button>
-        </p>
-        <button className="eai-close" onClick={onClose}>
+      <div className="bg-white rounded-xl p-6 shadow-[0_0_1.5rem_rgba(0,0,0,0.2)] flex flex-col gap-4">
+        {shopItems.map((item, index) => (
+          <React.Fragment key={item.name}>
+            <div className="flex justify-between items-center gap-4">
+              <span className="text-lg">{item.name}</span>
+              <span className="text-lg font-semibold ml-auto">
+                {formatMoney(item.price)}
+              </span>
+              <button
+                className="buyButton rounded-lg px-4 py-2 bg-gradient-to-b from-[lightgrey]/50 to-[grey]/50 text-black border-none"
+                disabled={
+                  disabledItems.includes(item.name) || player.money < item.price
+                }
+                onClick={() => {
+                  handlePurchase(item.name, item.price);
+                  setDisabledItems([...disabledItems, item.name]);
+                }}
+              >
+                Vásárlás
+              </button>
+            </div>
+            {index !== shopItems.length - 1 && (
+              <div className="border-b border-gray-300" />
+            )}
+          </React.Fragment>
+        ))}
+        <button
+          className="bg-gradient-to-b from-yellow-600/85 text-lg to-orange-600 mt-8 font-medium text-white rounded-lg px-4 py-2"
+          onClick={closePopup}
+        >
           Bezárás
         </button>
       </div>
     </>
   );
-};
-
-export default ElzaAndIdea;
+}

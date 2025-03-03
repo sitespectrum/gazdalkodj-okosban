@@ -399,71 +399,10 @@ input {
 }
 
 .popup-content-elzaandidea {
-  position: relative;
-  background-color: #fbd914;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
+  background: linear-gradient(to bottom, #fff092, #ffac7d);
   z-index: 10000;
   color: black;
-  width: 40%;
-  height: 75%;
-}
-
-.elzaandidea {
-  position: absolute;
-  top: 140px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 30;
-  background-color: white;
-  padding: 30px;
-  color: black;
-  border-radius: 5px;
-  box-shadow: 0 4px 20px black;
-  font-weight: bold;
-}
-
-.eai-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.eai-title {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  color: white;
-  padding: 0 0.5rem;
-}
-
-.eai-balance {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  color: white;
-  flex: 1;
-  padding: 0 0.5rem;
-}
-
-.eai-close {
-  background-color: #fbd914;
-  width: 8%;
-  height: 5%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: fixed;
-  left: 46%;
-  top: 75%;
-  font-size: 17px;
-  color: black;
-  font-weight: bold;
 }
 
 .popup-wrapper-carshop {

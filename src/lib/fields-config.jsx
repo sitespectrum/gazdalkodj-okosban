@@ -3,6 +3,7 @@ import React from "react";
 import Elza from "../Components/Elza";
 import BankRobbery from "../Components/BankRobbery";
 import Lucky from "../Components/Lucky";
+import ElzaAndIdea from "../Components/ElzaAndIdea";
 
 /** @type {import('./types').Field[]} */
 export const FIELDS = [
@@ -55,7 +56,13 @@ export const FIELDS = [
     y: 80,
     action: ({ openPopup }) => openPopup("bankrobbery", <BankRobbery />),
   },
-  { id: 6, name: "Elza and Idea", x: 33.9, y: 80 },
+  {
+    id: 6,
+    name: "Elza and Idea",
+    x: 33.9,
+    y: 80,
+    action: ({ openPopup }) => openPopup("elzaandidea", <ElzaAndIdea />),
+  },
   {
     id: 7,
     name: "Lucky 2",
@@ -77,7 +84,7 @@ export const FIELDS = [
       }),
   },
 
-  { id: 9, name: "Jail (visiting)", x: 4, y: 88 },
+  { id: 9, name: "Jail (visiting)", x: 1.25, y: 91.5 },
 
   {
     id: 10,
