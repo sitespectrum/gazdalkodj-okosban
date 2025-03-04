@@ -6,6 +6,7 @@ import Lucky from "../Components/Lucky";
 import ElzaAndIdea from "../Components/ElzaAndIdea";
 import Bobthebuilder from "../Components/Bobthebuilder";
 import Carshop from "../Components/Carshop";
+import Idea from "../Components/Idea";
 
 /** @type {import('./types').Field[]} */
 export const FIELDS = [
@@ -188,7 +189,13 @@ export const FIELDS = [
         };
       }),
   },
-  { id: 20, name: "Idea", x: 64, y: 12 },
+  {
+    id: 20,
+    name: "Idea",
+    x: 64,
+    y: 12,
+    action: ({ openPopup }) => openPopup("idea", <Idea />),
+  },
   { id: 21, name: "Bank 4", x: 71.5, y: 12 },
   {
     id: 22,

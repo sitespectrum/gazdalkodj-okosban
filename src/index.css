@@ -275,74 +275,10 @@ input {
 }
 
 .popup-content-idea {
-  position: relative;
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
   background: linear-gradient(to bottom, white, #bae2fc);
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
   z-index: 10000;
-  color: black;
-  width: 40%;
-  height: 55%;
-}
-
-.idea {
-  position: fixed;
-  z-index: 30;
-  background-color: #007cc1;
-  padding: 30px;
-  color: white;
-  border-radius: 5px;
-  width: 35%;
-  height: 35%;
-  left: 30.5%;
-  top: 33%;
-  box-shadow: 0 4px 20px black;
-  font-weight: bold;
-}
-
-.idea-logo {
-  margin-left: 8px;
-  width: 28%;
-  margin-top: 13px;
-}
-
-.idea-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.idea-balance {
-  margin-top: 1rem;
-  margin-right: 1.5rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  font-size: 1.5vw;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  border-radius: 10px;
-  align-items: center;
-  padding-top: 10px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.idea-close {
-  background-color: white;
-  width: 8%;
-  height: 5%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: fixed;
-  left: 46%;
-  top: 65%;
-  font-size: 17px;
   color: black;
 }
 
