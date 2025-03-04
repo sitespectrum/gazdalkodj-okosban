@@ -709,63 +709,12 @@ input::-webkit-inner-spin-button {
 }
 
 .popup-content-bobthebuilder {
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[42rem];
   position: relative;
-  background-color: #e7a402;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to bottom, #ffe6aa, #e7a402);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 10000;
   color: black;
-  width: 30%;
-  height: 35%;
-  top: -9px;
-}
-
-.bobthebuilder {
-  position: absolute;
-  top: 90px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 30;
-  background-color: white;
-  padding: 10px;
-  color: black;
-  border-radius: 5px;
-  box-shadow: 0 4px 20px black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.BoButton {
-  background-color: #e7a402;
-  width: 20%;
-  height: 15%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: absolute;
-  left: 28%;
-  top: 40%;
-  font-size: 17px;
-  color: white;
-}
-
-.bobthebuilder-close {
-  background-color: #e7a402;
-  width: 20%;
-  height: 15%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: absolute;
-  left: 52%;
-  top: 40%;
-  font-size: 17px;
-  color: white;
 }
 
 .price {

@@ -4,6 +4,7 @@ import Elza from "../Components/Elza";
 import BankRobbery from "../Components/BankRobbery";
 import Lucky from "../Components/Lucky";
 import ElzaAndIdea from "../Components/ElzaAndIdea";
+import Bobthebuilder from "../Components/Bobthebuilder";
 
 /** @type {import('./types').Field[]} */
 export const FIELDS = [
@@ -127,7 +128,13 @@ export const FIELDS = [
     },
   },
 
-  { id: 14, name: "Bob the Builder", x: 18.9, y: 12 },
+  {
+    id: 14,
+    name: "Bob the Builder",
+    x: 18.9,
+    y: 12,
+    action: ({ openPopup }) => openPopup("bobthebuilder", <Bobthebuilder />),
+  },
   { id: 15, name: "Car Shop", x: 26.4, y: 12 },
   {
     id: 16,
