@@ -48,6 +48,7 @@ export function Board({ children }) {
 
       let iterations = 10;
       const maxIterations = 999;
+      const plusIterationThreshold = 0.1;
 
       for (let i = 0; i < iterations; i++) {
         // if positive, we need to zoom out
@@ -83,7 +84,7 @@ export function Board({ children }) {
 
         if (
           i === iterations - 1 &&
-          difference > threshold &&
+          Math.abs(difference) > plusIterationThreshold &&
           iterations < maxIterations
         ) {
           iterations += 10;
