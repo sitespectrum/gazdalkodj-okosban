@@ -46,7 +46,10 @@ export function Board({ children }) {
         }
       }
 
-      for (let i = 0; i < 10; i++) {
+      let iterations = 10;
+      const maxIterations = 999;
+
+      for (let i = 0; i < iterations; i++) {
         // if positive, we need to zoom out
         // if negative, we need to zoom in
         const difference = getDifference();
@@ -77,6 +80,17 @@ export function Board({ children }) {
           });
         }
         document.documentElement.style.fontSize = `${newSize}px`;
+
+        if (
+          i === iterations - 1 &&
+          difference > threshold &&
+          iterations < maxIterations
+        ) {
+          iterations += 10;
+          if (debugSizing) {
+            console.log("[sizing] increasing iterations to", iterations);
+          }
+        }
       }
     };
 
