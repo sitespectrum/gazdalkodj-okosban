@@ -319,10 +319,7 @@ export default function App() {
 
       {popupContent && !(!showAlertOnPopup && alertContent) ? (
         <>
-          <div
-            className={`popup-wrapper-${popupClass}`}
-            onClick={() => closePopup()}
-          >
+          <div className={`popup-wrapper`} onClick={() => closePopup()}>
             <div
               className={`popup-content-${popupClass}`}
               onClick={(e) => e.stopPropagation()}
@@ -338,7 +335,7 @@ export default function App() {
       {alertContent ? (
         <>
           <div
-            className={`alert-wrapper`}
+            className={`popup-wrapper`}
             onClick={() => {
               if (showCloseButton) {
                 closeAlert();

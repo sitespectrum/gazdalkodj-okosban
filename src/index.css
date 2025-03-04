@@ -67,7 +67,7 @@ input {
   margin-bottom: 10px;
 }
 
-.popup-wrapper-elza {
+.popup-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -86,19 +86,6 @@ input {
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 10000;
   color: black;
-}
-
-.popup-wrapper-lucky {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .popup-content-lucky {
@@ -155,19 +142,6 @@ input {
 
 .luckycard-text.animate {
   animation: slide-right 1s ease-in-out forwards;
-}
-
-.popup-wrapper-steelroad {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .popup-content-steelroad {
@@ -300,19 +274,6 @@ input {
   margin-top: 10px;
 }
 
-.popup-wrapper-idea {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
 .popup-content-idea {
   position: relative;
   background: linear-gradient(to bottom, white, #bae2fc);
@@ -385,37 +346,11 @@ input {
   color: black;
 }
 
-.popup-wrapper-elzaandidea {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
 .popup-content-elzaandidea {
   @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
   background: linear-gradient(to bottom, #fff092, #ffac7d);
   z-index: 10000;
   color: black;
-}
-
-.popup-wrapper-carshop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .popup-content-carshop {
@@ -506,19 +441,6 @@ input {
   color: white;
 }
 
-.popup-wrapper-bankrobbery {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
 .popup-content-bankrobbery {
   @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
   position: relative;
@@ -526,19 +448,6 @@ input {
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 10000;
   color: black;
-}
-
-.popup-wrapper-casino {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .popup-content-casino {
@@ -695,19 +604,6 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
 }
 
-.popup-wrapper-bobthebuilder {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
 .popup-content-bobthebuilder {
   @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[42rem];
   position: relative;
@@ -723,19 +619,6 @@ input::-webkit-inner-spin-button {
   text-align: center;
   font-size: 25px;
   margin-bottom: 160px;
-}
-
-.popup-wrapper-insurance {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .popup-content-insurance {
@@ -927,19 +810,6 @@ button {
     opacity: 0;
     scale: 0.95;
   }
-}
-
-.alert-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
 }
 
 .alert-content {
