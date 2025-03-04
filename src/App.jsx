@@ -9,7 +9,11 @@ import { useAlert } from "./hooks/use-alert.js";
 import { useCurrentPlayer } from "./hooks/use-current-player.js";
 import { useGameState } from "./hooks/use-game-state.js";
 import { usePopup } from "./hooks/use-popup.js";
-import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./lib/constants.js";
+import {
+  FIXED_DICE_ROLL,
+  IS_MENU_OPEN,
+  PURCHASEABLE_ITEMS,
+} from "./lib/constants.js";
 import { FIELDS } from "./lib/fields-config.jsx";
 
 export default function App() {
@@ -234,7 +238,9 @@ export default function App() {
   }
 
   function rollDice() {
-    // return 5;
+    if (FIXED_DICE_ROLL) {
+      return FIXED_DICE_ROLL;
+    }
     return Math.floor(Math.random() * 6) + 1;
   }
 
