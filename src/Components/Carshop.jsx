@@ -1,67 +1,65 @@
-import React, { useState, useContext } from "react";
+//@ts-check
+import React from "react";
 import { formatMoney } from "../lib/utils.js";
-import { alertContext } from "../lib/contexts.js";
+import { useCurrentPlayer } from "../hooks/use-current-player.js";
+import { useAlert } from "../hooks/use-alert.js";
+import { usePopup } from "../hooks/use-popup.js";
 
-const Carshop = ({
-  onClose,
-  currentPlayer,
-  reducePlayerMoney,
-  playerHasCar,
-  setPlayerHasCar,
-}) => {
-  const [isCarButtonDisabled, setIsCarButtonDisabled] = useState(
-    playerHasCar[currentPlayer]
-  );
-  const [_, setAlertContent, __, setShowAlertOnPopup] =
-    useContext(alertContext);
-  const [playerMoney] = useContext(moneyContext);
+export default function Carshop() {
+  const { player, updatePlayer } = useCurrentPlayer();
+  const { showAlert } = useAlert();
+  const { closePopup } = usePopup();
 
-  const handlePurchase = (price) => {
-    if (playerHasCar[currentPlayer] === 0) {
-      if (playerMoney[currentPlayer] >= price) {
-        setPlayerHasCar((prev) => {
-          const updated = [...prev];
-          updated[currentPlayer] = 1;
-          return updated;
+  /**
+   * @param {number} price
+   */
+  function handlePurchase(price) {
+    if (!player.hasCar) {
+      if (player.money >= price) {
+        updatePlayer({
+          ...player,
+          money: player.money - price,
+          hasCar: true,
         });
-        reducePlayerMoney(currentPlayer, price);
-        setIsCarButtonDisabled(true);
       } else {
-        setAlertContent("Nincs elég pénzed!");
-        setShowAlertOnPopup(true);
-        setIsCarButtonDisabled(true);
+        showAlert("Nincs elég pénzed!");
       }
     } else {
-      setAlertContent("Már van autód!");
-      setShowAlertOnPopup(true);
-      setIsCarButtonDisabled(true);
+      showAlert("Már van autód!");
     }
-  };
+  }
 
   return (
     <>
-      <div className="car-header">
-        <h1 className="car-title">Autóvásárlás</h1>
-        <h1 className="car-balance">
-          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+      <div className="flex gap-6 items-center justify-between">
+        <h1 className="flex-1 text-center text-2xl bg-black/50 font-semibold text-white rounded-xl p-2">
+          Autóvásárlás
+        </h1>
+        <h1 className="flex-1 text-center text-2xl whitespace-nowrap bg-black/50 font-semibold text-white rounded-xl p-2">
+          Egyenleg: {formatMoney(player.money)}
         </h1>
       </div>
-      <div className="carshop">
-        <p className="price">Ár: 1 000 000 Ft</p>
-        <img className="carshop-image" src="../src/HQ Pictures/Auto.png" />
-        <button
-          className="CarButton"
-          disabled={isCarButtonDisabled}
-          onClick={() => handlePurchase(1000000)}
-        >
-          Vásárlás
-        </button>
-        <button className="carshop-close" onClick={onClose}>
-          Bezárás
-        </button>
+      <div className="bg-white rounded-xl p-6 shadow-[0_0_1.5rem_rgba(0,0,0,0.2)] flex flex-col gap-16">
+        <p className="mt-12 text-center text-3xl font-semibold">
+          Ár: 1 000 000 Ft
+        </p>
+        <img className="h-48 mx-auto" src="../src/HQ Pictures/Auto.png" />
+        <div className="flex w-full gap-6">
+          <button
+            className="flex-1 bg-gradient-to-b from-green-500/85 text-lg to-green-600 font-medium text-white rounded-lg px-4 py-2 disabled:from-neutral-300/75 disabled:to-neutral-600/85"
+            disabled={player.hasCar || player.money < 1_000_000}
+            onClick={() => handlePurchase(1_000_000)}
+          >
+            Vásárlás
+          </button>
+          <button
+            className="flex-1 bg-gradient-to-b from-red-500/75 text-lg to-red-600 font-medium text-white rounded-lg px-4 py-2"
+            onClick={closePopup}
+          >
+            Bezárás
+          </button>
+        </div>
       </div>
     </>
   );
-};
-
-export default Carshop;
+}

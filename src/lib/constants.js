@@ -4,7 +4,7 @@
 export const IS_MENU_OPEN = true;
 
 /** @type {number} */
-export const FIXED_DICE_ROLL = 14;
+export const FIXED_DICE_ROLL = 0;
 
 /** @type {string[]} */
 export const PURCHASEABLE_ITEMS = [

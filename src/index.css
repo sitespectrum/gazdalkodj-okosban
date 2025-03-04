@@ -354,91 +354,9 @@ input {
 }
 
 .popup-content-carshop {
-  position: relative;
-  background-color: #c22133;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
-  width: 40%;
-  height: 75%;
-}
-
-.carshop {
-  position: absolute;
-  top: 90px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 30;
-  background-color: white;
-  padding: 30px;
-  color: black;
-  border-radius: 5px;
-  box-shadow: 0 4px 20px black;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-}
-
-.CarButton {
-  background-color: #c22133;
-  width: 8%;
-  height: 5%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: fixed;
-  top: 74%;
-  left: 41%;
-  font-size: 17px;
-  color: white;
-}
-
-.car-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-
-.car-title {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  color: white;
-  flex: 1;
-  padding: 0 0.5rem;
-}
-
-.car-balance {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  color: white;
-  padding: 0 0.5rem;
-}
-
-.carshop-image {
-  position: fixed;
-  margin-top: 110px;
-}
-
-.carshop-close {
-  background-color: #c22133;
-  width: 8%;
-  height: 5%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: fixed;
-  left: 50%;
-  top: 74%;
-  font-size: 17px;
-  color: white;
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
+  background: linear-gradient(to bottom, #ffcb7c, #c22133);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
 }
 
 .popup-content-bankrobbery {

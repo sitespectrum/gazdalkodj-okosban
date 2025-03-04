@@ -5,6 +5,7 @@ import BankRobbery from "../Components/BankRobbery";
 import Lucky from "../Components/Lucky";
 import ElzaAndIdea from "../Components/ElzaAndIdea";
 import Bobthebuilder from "../Components/Bobthebuilder";
+import Carshop from "../Components/Carshop";
 
 /** @type {import('./types').Field[]} */
 export const FIELDS = [
@@ -135,14 +136,20 @@ export const FIELDS = [
     y: 12,
     action: ({ openPopup }) => openPopup("bobthebuilder", <Bobthebuilder />),
   },
-  { id: 15, name: "Car Shop", x: 26.4, y: 12 },
+  {
+    id: 15,
+    name: "Car Shop",
+    x: 26.4,
+    y: 12,
+    action: ({ openPopup }) => openPopup("carshop", <Carshop />),
+  },
   {
     id: 16,
     name: "Car travel",
     x: 33.9,
     y: 12,
     action: async (props) => {
-      if (props.currentPlayer.hasCar) {
+      if (props.gameState.players[props.playerIndex].hasCar) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         props.updateGameState(
           (prevGameState) => {
