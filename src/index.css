@@ -8,13 +8,16 @@ body {
   overflow: hidden;
 
   color-scheme: light dark;
-  /* color: rgba(255, 255, 255, 0.87); */
   background-color: #0862e1;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  cursor: pointer;
 }
 
 button:disabled {
@@ -29,14 +32,6 @@ button:disabled {
   transition: left 1s ease, top 1s ease;
 }
 
-.playermoney {
-  position: fixed;
-  left: 65%;
-  top: 30%;
-  font-weight: bold;
-  font-size: 1.5vw;
-}
-
 .cheats {
   display: none;
   z-index: 30;
@@ -46,19 +41,6 @@ button:disabled {
   border-radius: 10px;
   left: 43%;
   top: 38%;
-}
-
-.close {
-  color: gray;
-  background-color: black;
-  font-weight: bold;
-  border-radius: 5px;
-}
-
-.submit {
-  color: grey;
-  margin-left: 33%;
-  background-color: black;
 }
 
 input {
@@ -80,29 +62,18 @@ input {
   z-index: 9999;
 }
 
-.popup-content-elza {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[42rem];
-  background: linear-gradient(to bottom, white, #bae2fc);
+.popup-content {
+  @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
   box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
+}
+
+.popup-content-elza {
+  background: linear-gradient(to bottom, white, #bae2fc);
+  min-width: 42rem;
 }
 
 .popup-content-lucky {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
-  position: relative;
   background-color: #a0ecff;
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
-}
-
-.luckycard-front {
-  z-index: 10001;
-}
-
-.luckycard-text {
-  z-index: 10000;
 }
 
 @keyframes slide-left {
@@ -129,11 +100,6 @@ input {
     transform: translateX(0);
     z-index: 10001;
   }
-}
-
-.luckycard-front,
-.luckycard-text {
-  transition: z-index 0s 0.5s;
 }
 
 .luckycard-front.animate {
@@ -275,33 +241,22 @@ input {
 }
 
 .popup-content-idea {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
   background: linear-gradient(to bottom, white, #bae2fc);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
+  min-width: 45rem;
 }
 
 .popup-content-elzaandidea {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
   background: linear-gradient(to bottom, #fff092, #ffac7d);
-  z-index: 10000;
-  color: black;
+  min-width: 45rem;
 }
 
 .popup-content-carshop {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[45rem];
   background: linear-gradient(to bottom, #ffcb7c, #c22133);
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
+  min-width: 45rem;
 }
 
 .popup-content-bankrobbery {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6;
-  position: relative;
   background-color: #21abe3;
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
 }
 
 .popup-content-casino {
@@ -459,20 +414,8 @@ input::-webkit-inner-spin-button {
 }
 
 .popup-content-bobthebuilder {
-  @apply rounded-2xl w-fit flex flex-col gap-6 p-6 min-w-[42rem];
-  position: relative;
   background: linear-gradient(to bottom, #ffe6aa, #e7a402);
-  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
-}
-
-.price {
-  position: absolute;
-  font-weight: bold;
-  text-align: center;
-  font-size: 25px;
-  margin-bottom: 160px;
+  min-width: 42rem;
 }
 
 .popup-content-insurance {
@@ -541,57 +484,6 @@ input::-webkit-inner-spin-button {
   border: none;
   font-size: 17px;
   font-weight: bold;
-}
-
-.lucky-close {
-  background-color: #a1c900;
-  width: 8%;
-  height: 5%;
-  border-radius: 5px;
-  box-shadow: none;
-  border: none;
-  position: fixed;
-  left: 46%;
-  top: 75%;
-}
-
-button {
-  cursor: pointer;
-}
-
-.sumasang p {
-  font-weight: bold;
-  font-size: 1.3vw;
-  margin-left: 35px;
-}
-
-.balance {
-  position: fixed;
-  left: 48.8%;
-  top: 14%;
-  width: 20%;
-  height: 5%;
-  background-color: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  font-size: 1.5vw;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  border-radius: 10px;
-  align-items: center;
-  padding-top: 10px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-.title {
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  margin-left: 170px;
-  margin-right: 170px;
-  border-radius: 5px;
-  color: white;
 }
 
 .ss-hero-container {
@@ -678,7 +570,7 @@ button {
   background: white;
   padding: 1rem;
 
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 1.5rem rgba(0, 0, 0, 0.3);
   z-index: 1000000;
   color: black;
 }
@@ -712,7 +604,6 @@ button {
 
 .board {
   @apply grid gap-1 bg-black p-1 w-full h-full rounded-2xl;
-  /* --big-size: 13.5rem; */
   grid-template-rows: var(--big-size) 1fr var(--big-size) 1fr var(--big-size);
   grid-template-columns: var(--big-size) repeat(9, 1fr) var(--big-size);
 }

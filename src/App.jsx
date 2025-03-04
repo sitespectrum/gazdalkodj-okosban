@@ -321,7 +321,7 @@ export default function App() {
         <>
           <div className={`popup-wrapper`} onClick={() => closePopup()}>
             <div
-              className={`popup-content-${popupClass}`}
+              className={`popup-content popup-content-${popupClass}`}
               onClick={(e) => e.stopPropagation()}
             >
               {popupContent}
