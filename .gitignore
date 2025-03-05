@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 .vscode/
-.mise.toml
+mise.toml
