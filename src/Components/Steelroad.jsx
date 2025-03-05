@@ -1,87 +1,14 @@
 //@ts-check
-import React, { useState, useEffect, useContext } from "react";
-import { alertContext } from "../lib/contexts.js";
+import React, { useEffect, useState } from "react";
+import { useAlert } from "../hooks/use-alert.js";
 import { useCurrentPlayer } from "../hooks/use-current-player.js";
 import { usePopup } from "../hooks/use-popup.js";
-import { useAlert } from "../hooks/use-alert.js";
 import { FIELDS } from "../lib/fields-config.jsx";
-import { formatMoney } from "../lib/utils.js";
 
 export default function Steelroad() {
-  const { player } = useCurrentPlayer();
+  const { player, updatePlayer } = useCurrentPlayer();
   const { closePopup } = usePopup();
   const { showAlert } = useAlert();
-
-  const [visitedStops, setVisitedStops] = useState(new Set());
-  const [_, setAlertContent, __, setShowAlertOnPopup] =
-    useContext(alertContext);
-
-  const travelToNextStop = () => {
-    // setPlayerPositions((prevPositions) => {
-    //   const newPositions = [...prevPositions];
-    //   const previousPosition = newPositions[currentPlayer];
-    //   let nextStop = (previousPosition + 1) % fields.length;
-    //   let attempts = 0;
-    //   while (!fields[nextStop]?.isStop && attempts < fields.length) {
-    //     nextStop = (nextStop + 1) % fields.length;
-    //     attempts++;
-    //   }
-    //   if (attempts >= fields.length || !fields[nextStop]?.isStop) {
-    //     console.error("No valid stops found. Check fields configuration.");
-    //     return prevPositions;
-    //   }
-    //   newPositions[currentPlayer] = nextStop;
-    //   if (previousPosition > nextStop) {
-    //     addPlayerMoney(currentPlayer, 80000);
-    //   }
-    //   setVisitedStops((prevVisited) => new Set([...prevVisited, nextStop]));
-    //   return newPositions;
-    // });
-    // if (playerMoney[currentPlayer] >= 3000) {
-    //   reducePlayerMoney(currentPlayer, 3000);
-    // } else {
-    //   setAlertContent("Nincs elég pénzed a jegyvásárláshoz!");
-    //   setShowAlertOnPopup(true);
-    //   canTravel = false;
-    // }
-    // onClose();
-  };
-
-  const handleNoTicket = () => {
-    // setPlayerPositions((prevPositions) => {
-    //   const newPositions = [...prevPositions];
-    //   const previousPosition = newPositions[currentPlayer];
-    //   let nextStop = (newPositions[currentPlayer] + 1) % fields.length;
-    //   let attempts = 0;
-    //   if (previousPosition > nextStop && previousPosition >= startFieldIndex) {
-    //     addPlayerMoney(currentPlayer, 80000);
-    //   }
-    //   while (!fields[nextStop]?.isStop && attempts < fields.length) {
-    //     nextStop = (nextStop + 1) % fields.length;
-    //     attempts++;
-    //   }
-    //   if (attempts >= fields.length || !fields[nextStop]?.isStop) {
-    //     console.error("No valid stops found. Check fields configuration.");
-    //     return prevPositions;
-    //   }
-    //   newPositions[currentPlayer] = nextStop;
-    //   if (previousPosition > nextStop) {
-    //     addPlayerMoney(currentPlayer, 80000);
-    //   }
-    //   return newPositions;
-    // });
-    // const shouldFine = Math.random();
-    // if (shouldFine < 0.5) {
-    //   reducePlayerMoney(currentPlayer, 40000);
-    //   setAlertContent(
-    //     `Bábu ${currentPlayer + 1} büntetést kapott! 40000 Ft levonva.`
-    //   );
-    //   setShowAlertOnPopup(true);
-    // }
-    // onClose();
-  };
-
-  let canTravel = FIELDS[player.position]?.isStop || false;
 
   const [time, setTime] = useState(new Date());
 
@@ -95,54 +22,141 @@ export default function Steelroad() {
 
   const earlierTime = new Date(time.getTime() - 20 * 60000);
 
+  /**
+   * @returns {[number, boolean]}
+   */
+  function getNextStop() {
+    let nextStop = FIELDS.find((x) => x.isStop && x.id > player.position)?.id;
+    let crossedStart = false;
+    if (!nextStop) {
+      nextStop = FIELDS.find((x) => x.isStop)?.id;
+      crossedStart = true;
+    }
+    if (!nextStop) {
+      console.log("[steelroad] No next stop found", {
+        playerPosition: player.position,
+        fields: FIELDS,
+      });
+      nextStop = player.position;
+    }
+    return [nextStop, crossedStart];
+  }
+
+  function handleBuyTicket() {
+    if (player.money < 3000) {
+      showAlert("Nincs elég pénzed a jegyvásárláshoz!");
+      return;
+    }
+
+    const [nextStop, crossedStart] = getNextStop();
+    let moneyAdjustment = -3000;
+    if (crossedStart) {
+      moneyAdjustment += 150_000;
+      if (!player.inventory.includes("Ház")) {
+        moneyAdjustment -= 70_000;
+      }
+    }
+
+    updatePlayer((prevPlayer) => ({
+      ...prevPlayer,
+      money: player.money + moneyAdjustment,
+      position: nextStop,
+    }));
+
+    closePopup();
+  }
+
+  function handleNoTicket() {
+    const shouldFine = Math.random();
+    const [nextStop, crossedStart] = getNextStop();
+
+    let moneyAdjustment = 0;
+    if (shouldFine < 0.5) {
+      moneyAdjustment = -40_000;
+    }
+    if (crossedStart) {
+      moneyAdjustment += 150_000;
+      if (!player.inventory.includes("Ház")) {
+        moneyAdjustment -= 70_000;
+      }
+    }
+
+    updatePlayer((prevPlayer) => ({
+      ...prevPlayer,
+      position: nextStop,
+      money: player.money + moneyAdjustment,
+    }));
+
+    closePopup();
+
+    if (shouldFine < 0.5) {
+      showAlert(`${player.name} büntetést kapott! 40 000 Ft levonva.`);
+    }
+  }
+
   return (
     <>
-      <div className="flex gap-6 items-center justify-between">
-        <h1 className="flex-1 text-center text-2xl bg-black/50 font-semibold text-white rounded-xl p-2">
-          Vasútállomás
-        </h1>
-        <h1 className="flex-1 text-center text-2xl bg-black/50 font-semibold text-white rounded-xl p-2">
-          Egyenleg: {formatMoney(player.money)}
-        </h1>
+      <div className="flex gap-6 items-center justify-center">
+        <img src="/src/Logos/MKV logo.png" alt="MKV logo" className="h-24" />
       </div>
-      <div className="steelroad">
-        <h2>Utazás a következő megállóra</h2>
-        <div className="steelroad-text">
-          <p className="simple">
-            {earlierTime.toLocaleTimeString("hu-HU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            -{" "}
-            {earlierTime.toLocaleTimeString("hu-HU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-          <p className="red">
-            {time.toLocaleTimeString("hu-HU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}{" "}
-            -{" "}
-            {time.toLocaleTimeString("hu-HU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-          <p className="delay">
-            Biztosítóberendezési hiba miatti késés <br /> Pálya állapota miatti
-            késés
-          </p>
-          <p className="question">{player.name}, szeretnél jegyet vásárolni?</p>
-          <button className="steelroad-yes" onClick={travelToNextStop}>
-            Igen
-          </button>
-          <button className="steelroad-no" onClick={handleNoTicket}>
-            Bliccelek
-          </button>
+      <div className="bg-[#c6eef8] rounded-xl p-6 pt-12 shadow-[0_0_1.5rem_rgba(0,0,0,0.4)] flex flex-col gap-12">
+        <h2 className="text-center text-2xl font-bold">
+          Utazás a következő megállóra
+        </h2>
+        <div className="bg-[lightblue] rounded-lg p-2 flex flex-col gap-2 items-center">
+          <div className="flex gap-4 items-center w-full my-8">
+            <div className="flex-1 flex gap-2 flex-col items-center">
+              <div className="font-semibold text-3xl">
+                {earlierTime.toLocaleTimeString("hu-HU", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
+                -{" "}
+                {earlierTime.toLocaleTimeString("hu-HU", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
+              <div className="font-medium italic text-3xl text-red-500">
+                {time.toLocaleTimeString("hu-HU", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}{" "}
+                -{" "}
+                {time.toLocaleTimeString("hu-HU", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
+            </div>
+            <div className="flex-1 text-red-500 text-lg">
+              Biztosítóberendezési hiba miatti késés
+              <br />
+              Pálya állapota miatti késés
+            </div>
+          </div>
+          <div className="font-semibold text-xl mt-4">
+            {player.name}, szeretnél jegyet vásárolni? (3000 Ft)
+          </div>
+          <div className="flex gap-4 mt-1 mb-2">
+            <button
+              className="font-medium text-lg bg-[#c6eef8] hover:bg-[#d4f4fc] active:scale-95 border-[0.1rem] border-black rounded-lg py-2 w-36 transition-all duration-100"
+              onClick={handleBuyTicket}
+            >
+              Igen
+            </button>
+            <button
+              className="font-medium text-lg bg-[#c6eef8] hover:bg-[#d4f4fc] active:scale-95 border-[0.1rem] border-black rounded-lg py-2 w-36 transition-all duration-100"
+              onClick={handleNoTicket}
+            >
+              Bliccelek
+            </button>
+          </div>
         </div>
-        <button className="steelroad-close" onClick={closePopup}>
+        <button
+          className="bg-[lightblue] text-lg hover:bg-[lightblue]/50 active:scale-98 active:scale-x-99 border-[0.1rem] font-medium border-black rounded-lg p-2 mt-4 transition-all duration-100"
+          onClick={closePopup}
+        >
           Bezárás
         </button>
       </div>
