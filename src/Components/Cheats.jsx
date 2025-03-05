@@ -12,7 +12,7 @@ const Cheats = ({ onClose, currentPlayer, movePlayer }) => {
   };
 
   return (
-    <div className="cheats">
+    <div className="hidden z-30 fixed bg-black p-6 rounded-xl">
       <input
         type="number"
         value={cheatValue}

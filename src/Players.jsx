@@ -12,10 +12,10 @@ const Players = () => {
         const field = FIELDS[player.position];
         return (
           <img
-            key={index}
+            key={player.name}
             src={player.image}
             alt={`Bábu ${index + 1}`}
-            className="player"
+            className="transition-[top,left] duration-1000"
             style={{
               position: "absolute",
               left: `${field?.x}%`,
