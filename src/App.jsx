@@ -3,16 +3,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { BigActiveField, Board } from "./Board.jsx";
 import { CurrentPlayerPanel } from "./Components/CurrentPlayerPanel.jsx";
 import Menu from "./Components/Menu.jsx";
+import RollDiceButton from "./Components/RollDiceButton.jsx";
 import Players from "./Players.jsx";
 import { useAlert } from "./hooks/use-alert.js";
 import { useCurrentPlayer } from "./hooks/use-current-player.js";
 import { useGameState } from "./hooks/use-game-state.js";
 import { usePopup } from "./hooks/use-popup.js";
-import {
-  FIXED_DICE_ROLL,
-  IS_MENU_OPEN,
-  PURCHASEABLE_ITEMS,
-} from "./lib/constants.js";
+import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./lib/constants.js";
 import { FIELDS } from "./lib/fields-config.jsx";
 
 export default function App() {
@@ -138,15 +135,8 @@ export default function App() {
     // TODO: add steelroad
   }
 
-  function rollDice() {
-    if (FIXED_DICE_ROLL) {
-      return FIXED_DICE_ROLL;
-    }
-    return Math.floor(Math.random() * 6) + 1;
-  }
-
-  function handleDiceRoll() {
-    const steps = rollDice();
+  /** @param {number} steps */
+  function handleDiceRoll(steps) {
     updatePlayer((prevPlayer) => ({ ...prevPlayer, canRollDice: false }));
     movePlayer(steps);
   }
@@ -194,17 +184,13 @@ export default function App() {
                   <div className="flex py-2 items-center justify-center bg-black/30 rounded-t-xl h-16">
                     <strong>Irányítás</strong>
                   </div>
-                  <div className="flex flex-col gap-8 justify-center h-full items-center">
-                    <button
-                      className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
-                      disabled={!player.canRollDice}
-                      onClick={() => handleDiceRoll()}
-                    >
-                      Dobás
-                    </button>
+                  <div className="flex flex-col gap-6 p-6 justify-center h-full items-center">
+                    <div className="flex-1 w-full">
+                      <RollDiceButton onDiceRoll={handleDiceRoll} />
+                    </div>
 
                     <button
-                      className="text-2xl bg-white text-black rounded-xl py-2 px-6 w-fit"
+                      className="text-2xl w-full font-medium hover:bg-white/85 active:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6"
                       onClick={() => handleEndTurn()}
                     >
                       Kör vége
