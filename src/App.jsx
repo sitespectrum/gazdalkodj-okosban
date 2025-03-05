@@ -223,7 +223,7 @@ export default function App() {
           className={`popup-content popup-content-${popupClass} transition-transform duration-200 ${
             isPopupOpen && !(!showAlertOnPopup && isAlertOpen)
               ? "scale-100"
-              : "scale-70"
+              : "scale-90"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
