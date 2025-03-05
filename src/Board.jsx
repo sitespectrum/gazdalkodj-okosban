@@ -1,10 +1,18 @@
+//@ts-check
 import React, { useEffect, useRef } from "react";
+import { useCurrentPlayer } from "./hooks/use-current-player";
 
 export function Board({ children }) {
   const bigTileSize = "15rem";
   const aspectRatio = "16 / 9";
 
+  /**
+   * @type {React.RefObject<HTMLDivElement>}
+   */
   const firstFieldRef = useRef(null);
+  /**
+   * @type {React.RefObject<HTMLDivElement>}
+   */
   const lastFieldRef = useRef(null);
 
   useEffect(() => {
@@ -55,7 +63,7 @@ export function Board({ children }) {
         // if negative, we need to zoom in
         const difference = getDifference();
 
-        if (Math.abs(difference) < threshold) {
+        if (Math.abs(difference ?? 0) < threshold) {
           if (debugSizing) {
             console.log(
               "[sizing] difference is less than threshold:",
@@ -65,7 +73,7 @@ export function Board({ children }) {
           break;
         }
 
-        const step = difference / 32;
+        const step = (difference ?? 0) / 32;
 
         const currentSize = parseFloat(
           document.documentElement.style.fontSize || "16"
@@ -84,7 +92,7 @@ export function Board({ children }) {
 
         if (
           i === iterations - 1 &&
-          Math.abs(difference) > plusIterationThreshold &&
+          Math.abs(difference ?? 0) > plusIterationThreshold &&
           iterations < maxIterations
         ) {
           iterations += 10;
@@ -117,6 +125,7 @@ export function Board({ children }) {
           <div
             className="board relative"
             style={{
+              //@ts-ignore
               "--big-size": bigTileSize,
             }}
           >
@@ -173,7 +182,7 @@ export function Board({ children }) {
               <img
                 className="h-full w-full object-cover"
                 src="./src/HQ Pictures/12. Mező.png"
-                alt="10. Mező"
+                alt="12. Mező"
               />
             </div>
             <div className="board-cell row-start-2 rotated-tile-container">
@@ -255,7 +264,9 @@ export function Board({ children }) {
 function MandatoryField() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-[#bc354a] font-semibold">Kötelező mező</div>
+      <div className="py-1 pt-1.5 bg-[#bc354a] font-semibold">
+        Kötelező mező
+      </div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -275,7 +286,7 @@ function MandatoryField() {
 function FieldOneLucky() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#a0ecff] font-semibold">1.</div>
+      <div className="py-1 pt-1.5 bg-[#a0ecff] font-semibold">1.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -293,7 +304,7 @@ function FieldOneLucky() {
 function FieldTwoTrash() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#52ae47] font-semibold">2.</div>
+      <div className="py-1 pt-1.5 bg-[#52ae47] font-semibold">2.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -313,7 +324,7 @@ function FieldTwoTrash() {
 function FieldThreeElectronics() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#cac9c9] font-semibold">3.</div>
+      <div className="py-1 pt-1.5 bg-[#cac9c9] font-semibold">3.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -333,7 +344,7 @@ function FieldThreeElectronics() {
 function FieldFourSouthStation() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#fac65c] font-semibold">4.</div>
+      <div className="py-1 pt-1.5 bg-[#fac65c] font-semibold">4.</div>
       <div>
         <img
           className="w-full h-full object-cover"
@@ -355,7 +366,7 @@ function FieldFourSouthStation() {
 function FieldFiveBankRobbery() {
   return (
     <div className="grid h-full grid-rows-[13%_87%] text-center text-black bg-white">
-      <div className="py-1 bg-[#21abe3] font-semibold">5.</div>
+      <div className="py-1 pt-1.5 bg-[#21abe3] font-semibold">5.</div>
       <div>
         <img
           className="w-full h-full object-cover"
@@ -370,7 +381,7 @@ function FieldFiveBankRobbery() {
 function FieldSixShoppingCenter() {
   return (
     <div className="field-grid-bottom text-center text-black bg-[#f2f2f1]">
-      <div className="py-1 bg-[#f8d91a] font-semibold">6.</div>
+      <div className="py-1 pt-1.5 bg-[#f8d91a] font-semibold">6.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -390,7 +401,7 @@ function FieldSixShoppingCenter() {
 function FieldSevenLucky() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#a0ecff] font-semibold">7.</div>
+      <div className="py-1 pt-1.5 bg-[#a0ecff] font-semibold">7.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -408,7 +419,7 @@ function FieldSevenLucky() {
 function FieldEightSmoking() {
   return (
     <div className="field-grid-bottom text-center text-black bg-[#f2f2f1]">
-      <div className="py-1 bg-[#c6c6c6] font-semibold">8.</div>
+      <div className="py-1 pt-1.5 bg-[#c6c6c6] font-semibold">8.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -428,7 +439,7 @@ function FieldEightSmoking() {
 function FieldTenMovieTheater() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#fefce5] font-semibold">10.</div>
+      <div className="py-1 pt-1.5 bg-[#fefce5] font-semibold">10.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -448,7 +459,7 @@ function FieldTenMovieTheater() {
 function FieldTwelveCasino() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-[#921914] font-semibold">12.</div>
+      <div className="py-1 pt-1.5 bg-[#921914] font-semibold">12.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -468,7 +479,7 @@ function FieldTwelveCasino() {
 function FieldFourteenBobTheBuilder() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-[#e7a402] font-semibold">14.</div>
+      <div className="py-1 pt-1.5 bg-[#e7a402] font-semibold">14.</div>
       <div>
         <img
           className="pt-2 w-full h-full object-contain"
@@ -490,7 +501,7 @@ function FieldFourteenBobTheBuilder() {
 function FieldFifteenCarShop() {
   return (
     <div className="field-grid-bottom text-center text-white bg-[#e7e6e6]">
-      <div className="py-1 bg-[#c21f34] font-semibold">15.</div>
+      <div className="py-1 pt-1.5 bg-[#c21f34] font-semibold">15.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -510,7 +521,7 @@ function FieldFifteenCarShop() {
 function FieldSixteenCarTravel() {
   return (
     <div className="field-grid-bottom text-center text-white bg-[#dadbda]">
-      <div className="py-1 bg-black font-semibold">16.</div>
+      <div className="py-1 pt-1.5 bg-black font-semibold">16.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -529,7 +540,7 @@ function FieldSixteenCarTravel() {
 function FieldSeventeenLucky() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#a0ecff] font-semibold">17.</div>
+      <div className="py-1 pt-1.5 bg-[#a0ecff] font-semibold">17.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -547,7 +558,7 @@ function FieldSeventeenLucky() {
 function FieldEighteenNorthStation() {
   return (
     <div className="field-grid-bottom text-center text-black bg-white">
-      <div className="py-1 bg-[#fac65c] font-semibold">18.</div>
+      <div className="py-1 pt-1.5 bg-[#fac65c] font-semibold">18.</div>
       <div>
         <img
           className="w-full h-full object-cover"
@@ -569,7 +580,7 @@ function FieldEighteenNorthStation() {
 function FieldNineteenAbidas() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-black font-semibold">19.</div>
+      <div className="py-1 pt-1.5 bg-black font-semibold">19.</div>
       <div>
         <img
           className="p-6 w-full h-full object-contain"
@@ -589,7 +600,7 @@ function FieldNineteenAbidas() {
 function FieldTwentyIdea() {
   return (
     <div className="field-grid-bottom text-center text-black bg-[#e7e6e6]">
-      <div className="py-1 bg-[#c6c6c6] font-semibold">20.</div>
+      <div className="py-1 pt-1.5 bg-[#c6c6c6] font-semibold">20.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -609,7 +620,7 @@ function FieldTwentyIdea() {
 function FieldTwentyOneBank() {
   return (
     <div className="field-grid-bottom text-center text-black bg-[#030405]">
-      <div className="py-1 bg-[#f9eb1b] font-semibold">21.</div>
+      <div className="py-1 pt-1.5 bg-[#f9eb1b] font-semibold">21.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -627,7 +638,7 @@ function FieldTwentyOneBank() {
 function FieldTwentyTwoABC() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-[#e61e28] font-semibold">22.</div>
+      <div className="py-1 pt-1.5 bg-[#e61e28] font-semibold">22.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -647,7 +658,7 @@ function FieldTwentyTwoABC() {
 function FieldTwentyFourInsurance() {
   return (
     <div className="field-grid-bottom text-center text-white bg-[#6a4c91]">
-      <div className="py-1 bg-[#7a70b2] font-semibold">24.</div>
+      <div className="py-1 pt-1.5 bg-[#7a70b2] font-semibold">24.</div>
       <div>
         <img
           className="p-5 w-full h-full object-contain"
@@ -665,7 +676,7 @@ function FieldTwentyFourInsurance() {
 function FieldTwentySixRollAgain() {
   return (
     <div className="field-grid-bottom text-center text-white bg-white">
-      <div className="py-1 bg-[#737373] font-semibold">26.</div>
+      <div className="py-1 pt-1.5 bg-[#737373] font-semibold">26.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -678,4 +689,238 @@ function FieldTwentySixRollAgain() {
       </div>
     </div>
   );
+}
+
+export function BigActiveField() {
+  const { player } = useCurrentPlayer();
+
+  if (player.position === 0) {
+    return (
+      <img
+        className="w-full h-full object-contain"
+        src="./src/HQ Pictures/Start.png"
+        alt="Start mező"
+      />
+    );
+  }
+
+  if (player.position === 1) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldOneLucky />
+      </div>
+    );
+  }
+
+  if (player.position === 2) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwoTrash />
+      </div>
+    );
+  }
+
+  if (player.position === 3) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldThreeElectronics />
+      </div>
+    );
+  }
+
+  if (player.position === 4) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldFourSouthStation />
+      </div>
+    );
+  }
+
+  if (player.position === 5) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldFiveBankRobbery />
+      </div>
+    );
+  }
+
+  if (player.position === 6) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldSixShoppingCenter />
+      </div>
+    );
+  }
+
+  if (player.position === 7) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldSevenLucky />
+      </div>
+    );
+  }
+
+  if (player.position === 8) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldEightSmoking />
+      </div>
+    );
+  }
+
+  if (player.position === 9 || player.position === 27) {
+    return (
+      <img
+        className="w-full h-full object-contain"
+        src="./src/HQ Pictures/10. Mező.png"
+        alt="Börtönmező"
+      />
+    );
+  }
+
+  if (player.position === 10) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTenMovieTheater />
+      </div>
+    );
+  }
+
+  if (player.position === 11) {
+    return (
+      <img
+        className="w-full h-full object-contain -rotate-90"
+        src="./src/HQ Pictures/12. Mező.png"
+        alt="Nyugati pályaudvar"
+      />
+    );
+  }
+
+  if (player.position === 12) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwelveCasino />
+      </div>
+    );
+  }
+
+  if (player.position === 13) {
+    return (
+      <img
+        className="w-full h-full object-contain"
+        src="./src/HQ Pictures/14. Mező.png"
+        alt="Repülőtér"
+      />
+    );
+  }
+
+  if (player.position === 14) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldFourteenBobTheBuilder />
+      </div>
+    );
+  }
+
+  if (player.position === 15) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldFifteenCarShop />
+      </div>
+    );
+  }
+
+  if (player.position === 16) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldSixteenCarTravel />
+      </div>
+    );
+  }
+
+  if (player.position === 17) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldSeventeenLucky />
+      </div>
+    );
+  }
+
+  if (player.position === 18) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldEighteenNorthStation />
+      </div>
+    );
+  }
+
+  if (player.position === 19) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldNineteenAbidas />
+      </div>
+    );
+  }
+
+  if (player.position === 20) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwentyIdea />
+      </div>
+    );
+  }
+
+  if (player.position === 21) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwentyOneBank />
+      </div>
+    );
+  }
+
+  if (player.position === 22) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwentyTwoABC />
+      </div>
+    );
+  }
+
+  if (player.position === 23) {
+    return (
+      <img
+        className="w-full h-full object-contain"
+        src="./src/HQ Pictures/24. Mező.png"
+        alt="Kórház"
+      />
+    );
+  }
+
+  if (player.position === 24) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwentyFourInsurance />
+      </div>
+    );
+  }
+
+  if (player.position === 25) {
+    return (
+      <img
+        className="w-full h-full object-contain -rotate-90"
+        src="./src/HQ Pictures/26. Mező.png"
+        alt="Keleti pályaudvar"
+      />
+    );
+  }
+
+  if (player.position === 26) {
+    return (
+      <div className="aspect-[360/566] h-[46%] scale-215">
+        <FieldTwentySixRollAgain />
+      </div>
+    );
+  }
+
+  return <></>;
 }

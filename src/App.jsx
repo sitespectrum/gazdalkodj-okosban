@@ -1,9 +1,8 @@
 //@ts-check
 import React, { useEffect, useMemo, useState } from "react";
-import { Board } from "./Board.jsx";
+import { BigActiveField, Board } from "./Board.jsx";
 import { CurrentPlayerPanel } from "./Components/CurrentPlayerPanel.jsx";
 import Menu from "./Components/Menu.jsx";
-import "./Fields.css";
 import Players from "./Players.jsx";
 import { useAlert } from "./hooks/use-alert.js";
 import { useCurrentPlayer } from "./hooks/use-current-player.js";
@@ -284,8 +283,8 @@ export default function App() {
               <div className="p-4 h-full flex-2/6">
                 <CurrentPlayerPanel />
               </div>
-              <div className="flex-2/6">
-                <ActivePictures />
+              <div className="flex-2/6 p-4 flex items-center justify-center">
+                <BigActiveField />
               </div>
 
               <div className="flex-2/6 p-4">
@@ -364,18 +363,4 @@ export default function App() {
       )}
     </div>
   );
-}
-
-function ActivePictures() {
-  const { player } = useCurrentPlayer();
-
-  return player.position ? (
-    <div className="w-full h-full flex p-4 items-center justify-center">
-      <img
-        src={`./src/HQ Pictures/${player.position + 1}. Mező.png`}
-        alt={`${player.position + 1}. Mező`}
-        className="w-full h-full object-contain"
-      />
-    </div>
-  ) : null;
 }
