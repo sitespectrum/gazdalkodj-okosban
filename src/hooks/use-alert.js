@@ -10,6 +10,8 @@ export function useAlert() {
     setShowOnPopup,
     showCloseButton,
     setShowCloseButton,
+    isAlertOpen,
+    setIsAlertOpen,
   ] = useContext(alertContext);
 
   /** @typedef {{showOnPopup?: boolean, showCloseButton?: boolean}} AlertOptions */
@@ -28,18 +30,18 @@ export function useAlert() {
     setContent(content);
     setShowOnPopup(options.showOnPopup ?? false);
     setShowCloseButton(options.showCloseButton ?? true);
+    setIsAlertOpen(true);
   };
 
   const closeAlert = () => {
-    setContent(null);
-    setShowOnPopup(false);
-    setShowCloseButton(true);
+    setIsAlertOpen(false);
   };
 
   return {
     content,
     showOnPopup,
     showCloseButton,
+    isOpen: isAlertOpen,
     showAlert,
     closeAlert,
   };

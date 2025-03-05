@@ -13,6 +13,8 @@ export function Providers({ children }) {
   const [popupClass, setPopupClass] = useState("");
   /** @type {[any, React.Dispatch<React.SetStateAction<any>>]} */
   const [popupContent, setPopupContent] = useState(null);
+  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   /** @type {[any, React.Dispatch<React.SetStateAction<any>>]} */
   const [alertContent, setAlertContent] = useState(null);
@@ -20,13 +22,22 @@ export function Providers({ children }) {
   const [showAlertOnPopup, setShowAlertOnPopup] = useState(false);
   /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
   const [showCloseButton, setShowCloseButton] = useState(true);
+  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   /** @type {CallbackGameState} */
   const [gameState, setGameState] = useCallbackState(DEFAULT_GAME_STATE);
 
   return (
     <popupContext.Provider
-      value={[popupClass, setPopupClass, popupContent, setPopupContent]}
+      value={[
+        popupClass,
+        setPopupClass,
+        popupContent,
+        setPopupContent,
+        isPopupOpen,
+        setIsPopupOpen,
+      ]}
     >
       <alertContext.Provider
         value={[
@@ -36,6 +47,8 @@ export function Providers({ children }) {
           setShowAlertOnPopup,
           showCloseButton,
           setShowCloseButton,
+          isAlertOpen,
+          setIsAlertOpen,
         ]}
       >
         <gameStateContext.Provider value={[gameState, setGameState]}>

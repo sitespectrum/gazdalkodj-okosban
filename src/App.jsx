@@ -15,11 +15,18 @@ import { FIELDS } from "./lib/fields-config.jsx";
 export default function App() {
   const [gameState, setGameState] = useGameState();
   const { player, updatePlayer } = useCurrentPlayer();
-  const { popupClass, popupContent, openPopup, closePopup } = usePopup();
+  const {
+    popupClass,
+    popupContent,
+    isOpen: isPopupOpen,
+    openPopup,
+    closePopup,
+  } = usePopup();
   const {
     content: alertContent,
     showOnPopup: showAlertOnPopup,
     showCloseButton,
+    isOpen: isAlertOpen,
     showAlert,
     closeAlert,
   } = useAlert();
@@ -204,51 +211,57 @@ export default function App() {
         </div>
       </Board>
 
-      {popupContent && !(!showAlertOnPopup && alertContent) ? (
-        <>
-          <div className={`popup-wrapper`} onClick={() => closePopup()}>
-            <div
-              className={`popup-content popup-content-${popupClass}`}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {popupContent}
-            </div>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+      <div
+        className={`popup-wrapper transition-opacity duration-200 ${
+          isPopupOpen && !(!showAlertOnPopup && isAlertOpen)
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => closePopup()}
+      >
+        <div
+          className={`popup-content popup-content-${popupClass} transition-transform duration-200 ${
+            isPopupOpen && !(!showAlertOnPopup && isAlertOpen)
+              ? "scale-100"
+              : "scale-70"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {popupContent}
+        </div>
+      </div>
 
-      {alertContent ? (
-        <>
-          <div
-            className={`popup-wrapper`}
-            onClick={() => {
-              if (showCloseButton) {
+      <div
+        className={`popup-wrapper transition-opacity duration-200 ${
+          isAlertOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => {
+          if (showCloseButton) {
+            closeAlert();
+          }
+        }}
+      >
+        <div
+          className={`alert-content transition-transform duration-200 ${
+            isAlertOpen ? "scale-100" : "scale-70"
+          }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <span>{alertContent}</span>
+          {showCloseButton && (
+            <button
+              className="hover:bg-black/80! active:scale-[.98] transition-all duration-100"
+              onClick={() => {
                 closeAlert();
-              }
-            }}
-          >
-            <div
-              className={`alert-content`}
-              onClick={(e) => e.stopPropagation()}
+              }}
             >
-              <span>{alertContent}</span>
-              {showCloseButton && (
-                <button
-                  onClick={() => {
-                    closeAlert();
-                  }}
-                >
-                  Bezárás
-                </button>
-              )}
-            </div>
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+              Bezárás
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

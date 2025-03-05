@@ -3,18 +3,24 @@ import { useContext } from "react";
 import { popupContext } from "../lib/contexts.js";
 
 export function usePopup() {
-  const [popupClass, setPopupClass, popupContent, setPopupContent] =
-    useContext(popupContext);
+  const [
+    popupClass,
+    setPopupClass,
+    popupContent,
+    setPopupContent,
+    isOpen,
+    setIsOpen,
+  ] = useContext(popupContext);
 
   const openPopup = (popupClass, popupContent) => {
     setPopupClass(popupClass);
     setPopupContent(popupContent);
+    setIsOpen(true);
   };
 
   const closePopup = () => {
-    setPopupClass("");
-    setPopupContent(null);
+    setIsOpen(false);
   };
 
-  return { popupClass, popupContent, openPopup, closePopup };
+  return { popupClass, popupContent, isOpen, openPopup, closePopup };
 }
