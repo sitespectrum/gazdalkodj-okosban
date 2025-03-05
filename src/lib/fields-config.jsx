@@ -7,6 +7,7 @@ import ElzaAndIdea from "../Components/ElzaAndIdea";
 import Bobthebuilder from "../Components/Bobthebuilder";
 import Carshop from "../Components/Carshop";
 import Idea from "../Components/Idea";
+import Steelroad from "../Components/Steelroad";
 
 /** @type {import('./types').Field[]} */
 export const FIELDS = [
@@ -51,7 +52,14 @@ export const FIELDS = [
     y: 84,
     action: ({ openPopup }) => openPopup("elza", <Elza />),
   },
-  { id: 4, name: "South Station", x: 48.9, y: 84, isStop: true },
+  {
+    id: 4,
+    name: "South Station",
+    x: 48.9,
+    y: 84,
+    isStop: true,
+    action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
+  },
   {
     id: 5,
     name: "Bank Robbery",
@@ -102,7 +110,14 @@ export const FIELDS = [
         };
       }),
   },
-  { id: 11, name: "West Station", x: 5, y: 45, isStop: true },
+  {
+    id: 11,
+    name: "West Station",
+    x: 5,
+    y: 45,
+    isStop: true,
+    action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
+  },
   { id: 12, name: "Casino", x: 5, y: 26.5 },
 
   {
@@ -175,7 +190,14 @@ export const FIELDS = [
     y: 7.5,
     action: ({ openPopup }) => openPopup("lucky", <Lucky />),
   },
-  { id: 18, name: "North Station", x: 48.9, y: 7.5, isStop: true },
+  {
+    id: 18,
+    name: "North Station",
+    x: 48.9,
+    y: 7.5,
+    isStop: true,
+    action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
+  },
   {
     id: 19,
     name: "Abidas",
@@ -226,7 +248,14 @@ export const FIELDS = [
     },
   },
   { id: 24, name: "Insurance", x: 93, y: 26 },
-  { id: 25, name: "East Station", x: 93, y: 45, isStop: true },
+  {
+    id: 25,
+    name: "East Station",
+    x: 93,
+    y: 45,
+    isStop: true,
+    action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
+  },
   {
     id: 26,
     name: "Roll again",
