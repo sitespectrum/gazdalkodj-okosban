@@ -1,5 +1,5 @@
 //@ts-check
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCurrentPlayer } from "./hooks/use-current-player";
 
 export function Board({ children }) {
@@ -691,10 +691,11 @@ function FieldTwentySixRollAgain() {
   );
 }
 
-export function BigActiveField() {
-  const { player } = useCurrentPlayer();
-
-  if (player.position === 0) {
+/**
+ * @param {{ position: number }} props
+ */
+export function BigActiveField({ position }) {
+  if (position === 0) {
     return (
       <img
         className="w-full h-full object-contain"
@@ -704,7 +705,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 1) {
+  if (position === 1) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldOneLucky />
@@ -712,7 +713,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 2) {
+  if (position === 2) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwoTrash />
@@ -720,7 +721,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 3) {
+  if (position === 3) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldThreeElectronics />
@@ -728,7 +729,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 4) {
+  if (position === 4) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldFourSouthStation />
@@ -736,7 +737,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 5) {
+  if (position === 5) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldFiveBankRobbery />
@@ -744,7 +745,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 6) {
+  if (position === 6) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldSixShoppingCenter />
@@ -752,7 +753,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 7) {
+  if (position === 7) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldSevenLucky />
@@ -760,7 +761,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 8) {
+  if (position === 8) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldEightSmoking />
@@ -768,7 +769,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 9 || player.position === 27) {
+  if (position === 9 || position === 27) {
     return (
       <img
         className="w-full h-full object-contain"
@@ -778,7 +779,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 10) {
+  if (position === 10) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTenMovieTheater />
@@ -786,7 +787,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 11) {
+  if (position === 11) {
     return (
       <img
         className="w-full h-full object-contain -rotate-90"
@@ -796,7 +797,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 12) {
+  if (position === 12) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwelveCasino />
@@ -804,7 +805,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 13) {
+  if (position === 13) {
     return (
       <img
         className="w-full h-full object-contain"
@@ -814,7 +815,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 14) {
+  if (position === 14) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldFourteenBobTheBuilder />
@@ -822,7 +823,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 15) {
+  if (position === 15) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldFifteenCarShop />
@@ -830,7 +831,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 16) {
+  if (position === 16) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldSixteenCarTravel />
@@ -838,7 +839,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 17) {
+  if (position === 17) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldSeventeenLucky />
@@ -846,7 +847,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 18) {
+  if (position === 18) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldEighteenNorthStation />
@@ -854,7 +855,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 19) {
+  if (position === 19) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldNineteenAbidas />
@@ -862,7 +863,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 20) {
+  if (position === 20) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwentyIdea />
@@ -870,7 +871,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 21) {
+  if (position === 21) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwentyOneBank />
@@ -878,7 +879,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 22) {
+  if (position === 22) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwentyTwoABC />
@@ -886,7 +887,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 23) {
+  if (position === 23) {
     return (
       <img
         className="w-full h-full object-contain"
@@ -896,7 +897,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 24) {
+  if (position === 24) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwentyFourInsurance />
@@ -904,7 +905,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 25) {
+  if (position === 25) {
     return (
       <img
         className="w-full h-full object-contain -rotate-90"
@@ -914,7 +915,7 @@ export function BigActiveField() {
     );
   }
 
-  if (player.position === 26) {
+  if (position === 26) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
         <FieldTwentySixRollAgain />
@@ -923,4 +924,41 @@ export function BigActiveField() {
   }
 
   return <></>;
+}
+
+export function BigActiveFieldFader() {
+  const { player } = useCurrentPlayer();
+
+  const [activeSwitched, setActiveSwitched] = useState(false);
+  const [positionOne, setPositionOne] = useState(0);
+  const [positionTwo, setPositionTwo] = useState(0);
+
+  useEffect(() => {
+    if (activeSwitched) {
+      setPositionOne(player.position);
+    } else {
+      setPositionTwo(player.position);
+    }
+
+    setActiveSwitched(!activeSwitched);
+  }, [player.position]);
+
+  return (
+    <div className="w-full h-full relative ">
+      <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${
+          activeSwitched ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <BigActiveField position={positionOne} />
+      </div>
+      <div
+        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${
+          activeSwitched ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <BigActiveField position={positionTwo} />
+      </div>
+    </div>
+  );
 }

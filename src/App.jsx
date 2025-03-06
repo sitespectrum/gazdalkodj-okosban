@@ -1,6 +1,6 @@
 //@ts-check
 import React, { useEffect, useMemo, useState } from "react";
-import { BigActiveField, Board } from "./Board.jsx";
+import { BigActiveFieldFader, Board } from "./Board.jsx";
 import { CurrentPlayerPanel } from "./Components/CurrentPlayerPanel.jsx";
 import Menu from "./Components/Menu.jsx";
 import RollDiceButton from "./Components/RollDiceButton.jsx";
@@ -183,7 +183,7 @@ export default function App() {
                 <CurrentPlayerPanel />
               </div>
               <div className="flex-2/6 p-4 flex items-center justify-center">
-                <BigActiveField />
+                <BigActiveFieldFader />
               </div>
 
               <div className="flex-2/6 p-4">
