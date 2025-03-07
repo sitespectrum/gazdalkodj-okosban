@@ -9,6 +9,9 @@ export const FIXED_DICE_ROLL = 0;
 /** @type {boolean} */
 export const INSTANT_DICE_ROLL = false;
 
+/** @type {string} */
+export const SERVER_URL = "http://localhost:42069";
+
 /** @type {string[]} */
 export const PURCHASEABLE_ITEMS = [
   "Ház",

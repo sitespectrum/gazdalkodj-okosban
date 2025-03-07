@@ -11,6 +11,7 @@ import { useGameState } from "./hooks/use-game-state.js";
 import { usePopup } from "./hooks/use-popup.js";
 import { IS_MENU_OPEN, PURCHASEABLE_ITEMS } from "./lib/constants.js";
 import { FIELDS } from "./lib/fields-config.jsx";
+import { startWebSocket } from "./lib/websockets.js";
 
 export default function App() {
   const [gameState, setGameState] = useGameState();
@@ -38,6 +39,10 @@ export default function App() {
       PURCHASEABLE_ITEMS.every((item) => player.inventory.includes(item))
     );
   }, [gameState.players]);
+
+  useEffect(() => {
+    startWebSocket();
+  }, []);
 
   useEffect(() => {
     if (winningPlayerIndex !== -1) {
