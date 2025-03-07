@@ -14,9 +14,10 @@ export interface Player {
   hasCASCO: boolean;
   hasAccIns: boolean;
   hasHomeIns: boolean;
-  inHospital: "no" | "arrived" | "healed";
+  inHospital: boolean;
   inJail: boolean;
   canRollDice: boolean;
+  state: "justStarted" | "rolledDice" | "actionClosed";
 }
 
 export interface Field {

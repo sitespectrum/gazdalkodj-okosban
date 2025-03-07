@@ -61,16 +61,18 @@ export default function App() {
 
   /** @param {number} steps */
   async function movePlayer(steps) {
-    showAlert(`Dobott szám: ${steps}`);
-
     const playerIndex = gameState.currentPlayer;
     const oldPlayer = gameState.players[playerIndex];
-    console.log("playerIndex", playerIndex);
 
     if (gameState.players[playerIndex].inJail && steps !== 6) {
-      showAlert(
-        `Csak hatos dobással lehet kiszabadulni a börtönből! (Dobott szám: ${steps})`
-      );
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      showAlert(`Csak hatos dobással lehet kiszabadulni a börtönből!`);
+      setGameState((prevGameState) => {
+        prevGameState.players[playerIndex].state = "rolledDice";
+        return {
+          ...prevGameState,
+        };
+      });
       return;
     }
 
@@ -122,15 +124,30 @@ export default function App() {
               ...prevGameState,
             };
           },
-          (newGameState) => {
-            newField.action?.({
-              currentPlayer: newGameState.players[playerIndex],
-              updateCurrentPlayer: updatePlayer,
-              gameState: newGameState,
-              updateGameState: setGameState,
-              playerIndex: playerIndex,
-              openPopup: openPopup,
-            });
+          async (newGameState) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            setGameState(
+              (prevGameState) => ({
+                ...prevGameState,
+                players: prevGameState.players.map((player) => ({
+                  ...player,
+                  state: "rolledDice",
+                })),
+              }),
+              () => {
+                newField.action?.({
+                  currentPlayer: newGameState.players[playerIndex],
+                  updateCurrentPlayer: updatePlayer,
+                  gameState: newGameState,
+                  updateGameState: setGameState,
+                  playerIndex: playerIndex,
+                  openPopup: openPopup,
+                });
+              }
+            );
+            openPopup("", <></>);
+            closePopup();
           }
         );
       }
@@ -144,26 +161,29 @@ export default function App() {
 
   /** @param {number} steps */
   function handleDiceRoll(steps) {
-    updatePlayer((prevPlayer) => ({ ...prevPlayer, canRollDice: false }));
+    updatePlayer((prevPlayer) => ({
+      ...prevPlayer,
+      canRollDice: false,
+    }));
     movePlayer(steps);
   }
 
   function handleEndTurn() {
-    // can leave hospital
-    if (player.inHospital === "healed") {
-      updatePlayer({ ...player, inHospital: "no" });
-    }
-    // can roll dice
-    if (player.inHospital !== "arrived") {
-      updatePlayer({ ...player, canRollDice: true });
-    } else {
-      // arrived to hospital, will be healed next turn
-      updatePlayer({ ...player, inHospital: "healed" });
-    }
-    setGameState((prevGameState) => ({
-      ...prevGameState,
-      currentPlayer: (prevGameState.currentPlayer + 1) % 4,
-    }));
+    setGameState((prevGameState) => {
+      prevGameState.currentPlayer = (prevGameState.currentPlayer + 1) % 4;
+      prevGameState.players[prevGameState.currentPlayer].state = "justStarted";
+      prevGameState.players[prevGameState.currentPlayer].canRollDice = true;
+
+      if (prevGameState.players[prevGameState.currentPlayer].inHospital) {
+        prevGameState.players[prevGameState.currentPlayer].canRollDice = false;
+        prevGameState.players[prevGameState.currentPlayer].state = "rolledDice";
+        prevGameState.players[prevGameState.currentPlayer].inHospital = false;
+      }
+
+      return {
+        ...prevGameState,
+      };
+    });
   }
 
   return (
@@ -197,8 +217,9 @@ export default function App() {
                     </div>
 
                     <button
-                      className="text-2xl w-full font-medium hover:bg-white/85 active:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6"
+                      className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
                       onClick={() => handleEndTurn()}
+                      disabled={player.state === "justStarted"}
                     >
                       Kör vége
                     </button>

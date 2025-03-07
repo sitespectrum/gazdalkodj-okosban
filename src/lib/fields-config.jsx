@@ -239,7 +239,7 @@ export const FIELDS = [
     y: 11,
     action: ({ updateGameState, playerIndex }) => {
       updateGameState((prevGameState) => {
-        prevGameState.players[playerIndex].inHospital = "arrived";
+        prevGameState.players[playerIndex].inHospital = true;
         prevGameState.players[playerIndex].canRollDice = false;
         return {
           ...prevGameState,

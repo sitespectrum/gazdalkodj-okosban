@@ -90,7 +90,12 @@ export default function Steelroad() {
     closePopup();
 
     if (shouldFine < 0.5) {
-      showAlert(`${player.name} büntetést kapott! 40 000 Ft levonva.`);
+      showAlert(
+        <>
+          {player.name} büntetést kapott!
+          <br /> 40 000 Ft levonva.
+        </>
+      );
     }
   }
 

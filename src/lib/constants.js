@@ -1,10 +1,13 @@
 //@ts-check
 
 /** @type {boolean} */
-export const IS_MENU_OPEN = true;
+export const IS_MENU_OPEN = false;
 
 /** @type {number} */
 export const FIXED_DICE_ROLL = 0;
+
+/** @type {boolean} */
+export const INSTANT_DICE_ROLL = false;
 
 /** @type {string[]} */
 export const PURCHASEABLE_ITEMS = [
@@ -29,15 +32,16 @@ export const DEFAULT_GAME_STATE = {
       name: "Játékos 1",
       image: "./src/Pictures/Puppets/Piros bábú 1.png",
       money: 400_000,
-      position: 0,
+      position: 27,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
       hasAccIns: false,
       hasHomeIns: false,
       inHospital: "no",
-      inJail: false,
+      inJail: true,
       canRollDice: true,
+      state: "justStarted",
     },
     {
       name: "Játékos 2",
@@ -52,6 +56,7 @@ export const DEFAULT_GAME_STATE = {
       inHospital: "no",
       inJail: false,
       canRollDice: true,
+      state: "justStarted",
     },
     {
       name: "Játékos 3",
@@ -66,6 +71,7 @@ export const DEFAULT_GAME_STATE = {
       inHospital: "no",
       inJail: false,
       canRollDice: true,
+      state: "justStarted",
     },
     {
       name: "Játékos 4",
@@ -80,6 +86,7 @@ export const DEFAULT_GAME_STATE = {
       inHospital: "no",
       inJail: false,
       canRollDice: true,
+      state: "justStarted",
     },
   ],
 };
