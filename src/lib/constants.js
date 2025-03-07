@@ -1,7 +1,7 @@
 //@ts-check
 
 /** @type {boolean} */
-export const IS_MENU_OPEN = false;
+export const IS_MENU_OPEN = true;
 
 /** @type {number} */
 export const FIXED_DICE_ROLL = 0;
@@ -32,14 +32,14 @@ export const DEFAULT_GAME_STATE = {
       name: "Játékos 1",
       image: "./src/Pictures/Puppets/Piros bábú 1.png",
       money: 400_000,
-      position: 27,
+      position: 0,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
       hasAccIns: false,
       hasHomeIns: false,
-      inHospital: "no",
-      inJail: true,
+      inHospital: false,
+      inJail: false,
       canRollDice: true,
       state: "justStarted",
     },
@@ -53,7 +53,7 @@ export const DEFAULT_GAME_STATE = {
       hasCASCO: false,
       hasAccIns: false,
       hasHomeIns: false,
-      inHospital: "no",
+      inHospital: false,
       inJail: false,
       canRollDice: true,
       state: "justStarted",
@@ -68,7 +68,7 @@ export const DEFAULT_GAME_STATE = {
       hasCASCO: false,
       hasAccIns: false,
       hasHomeIns: false,
-      inHospital: "no",
+      inHospital: false,
       inJail: false,
       canRollDice: true,
       state: "justStarted",
@@ -83,7 +83,7 @@ export const DEFAULT_GAME_STATE = {
       hasCASCO: false,
       hasAccIns: false,
       hasHomeIns: false,
-      inHospital: "no",
+      inHospital: false,
       inJail: false,
       canRollDice: true,
       state: "justStarted",
