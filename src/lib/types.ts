@@ -1,10 +1,64 @@
+export type Result<T> =
+  | {
+      success: true;
+      data: T;
+    }
+  | {
+      success: false;
+      error: string;
+    };
+
+export interface GameManager extends GameManagerActions {
+  meta: GameMeta;
+  state: GameState;
+  currentPlayer: Player;
+}
+
+export interface GameManagerActions {
+  updateMeta: CallbackStateAction<GameMeta>;
+  updateState: CallbackStateAction<GameState>;
+  updateCurrentPlayer: CallbackStateAction<Player>;
+
+  rollDice: (playerIndex: number) => Promise<Result<number>>;
+  movePlayer: (playerIndex: number, steps: number) => Promise<Result<null>>;
+  endTurn: (playerIndex: number) => Promise<Result<null>>;
+
+  buyItem: (playerIndex: number, item: ShopItem) => Promise<Result<null>>;
+}
+
+export interface GameContext {
+  meta?: GameMeta;
+  state?: GameState;
+  actions?: GameManagerActions;
+}
+
+export interface GameData {
+  meta?: GameMeta;
+  state?: GameState;
+}
+
+export interface GameDataContext {
+  meta?: GameMeta;
+  setMeta?: CallbackStateAction<GameMeta>;
+  state?: GameState;
+  setState?: CallbackStateAction<GameState>;
+}
+
+export interface GameMeta {
+  id: string;
+  name: string;
+}
+
 export interface GameState {
   isGameOver: boolean;
+  winningPlayerIndex: number;
   currentPlayer: number;
   players: Player[];
 }
 
 export interface Player {
+  id?: string;
+  index: number;
   name: string;
   image: string;
   money: number;
@@ -17,7 +71,8 @@ export interface Player {
   inHospital: boolean;
   inJail: boolean;
   canRollDice: boolean;
-  state: "justStarted" | "rolledDice" | "actionClosed";
+  canEndTurn: boolean;
+  state: "justStarted" | "rolledDice" | "actionStarted" | "actionEnded";
 }
 
 export interface Field {
@@ -26,6 +81,7 @@ export interface Field {
   x: number;
   y: number;
   isStop?: boolean;
+  isActionInstant?: boolean;
   action?: (props: FieldActionProps) => any;
 }
 
@@ -36,6 +92,19 @@ export interface FieldActionProps {
   updateGameState: CallbackStateAction<GameState>;
   playerIndex: number;
   openPopup: (popupName: string, content: React.ReactNode) => void;
+}
+
+export interface LuckyCard {
+  id: number;
+  text: string;
+  action: () => void;
+}
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  price: number;
+  optional?: boolean;
 }
 
 export type CallbackState<T> = [T, CallbackStateAction<T>];

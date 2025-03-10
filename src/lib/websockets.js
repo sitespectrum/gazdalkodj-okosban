@@ -1,5 +1,4 @@
-//@ts-check
-import { SERVER_URL } from "./constants";
+import { SERVER_URL } from "@/lib/constants";
 
 export function startWebSocket() {
   const ws = new WebSocket(`${SERVER_URL}/ws`);

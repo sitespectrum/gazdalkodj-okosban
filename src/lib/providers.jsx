@@ -1,12 +1,20 @@
-//@ts-check
+import { useLocalGame } from "@/hooks/managers/use-local-game";
+import { useCallbackState } from "@/hooks/use-callback-state.js";
+import {
+  alertContext,
+  gameContext,
+  gameDataContext,
+  popupContext,
+} from "@/lib/contexts.js";
 import { useState } from "react";
-import { popupContext, alertContext, gameStateContext } from "./contexts.js";
-import { DEFAULT_GAME_STATE } from "./constants.js";
-import React from "react";
-import { useCallbackState } from "../hooks/use-callback-state.js";
 
-/** @typedef {import('./types').GameState} GameState */
-/** @typedef {import('./types').CallbackState<GameState>} CallbackGameState */
+/** @typedef {import("@/lib/types").GameData} GameData */
+/** @typedef {import("@/lib/types").GameState} GameState */
+/** @typedef {import("@/lib/types").GameMeta} GameMeta */
+/**
+ * @template T
+ * @typedef {import("@/lib/types").CallbackState<T>} CallbackState
+ */
 
 export function Providers({ children }) {
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
@@ -24,9 +32,6 @@ export function Providers({ children }) {
   const [showCloseButton, setShowCloseButton] = useState(true);
   /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-
-  /** @type {CallbackGameState} */
-  const [gameState, setGameState] = useCallbackState(DEFAULT_GAME_STATE);
 
   return (
     <popupContext.Provider
@@ -51,10 +56,30 @@ export function Providers({ children }) {
           setIsAlertOpen,
         ]}
       >
-        <gameStateContext.Provider value={[gameState, setGameState]}>
-          {children}
-        </gameStateContext.Provider>
+        {children}
       </alertContext.Provider>
     </popupContext.Provider>
   );
+}
+
+/**
+ * @param {Object} props
+ * @param {GameData} props.initialData
+ * @param {React.ReactNode} props.children
+ */
+export function LocalGameDataProvider({ initialData, children }) {
+  const [meta, setMeta] = useCallbackState(initialData.meta);
+  const [state, setState] = useCallbackState(initialData.state);
+
+  return (
+    <gameDataContext.Provider value={{ meta, setMeta, state, setState }}>
+      {children}
+    </gameDataContext.Provider>
+  );
+}
+
+export function LocalGameProvider({ children }) {
+  const game = useLocalGame();
+
+  return <gameContext.Provider value={game}>{children}</gameContext.Provider>;
 }

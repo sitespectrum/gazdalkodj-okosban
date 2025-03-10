@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const Cheats = ({ onClose, currentPlayer, movePlayer }) => {
+export function Cheats({ onClose, currentPlayer, movePlayer }) {
   const [cheatValue, setCheatValue] = useState("");
 
   const handleMove = () => {
@@ -25,6 +25,4 @@ const Cheats = ({ onClose, currentPlayer, movePlayer }) => {
       </button>
     </div>
   );
-};
-
-export default Cheats;
+}

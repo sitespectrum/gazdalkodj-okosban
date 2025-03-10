@@ -1,11 +1,10 @@
-//@ts-check
-import React, { useEffect, useState } from "react";
-import { useCurrentPlayer } from "../hooks/use-current-player.js";
-import { usePopup } from "../hooks/use-popup.js";
-import { formatMoney } from "../lib/utils.js";
+import { useGame } from "@/hooks/use-game";
+import { usePopup } from "@/hooks/use-popup.js";
+import { formatMoney } from "@/lib/utils.js";
+import { useEffect, useState } from "react";
 
-export default function BankRobbery() {
-  const { player, updatePlayer } = useCurrentPlayer();
+export function BankRobbery() {
+  const { currentPlayer, updateCurrentPlayer } = useGame();
   const { closePopup } = usePopup();
 
   const [isRobbing, setIsRobbing] = useState(false);
@@ -48,9 +47,9 @@ export default function BankRobbery() {
 
   const handleEscape = () => {
     if (isRobbing && escapeVisible) {
-      updatePlayer({
-        ...player,
-        money: player.money + clickCount * 10000,
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + clickCount * 10000,
       });
       setGameOver(true);
     }
@@ -60,8 +59,8 @@ export default function BankRobbery() {
     if (!gameOver) {
       setEscapeVisible(false);
 
-      updatePlayer({
-        ...player,
+      updateCurrentPlayer({
+        ...currentPlayer,
         inJail: true,
         position: 27,
       });

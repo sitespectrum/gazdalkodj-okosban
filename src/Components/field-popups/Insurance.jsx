@@ -1,48 +1,43 @@
-import React, { useState, useContext } from "react";
-import { alertContext } from "../lib/contexts.js";
-import { formatMoney } from "../lib/utils.js";
-import Lucky from "./Lucky";
+import { useAlert } from "@/hooks/use-alert.js";
+import { useGame } from "@/hooks/use-game";
+import { usePopup } from "@/hooks/use-popup.js";
+import { formatMoney } from "@/lib/utils.js";
+import { useState } from "react";
 
-const Insurance = ({
-  currentPlayer,
-  reducePlayerMoney,
-  onClose,
-  playerHasCar,
-}) => {
+export function Insurance() {
+  const { currentPlayer, updateCurrentPlayer } = useGame();
+  const { showAlert } = useAlert();
+  const { closePopup } = usePopup();
+
   const [playerHasCASCO, setPlayerHasCASCO] = useState(false);
   const [playerHasAccIns, setPlayerHasAccIns] = useState(false);
   const [playerHasHomeIns, setPlayerHasHomeIns] = useState(false);
-  const [playerMoney] = useContext(moneyContext);
-  const [_, setAlertContent, __, setShowAlertOnPopup] =
-    useContext(alertContext);
-
-  <Lucky
-    playerHasCASCO={playerHasCASCO}
-    playerHasAccIns={playerHasAccIns}
-    playerHasHomeIns={playerHasHomeIns}
-  />;
 
   const handleCASCOPurchase = (price) => {
     if (
-      playerMoney[currentPlayer] >= price &&
-      playerHasCar[currentPlayer] === 1
+      currentPlayer.money >= price &&
+      currentPlayer.inventory.includes("car")
     ) {
-      reducePlayerMoney(currentPlayer, price);
-    } else if (playerMoney[currentPlayer] <= price) {
-      setAlertContent("Nincs elég pénzed!");
-      setShowAlertOnPopup(true);
-    } else if (playerHasCar[currentPlayer] === 0) {
-      setAlertContent("Nincs autód!");
-      setShowAlertOnPopup(true);
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money - price,
+        hasCASCO: true,
+      });
+    } else if (currentPlayer.money <= price) {
+      showAlert("Nincs elég pénzed!");
+    } else if (!currentPlayer.inventory.includes("car")) {
+      showAlert("Nincs autód!");
     }
   };
 
   const handlePurchase = (price) => {
-    if (playerMoney[currentPlayer] >= price) {
-      reducePlayerMoney(currentPlayer, price);
+    if (currentPlayer.money >= price) {
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money - price,
+      });
     } else {
-      setAlertContent("Nincs elég pénzed!");
-      setShowAlertOnPopup(true);
+      showAlert("Nincs elég pénzed!");
     }
   };
 
@@ -51,7 +46,7 @@ const Insurance = ({
       <div className="ins-header">
         <h1 className="ins-title">Biztosító</h1>
         <h1 className="ins-balance">
-          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+          Egyenleg: {formatMoney(currentPlayer.money)}
         </h1>
       </div>
       <div className="insurance">
@@ -93,12 +88,10 @@ const Insurance = ({
             Lakásbiztosítás - 1 000 000 Ft
           </button>
         </p>
-        <button className="ins-close" onClick={onClose}>
+        <button className="ins-close" onClick={closePopup}>
           Bezárás
         </button>
       </div>
     </>
   );
-};
-
-export default Insurance;
+}

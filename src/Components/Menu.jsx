@@ -1,4 +1,4 @@
-const Menu = ({ onClose }) => {
+export function Menu({ onClose }) {
   return (
     <>
       <div className="ss-hero-container">
@@ -19,6 +19,4 @@ const Menu = ({ onClose }) => {
       </div>
     </>
   );
-};
-
-export default Menu;
+}

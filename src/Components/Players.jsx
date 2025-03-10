@@ -1,14 +1,12 @@
-//@ts-check
-import React from "react";
-import { useGameState } from "./hooks/use-game-state";
-import { FIELDS } from "./lib/fields-config";
+import { useGame } from "@/hooks/use-game";
+import { FIELDS } from "@/lib/fields-config";
 
-const Players = () => {
-  const [gameState] = useGameState();
+export function Players() {
+  const { state } = useGame();
 
   return (
     <div className="players">
-      {gameState.players.map((player, index) => {
+      {state.players.map((player, index) => {
         const field = FIELDS[player.position];
         return (
           <img
@@ -27,6 +25,4 @@ const Players = () => {
       })}
     </div>
   );
-};
-
-export default Players;
+}

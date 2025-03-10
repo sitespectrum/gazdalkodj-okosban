@@ -1,6 +1,5 @@
-//@ts-check
-import React, { useEffect, useRef, useState } from "react";
-import { useCurrentPlayer } from "./hooks/use-current-player";
+import { useGame } from "@/hooks/use-game";
+import { useEffect, useRef, useState } from "react";
 
 export function Board({ children }) {
   const bigTileSize = "15rem";
@@ -132,7 +131,7 @@ export function Board({ children }) {
             <div className="board-cell row-start-5 col-start-11 rounded-br-xl">
               <img
                 className="rounded-br-xl"
-                src="./src/HQ Pictures/Start.png"
+                src="/src/HQ Pictures/Start.png"
                 alt="Start"
               />
             </div>
@@ -169,7 +168,7 @@ export function Board({ children }) {
             <div className="board-cell row-start-5 rounded-bl-xl !p-0">
               <img
                 className="rounded-bl-xl"
-                src="./src/HQ Pictures/10. Mező.png"
+                src="/src/HQ Pictures/10. Mező.png"
                 alt="10. Mező"
               />
             </div>
@@ -181,7 +180,7 @@ export function Board({ children }) {
             <div className="board-cell row-start-3 overflow-hidden">
               <img
                 className="h-full w-full object-cover"
-                src="./src/HQ Pictures/12. Mező.png"
+                src="/src/HQ Pictures/12. Mező.png"
                 alt="12. Mező"
               />
             </div>
@@ -193,7 +192,7 @@ export function Board({ children }) {
             <div className="board-cell rounded-tl-xl !p-0">
               <img
                 className="rounded-tl-xl"
-                src="./src/HQ Pictures/14. Mező.png"
+                src="/src/HQ Pictures/14. Mező.png"
                 alt="14. Mező"
               />
             </div>
@@ -227,7 +226,7 @@ export function Board({ children }) {
             <div className="board-cell rounded-tr-xl !p-0">
               <img
                 className="rounded-tr-xl"
-                src="./src/HQ Pictures/24. Mező.png"
+                src="/src/HQ Pictures/24. Mező.png"
                 alt="24. Mező"
               />
             </div>
@@ -239,7 +238,7 @@ export function Board({ children }) {
             <div className="board-cell row-start-3 col-start-11 rotate-180 overflow-hidden">
               <img
                 className="h-full w-full object-cover "
-                src="./src/HQ Pictures/26. Mező.png"
+                src="/src/HQ Pictures/26. Mező.png"
                 alt="10. Mező"
               />
             </div>
@@ -270,7 +269,7 @@ function MandatoryField() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/mandatory.png"
+          src="/src/Pictures/CroppedFieldPics/mandatory.png"
           alt="Madnatory field picture"
         />
       </div>
@@ -290,7 +289,7 @@ function FieldOneLucky() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          src="/src/Pictures/CroppedFieldPics/lucky.png"
           alt="Lucky field picture"
         />
       </div>
@@ -308,7 +307,7 @@ function FieldTwoTrash() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/2.png"
+          src="/src/Pictures/CroppedFieldPics/2.png"
           alt="Trash field picture"
         />
       </div>
@@ -328,7 +327,7 @@ function FieldThreeElectronics() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/3.png"
+          src="/src/Pictures/CroppedFieldPics/3.png"
           alt="Electronics field picture"
         />
       </div>
@@ -348,7 +347,7 @@ function FieldFourSouthStation() {
       <div>
         <img
           className="w-full h-full object-cover"
-          src="./src/Pictures/CroppedFieldPics/4.png"
+          src="/src/Pictures/CroppedFieldPics/4.png"
           alt="South station field picture"
         />
       </div>
@@ -370,7 +369,7 @@ function FieldFiveBankRobbery() {
       <div>
         <img
           className="w-full h-full object-cover"
-          src="./src/Pictures/CroppedFieldPics/5.png"
+          src="/src/Pictures/CroppedFieldPics/5.png"
           alt="Bank robbery field picture"
         />
       </div>
@@ -385,7 +384,7 @@ function FieldSixShoppingCenter() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/6.png"
+          src="/src/Pictures/CroppedFieldPics/6.png"
           alt="Shopping center field picture"
         />
       </div>
@@ -405,7 +404,7 @@ function FieldSevenLucky() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          src="/src/Pictures/CroppedFieldPics/lucky.png"
           alt="Lucky field picture"
         />
       </div>
@@ -423,7 +422,7 @@ function FieldEightSmoking() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/8.png"
+          src="/src/Pictures/CroppedFieldPics/8.png"
           alt="Smoking field picture"
         />
       </div>
@@ -443,7 +442,7 @@ function FieldTenMovieTheater() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/10.png"
+          src="/src/Pictures/CroppedFieldPics/10.png"
           alt="Movie theater field picture"
         />
       </div>
@@ -463,7 +462,7 @@ function FieldTwelveCasino() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/12.png"
+          src="/src/Pictures/CroppedFieldPics/12.png"
           alt="Casino field picture"
         />
       </div>
@@ -483,7 +482,7 @@ function FieldFourteenBobTheBuilder() {
       <div>
         <img
           className="pt-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/14.png"
+          src="/src/Pictures/CroppedFieldPics/14.png"
           alt="Bob the Builder field picture"
         />
       </div>
@@ -505,7 +504,7 @@ function FieldFifteenCarShop() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/15.png"
+          src="/src/Pictures/CroppedFieldPics/15.png"
           alt="Car shop field picture"
         />
       </div>
@@ -525,7 +524,7 @@ function FieldSixteenCarTravel() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/16.png"
+          src="/src/Pictures/CroppedFieldPics/16.png"
           alt="Car travel field picture"
         />
       </div>
@@ -544,7 +543,7 @@ function FieldSeventeenLucky() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/lucky.png"
+          src="/src/Pictures/CroppedFieldPics/lucky.png"
           alt="Lucky field picture"
         />
       </div>
@@ -562,7 +561,7 @@ function FieldEighteenNorthStation() {
       <div>
         <img
           className="w-full h-full object-cover"
-          src="./src/Pictures/CroppedFieldPics/18.png"
+          src="/src/Pictures/CroppedFieldPics/18.png"
           alt="North station field picture"
         />
       </div>
@@ -584,7 +583,7 @@ function FieldNineteenAbidas() {
       <div>
         <img
           className="p-6 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/19.png"
+          src="/src/Pictures/CroppedFieldPics/19.png"
           alt="Abidas field picture"
         />
       </div>
@@ -604,7 +603,7 @@ function FieldTwentyIdea() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/20.png"
+          src="/src/Pictures/CroppedFieldPics/20.png"
           alt="Furniture shop field picture"
         />
       </div>
@@ -624,7 +623,7 @@ function FieldTwentyOneBank() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/21.png"
+          src="/src/Pictures/CroppedFieldPics/21.png"
           alt="Bank field picture"
         />
       </div>
@@ -642,7 +641,7 @@ function FieldTwentyTwoABC() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/22.png"
+          src="/src/Pictures/CroppedFieldPics/22.png"
           alt="Food shop field picture"
         />
       </div>
@@ -662,7 +661,7 @@ function FieldTwentyFourInsurance() {
       <div>
         <img
           className="p-5 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/24.png"
+          src="/src/Pictures/CroppedFieldPics/24.png"
           alt="Insurance field picture"
         />
       </div>
@@ -680,7 +679,7 @@ function FieldTwentySixRollAgain() {
       <div>
         <img
           className="p-2 w-full h-full object-contain"
-          src="./src/Pictures/CroppedFieldPics/26.png"
+          src="/src/Pictures/CroppedFieldPics/26.png"
           alt="Roll again field picture"
         />
       </div>
@@ -699,7 +698,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain"
-        src="./src/HQ Pictures/Start.png"
+        src="/src/HQ Pictures/Start.png"
         alt="Start mező"
       />
     );
@@ -773,7 +772,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain"
-        src="./src/HQ Pictures/10. Mező.png"
+        src="/src/HQ Pictures/10. Mező.png"
         alt="Börtönmező"
       />
     );
@@ -791,7 +790,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain -rotate-90"
-        src="./src/HQ Pictures/12. Mező.png"
+        src="/src/HQ Pictures/12. Mező.png"
         alt="Nyugati pályaudvar"
       />
     );
@@ -809,7 +808,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain"
-        src="./src/HQ Pictures/14. Mező.png"
+        src="/src/HQ Pictures/14. Mező.png"
         alt="Repülőtér"
       />
     );
@@ -891,7 +890,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain"
-        src="./src/HQ Pictures/24. Mező.png"
+        src="/src/HQ Pictures/24. Mező.png"
         alt="Kórház"
       />
     );
@@ -909,7 +908,7 @@ export function BigActiveField({ position }) {
     return (
       <img
         className="w-full h-full object-contain -rotate-90"
-        src="./src/HQ Pictures/26. Mező.png"
+        src="/src/HQ Pictures/26. Mező.png"
         alt="Keleti pályaudvar"
       />
     );
@@ -927,7 +926,7 @@ export function BigActiveField({ position }) {
 }
 
 export function BigActiveFieldFader() {
-  const { player } = useCurrentPlayer();
+  const { currentPlayer } = useGame();
 
   const [activeSwitched, setActiveSwitched] = useState(false);
   const [positionOne, setPositionOne] = useState(0);
@@ -935,13 +934,13 @@ export function BigActiveFieldFader() {
 
   useEffect(() => {
     if (activeSwitched) {
-      setPositionOne(player.position);
+      setPositionOne(currentPlayer.position);
     } else {
-      setPositionTwo(player.position);
+      setPositionTwo(currentPlayer.position);
     }
 
     setActiveSwitched(!activeSwitched);
-  }, [player.position]);
+  }, [currentPlayer.position]);
 
   return (
     <div className="w-full h-full relative ">

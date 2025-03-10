@@ -1,16 +1,13 @@
-import React, { useState, useContext } from "react";
-import { alertContext } from "../lib/contexts.js";
-import { formatMoney } from "../lib/utils.js";
+import { useAlert } from "@/hooks/use-alert";
+import { useGame } from "@/hooks/use-game";
+import { usePopup } from "@/hooks/use-popup";
+import { formatMoney } from "@/lib/utils.js";
+import { useState } from "react";
 
-const Casino = ({
-  onClose,
-  currentPlayer,
-  reducePlayerMoney,
-  addPlayerMoney,
-}) => {
-  const [playerMoney] = useContext(moneyContext);
-  const [_, setAlertContent, __, setShowAlertOnPopup] =
-    useContext(alertContext);
+export function Casino() {
+  const { currentPlayer, updateCurrentPlayer } = useGame();
+  const { showAlert } = useAlert();
+  const { closePopup } = usePopup();
 
   const [playerCards, setPlayerCards] = useState([]);
   const [dealerCards, setDealerCards] = useState([]);
@@ -22,13 +19,15 @@ const Casino = ({
   const getTotal = (cards) => cards.reduce((sum, card) => sum + card, 0);
 
   const startGame = () => {
-    if (playerMoney[currentPlayer] < bet) {
-      setAlertContent("Nincs elég pénzed a tét megtételéhez!");
-      setShowAlertOnPopup(true);
+    if (currentPlayer.money < bet) {
+      showAlert("Nincs elég pénzed a tét megtételéhez!");
       return;
     }
 
-    reducePlayerMoney(currentPlayer, bet);
+    updateCurrentPlayer({
+      ...currentPlayer,
+      money: currentPlayer.money - bet,
+    });
 
     setPlayerCards([getRandomCard(), getRandomCard()]);
     setDealerCards([getRandomCard(), getRandomCard()]);
@@ -61,12 +60,18 @@ const Casino = ({
 
     if (finalDealerTotal > 21 || finalPlayerTotal > finalDealerTotal) {
       setMessage("Nyertél!");
-      addPlayerMoney(currentPlayer, bet * 2);
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + bet * 2,
+      });
     } else if (finalPlayerTotal < finalDealerTotal) {
       setMessage("Vesztettél!");
     } else {
       setMessage("Döntetlen! Visszakaptad a tétet.");
-      addPlayerMoney(currentPlayer, bet);
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + bet,
+      });
     }
     setGameOver(true);
   };
@@ -78,7 +83,7 @@ const Casino = ({
       <div className="casino-header">
         <h1 className="casino-title">Casino</h1>
         <h1 className="casino-balance">
-          Egyenleg: {formatMoney(playerMoney[currentPlayer])}
+          Egyenleg: {formatMoney(currentPlayer.money)}
         </h1>
       </div>
       <div className="casino">
@@ -88,7 +93,7 @@ const Casino = ({
           placeholder="Tét"
           value={bet}
           min="1"
-          max={playerMoney[currentPlayer]}
+          max={currentPlayer.money}
           onChange={(e) => setBet(parseInt(e.target.value) || 1)}
           className="bet"
           disabled={gameStarted}
@@ -132,12 +137,10 @@ const Casino = ({
             )}
           </>
         )}
-        <button className="casino-close" onClick={onClose}>
+        <button className="casino-close" onClick={closePopup}>
           Bezárás
         </button>
       </div>
     </>
   );
-};
-
-export default Casino;
+}

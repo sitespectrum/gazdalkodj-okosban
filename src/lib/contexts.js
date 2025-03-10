@@ -1,11 +1,10 @@
-//@ts-check
 import { createContext } from "react";
-import { DEFAULT_GAME_STATE } from "./constants";
 
-/** @typedef {import('./types').GameState} GameState */
+/** @typedef {import("@/lib/types").GameState} GameState */
 /** @typedef {[string, React.Dispatch<React.SetStateAction<string>>, any, React.Dispatch<React.SetStateAction<any>>, boolean, React.Dispatch<React.SetStateAction<boolean>>]} PopupContext */
 /** @typedef {[any, React.Dispatch<React.SetStateAction<any>>, boolean, React.Dispatch<React.SetStateAction<boolean>>, boolean, React.Dispatch<React.SetStateAction<boolean>>, boolean, React.Dispatch<React.SetStateAction<boolean>>]} AlertContext */
-/** @typedef {import('./types').CallbackState<GameState>} GameStateContext */
+/** @typedef {import("@/lib/types").GameManager} GameManager */
+/** @typedef {import("@/lib/types").GameDataContext} GameDataContext */
 
 /** @type {React.Context<PopupContext>} */
 export const popupContext = createContext([
@@ -29,5 +28,8 @@ export const alertContext = createContext([
   (_) => {},
 ]);
 
-/** @type {React.Context<GameStateContext>} */
-export const gameStateContext = createContext([DEFAULT_GAME_STATE, (_) => {}]);
+/** @type {React.Context<GameDataContext>} */
+export const gameDataContext = createContext({});
+
+/** @type {React.Context<GameManager | null>} */
+export const gameContext = createContext(null);

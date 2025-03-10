@@ -1,21 +1,24 @@
-//@ts-check
-import React from "react";
-import Elza from "../Components/Elza";
-import BankRobbery from "../Components/BankRobbery";
-import Lucky from "../Components/Lucky";
-import ElzaAndIdea from "../Components/ElzaAndIdea";
-import Bobthebuilder from "../Components/Bobthebuilder";
-import Carshop from "../Components/Carshop";
-import Idea from "../Components/Idea";
-import Steelroad from "../Components/Steelroad";
+import { BankRobbery } from "@/Components/field-popups/BankRobbery";
+import { Bobthebuilder } from "@/Components/field-popups/Bobthebuilder";
+import { Carshop } from "@/Components/field-popups/Carshop";
+import { Elza } from "@/Components/field-popups/Elza";
+import { ElzaAndIdea } from "@/Components/field-popups/ElzaAndIdea";
+import { Idea } from "@/Components/field-popups/Idea";
+import { Lucky } from "@/Components/field-popups/Lucky";
+import { Steelroad } from "@/Components/field-popups/Steelroad";
 
-/** @type {import('./types').Field[]} */
+// Missing actions:
+// TODO: add casino
+// TODO: add insurance
+
+/** @type {import("@/lib/types").Field[]} */
 export const FIELDS = [
   {
     id: 0,
     name: "Start",
     x: 92.45,
     y: 83,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money += 170_000;
@@ -30,6 +33,7 @@ export const FIELDS = [
     name: "Lucky 1",
     x: 73.7,
     y: 84,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("lucky", <Lucky />),
   },
   {
@@ -37,6 +41,7 @@ export const FIELDS = [
     name: "Trash",
     x: 65.4,
     y: 84,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money -= 1500;
@@ -50,6 +55,7 @@ export const FIELDS = [
     name: "Elza",
     x: 57.1,
     y: 84,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("elza", <Elza />),
   },
   {
@@ -58,6 +64,7 @@ export const FIELDS = [
     x: 48.9,
     y: 84,
     isStop: true,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
   },
   {
@@ -65,6 +72,7 @@ export const FIELDS = [
     name: "Bank Robbery",
     x: 40.6,
     y: 84,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("bankrobbery", <BankRobbery />),
   },
   {
@@ -72,6 +80,7 @@ export const FIELDS = [
     name: "Elza and Idea",
     x: 32.5,
     y: 84,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("elzaandidea", <ElzaAndIdea />),
   },
   {
@@ -79,6 +88,7 @@ export const FIELDS = [
     name: "Lucky 2",
     x: 24.2,
     y: 84,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("lucky", <Lucky />),
   },
   {
@@ -86,6 +96,7 @@ export const FIELDS = [
     name: "Smoking",
     x: 16,
     y: 84,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money -= 1500;
@@ -102,6 +113,7 @@ export const FIELDS = [
     name: "Movie Theater",
     x: 5,
     y: 64,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money -= 5000;
@@ -116,6 +128,7 @@ export const FIELDS = [
     x: 5,
     y: 45,
     isStop: true,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
   },
   { id: 12, name: "Casino", x: 5, y: 26.5 },
@@ -125,20 +138,36 @@ export const FIELDS = [
     name: "Airport",
     x: 5,
     y: 10,
+    isActionInstant: false,
     action: async (props) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
       props.updateGameState(
         (prevGameState) => {
-          console.log("prevGameState", prevGameState);
           prevGameState.players[props.playerIndex].position += 4;
-          console.log("prevGameState", prevGameState);
           return {
             ...prevGameState,
           };
         },
-        (newGameState) => {
-          FIELDS[newGameState.players[props.playerIndex].position].action?.(
-            props
+        async (newGameState) => {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+
+          const newField =
+            FIELDS[newGameState.players[props.playerIndex].position];
+          props.updateGameState(
+            (prev) => {
+              prev.players[props.playerIndex].state = newField.isActionInstant
+                ? "actionEnded"
+                : "actionStarted";
+              return {
+                ...prev,
+              };
+            },
+            (newState) => {
+              newField.action?.({
+                ...props,
+                currentPlayer: newState.players[props.playerIndex],
+                gameState: newState,
+              });
+            }
           );
         }
       );
@@ -150,6 +179,7 @@ export const FIELDS = [
     name: "Bob the Builder",
     x: 16,
     y: 7.5,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("bobthebuilder", <Bobthebuilder />),
   },
   {
@@ -157,6 +187,7 @@ export const FIELDS = [
     name: "Car Shop",
     x: 24.2,
     y: 7.5,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("carshop", <Carshop />),
   },
   {
@@ -164,9 +195,9 @@ export const FIELDS = [
     name: "Car travel",
     x: 32.5,
     y: 7.5,
+    isActionInstant: false,
     action: async (props) => {
       if (props.gameState.players[props.playerIndex].hasCar) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         props.updateGameState(
           (prevGameState) => {
             prevGameState.players[props.playerIndex].position += 10;
@@ -174,9 +205,27 @@ export const FIELDS = [
               ...prevGameState,
             };
           },
-          (newGameState) => {
-            FIELDS[newGameState.players[props.playerIndex].position].action?.(
-              props
+          async (newGameState) => {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const newField =
+              FIELDS[newGameState.players[props.playerIndex].position];
+            props.updateGameState(
+              (prev) => {
+                prev.players[props.playerIndex].state = newField.isActionInstant
+                  ? "actionEnded"
+                  : "actionStarted";
+                return {
+                  ...prev,
+                };
+              },
+              (newState) => {
+                newField.action?.({
+                  ...props,
+                  currentPlayer: newState.players[props.playerIndex],
+                  gameState: newState,
+                });
+              }
             );
           }
         );
@@ -188,6 +237,7 @@ export const FIELDS = [
     name: "Lucky 3",
     x: 40.6,
     y: 7.5,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("lucky", <Lucky />),
   },
   {
@@ -196,6 +246,7 @@ export const FIELDS = [
     x: 48.9,
     y: 7.5,
     isStop: true,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
   },
   {
@@ -203,6 +254,7 @@ export const FIELDS = [
     name: "Abidas",
     x: 57.1,
     y: 7.5,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money -= 15_000;
@@ -216,6 +268,7 @@ export const FIELDS = [
     name: "Idea",
     x: 65.4,
     y: 7.5,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("idea", <Idea />),
   },
   { id: 21, name: "Bank 4", x: 73.7, y: 7.5 },
@@ -224,6 +277,7 @@ export const FIELDS = [
     name: "ABC",
     x: 81.8,
     y: 7.5,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].money -= 10_000;
@@ -237,6 +291,7 @@ export const FIELDS = [
     name: "Hospital",
     x: 94,
     y: 11,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) => {
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].inHospital = true;
@@ -254,6 +309,7 @@ export const FIELDS = [
     x: 93,
     y: 45,
     isStop: true,
+    isActionInstant: false,
     action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
   },
   {
@@ -261,6 +317,7 @@ export const FIELDS = [
     name: "Roll again",
     x: 93,
     y: 64,
+    isActionInstant: true,
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].canRollDice = true;

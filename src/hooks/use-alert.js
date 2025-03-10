@@ -1,6 +1,5 @@
-//@ts-check
+import { alertContext } from "@/lib/contexts";
 import { useContext } from "react";
-import { alertContext } from "../lib/contexts";
 
 export function useAlert() {
   const [

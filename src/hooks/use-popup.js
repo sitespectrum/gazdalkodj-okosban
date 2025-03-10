@@ -1,6 +1,5 @@
-//@ts-check
 import { useContext } from "react";
-import { popupContext } from "../lib/contexts.js";
+import { popupContext } from "@/lib/contexts.js";
 
 export function usePopup() {
   const [
@@ -12,6 +11,10 @@ export function usePopup() {
     setIsOpen,
   ] = useContext(popupContext);
 
+  /**
+   * @param {string} popupClass
+   * @param {React.ReactNode} popupContent
+   */
   const openPopup = (popupClass, popupContent) => {
     setPopupClass(popupClass);
     setPopupContent(popupContent);

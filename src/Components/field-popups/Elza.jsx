@@ -1,40 +1,20 @@
-//@ts-check
-import React, { useState, useEffect } from "react";
-import { formatMoney } from "../lib/utils.js";
-import { useCurrentPlayer } from "../hooks/use-current-player.js";
-import { useAlert } from "../hooks/use-alert.js";
-import { usePopup } from "../hooks/use-popup.js";
+import { useGame } from "@/hooks/use-game";
+import { usePopup } from "@/hooks/use-popup.js";
+import { PURCHASEABLE_ITEMS } from "@/lib/constants";
+import { formatMoney } from "@/lib/utils.js";
+import { Fragment, useEffect, useState } from "react";
 
 const shopItems = [
-  {
-    name: "Sumasang 4K TV",
-    price: 119_990,
-  },
-  {
-    name: "GL előltöltős mosógép",
-    price: 99_990,
-  },
-  {
-    name: "Boss előltöltős szárítógép",
-    price: 129_990,
-  },
-  {
-    name: "Görénye alulfagyasztós hűtő",
-    price: 84_990,
-  },
-  {
-    name: "Kendi mosogatógép",
-    price: 109_990,
-  },
-  {
-    name: "Dájszon porszívó",
-    price: 124_990,
-  },
+  PURCHASEABLE_ITEMS.tv,
+  PURCHASEABLE_ITEMS.washingMachine,
+  PURCHASEABLE_ITEMS.dryer,
+  PURCHASEABLE_ITEMS.fridge,
+  PURCHASEABLE_ITEMS.dishwasher,
+  PURCHASEABLE_ITEMS.vacuumCleaner,
 ];
 
-export default function Elza() {
-  const { player, updatePlayer } = useCurrentPlayer();
-  const { showAlert } = useAlert();
+export function Elza() {
+  const { currentPlayer, buyItem } = useGame();
   const { closePopup } = usePopup();
 
   /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
@@ -46,36 +26,22 @@ export default function Elza() {
     setDisabledItems([
       ...disabledItems,
       ...shopItems
-        .filter((item) => player.inventory.includes(item.name))
-        .map((item) => item.name),
+        .filter((item) => currentPlayer.inventory.includes(item.id))
+        .map((item) => item.id),
     ]);
-  }, [player.inventory]);
-
-  const handlePurchase = (item, price) => {
-    if (player.money >= price) {
-      updatePlayer({
-        ...player,
-        money: player.money - price,
-        inventory: [...player.inventory, item],
-      });
-    } else {
-      showAlert("Nincs elég pénzed!", {
-        showOnPopup: true,
-      });
-    }
-  };
+  }, [currentPlayer.inventory]);
 
   return (
     <>
       <div className=" flex gap-12 items-stretch justify-between">
-        <img src="./src/Logos/Elza logo.png" className="w-48 -mt-4" />
+        <img src="/src/Logos/Elza logo.png" className="w-48 -mt-4" />
         <div className="bg-black/50 rounded-xl px-8 py-3 text-2xl flex items-center justify-center text-white font-semibold">
-          Egyenleg: {formatMoney(player.money)}
+          Egyenleg: {formatMoney(currentPlayer.money)}
         </div>
       </div>
       <div className="bg-white rounded-xl p-6 shadow-[0_0_1.5rem_rgba(0,0,0,0.2)] flex flex-col gap-4">
         {shopItems.map((item, index) => (
-          <React.Fragment key={item.name}>
+          <Fragment key={item.id}>
             <div className="flex justify-between items-center gap-4">
               <span className="text-lg">{item.name}</span>
               <span className="text-lg font-semibold ml-auto">
@@ -84,11 +50,12 @@ export default function Elza() {
               <button
                 className="buyButton rounded-lg px-4 py-2 bg-gradient-to-b from-[lightgrey]/50 to-[grey]/50 text-black border-none"
                 disabled={
-                  disabledItems.includes(item.name) || player.money < item.price
+                  disabledItems.includes(item.id) ||
+                  currentPlayer.money < item.price
                 }
                 onClick={() => {
-                  handlePurchase(item.name, item.price);
-                  setDisabledItems([...disabledItems, item.name]);
+                  buyItem(currentPlayer.index, item);
+                  setDisabledItems([...disabledItems, item.id]);
                 }}
               >
                 Vásárlás
@@ -97,7 +64,7 @@ export default function Elza() {
             {index !== shopItems.length - 1 && (
               <div className="border-b border-gray-300" />
             )}
-          </React.Fragment>
+          </Fragment>
         ))}
 
         <button

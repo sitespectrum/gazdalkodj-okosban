@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-/** @typedef {import('../lib/types').CallbackState} CallbackState */
+/**
+ * @template T
+ * @typedef {import('@/lib/types').CallbackState<T>} CallbackState
+ */
 
 /**
  * A custom hook that extends useState with callback support

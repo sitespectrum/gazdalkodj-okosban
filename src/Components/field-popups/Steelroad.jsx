@@ -1,12 +1,11 @@
-//@ts-check
-import React, { useEffect, useState } from "react";
-import { useAlert } from "../hooks/use-alert.js";
-import { useCurrentPlayer } from "../hooks/use-current-player.js";
-import { usePopup } from "../hooks/use-popup.js";
-import { FIELDS } from "../lib/fields-config.jsx";
+import { useAlert } from "@/hooks/use-alert.js";
+import { useGame } from "@/hooks/use-game";
+import { usePopup } from "@/hooks/use-popup.js";
+import { FIELDS } from "@/lib/fields-config.jsx";
+import { useEffect, useState } from "react";
 
-export default function Steelroad() {
-  const { player, updatePlayer } = useCurrentPlayer();
+export function Steelroad() {
+  const { currentPlayer, updateCurrentPlayer } = useGame();
   const { closePopup } = usePopup();
   const { showAlert } = useAlert();
 
@@ -26,7 +25,9 @@ export default function Steelroad() {
    * @returns {[number, boolean]}
    */
   function getNextStop() {
-    let nextStop = FIELDS.find((x) => x.isStop && x.id > player.position)?.id;
+    let nextStop = FIELDS.find(
+      (x) => x.isStop && x.id > currentPlayer.position
+    )?.id;
     let crossedStart = false;
     if (!nextStop) {
       nextStop = FIELDS.find((x) => x.isStop)?.id;
@@ -34,16 +35,16 @@ export default function Steelroad() {
     }
     if (!nextStop) {
       console.log("[steelroad] No next stop found", {
-        playerPosition: player.position,
+        playerPosition: currentPlayer.position,
         fields: FIELDS,
       });
-      nextStop = player.position;
+      nextStop = currentPlayer.position;
     }
     return [nextStop, crossedStart];
   }
 
   function handleBuyTicket() {
-    if (player.money < 3000) {
+    if (currentPlayer.money < 3000) {
       showAlert("Nincs elég pénzed a jegyvásárláshoz!");
       return;
     }
@@ -52,14 +53,14 @@ export default function Steelroad() {
     let moneyAdjustment = -3000;
     if (crossedStart) {
       moneyAdjustment += 150_000;
-      if (!player.inventory.includes("Ház")) {
+      if (!currentPlayer.inventory.includes("Ház")) {
         moneyAdjustment -= 70_000;
       }
     }
 
-    updatePlayer((prevPlayer) => ({
+    updateCurrentPlayer((prevPlayer) => ({
       ...prevPlayer,
-      money: player.money + moneyAdjustment,
+      money: currentPlayer.money + moneyAdjustment,
       position: nextStop,
     }));
 
@@ -76,15 +77,15 @@ export default function Steelroad() {
     }
     if (crossedStart) {
       moneyAdjustment += 150_000;
-      if (!player.inventory.includes("Ház")) {
+      if (!currentPlayer.inventory.includes("Ház")) {
         moneyAdjustment -= 70_000;
       }
     }
 
-    updatePlayer((prevPlayer) => ({
+    updateCurrentPlayer((prevPlayer) => ({
       ...prevPlayer,
       position: nextStop,
-      money: player.money + moneyAdjustment,
+      money: currentPlayer.money + moneyAdjustment,
     }));
 
     closePopup();
@@ -92,7 +93,7 @@ export default function Steelroad() {
     if (shouldFine < 0.5) {
       showAlert(
         <>
-          {player.name} büntetést kapott!
+          {currentPlayer.name} büntetést kapott!
           <br /> 40 000 Ft levonva.
         </>
       );
@@ -141,7 +142,7 @@ export default function Steelroad() {
             </div>
           </div>
           <div className="font-semibold text-xl mt-4">
-            {player.name}, szeretnél jegyet vásárolni? (3000 Ft)
+            {currentPlayer.name}, szeretnél jegyet vásárolni? (3000 Ft)
           </div>
           <div className="flex gap-4 mt-1 mb-2">
             <button
