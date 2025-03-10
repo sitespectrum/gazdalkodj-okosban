@@ -13,6 +13,7 @@ type Params = {
   };
   "/new-local-game": {};
   "/local-games": {};
+  "/online-game": {};
   "/temp-game": {};
   "/new-game": {};
 };

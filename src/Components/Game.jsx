@@ -70,9 +70,13 @@ export function Game() {
                 <div className="flex flex-col gap-6 p-6 justify-center h-full items-center">
                   <div className="flex-1 w-full">
                     <RollDiceButton
-                      onDiceRoll={(steps) =>
-                        movePlayer(currentPlayer.index, steps)
-                      }
+                      onDiceRoll={(steps) => {
+                        updateCurrentPlayer((prev) => ({
+                          ...prev,
+                          rollingDice: false,
+                        }));
+                        movePlayer(currentPlayer.index, steps);
+                      }}
                     />
                   </div>
 

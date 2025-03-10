@@ -68,7 +68,8 @@ export default function App() {
   useEffect(() => {
     if (
       !location.pathname.startsWith("/local-game/") &&
-      !location.pathname.startsWith("/temp-game")
+      !location.pathname.startsWith("/temp-game") &&
+      !location.pathname.startsWith("/online-game")
     ) {
       document.documentElement.style.fontSize = "16px";
     }

@@ -1,12 +1,12 @@
 import { WinnerAlert } from "@/Components/WinnerAlert";
-import { FIXED_DICE_ROLL, PURCHASEABLE_ITEMS } from "@/lib/constants";
 import { gameDataContext } from "@/lib/contexts";
-import { FIELDS } from "@/lib/fields-config";
-import { getRandomNumber } from "@/lib/utils";
-import { createElement, useCallback, useContext } from "react";
+import { createElement, useContext, useEffect } from "react";
 import { useAlert } from "../use-alert";
 import { usePopup } from "../use-popup";
-import { useEffect } from "react";
+import { useCallback } from "react";
+import { useRef } from "react";
+import { SERVER_URL } from "@/lib/constants";
+import { FIELDS } from "@/lib/fields-config";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -16,11 +16,15 @@ import { useEffect } from "react";
  * @template T
  * @typedef {import("@/lib/types").Result<T>} Result
  */
+/**
+ * @template [T=any]
+ * @typedef {import("@/lib/types").WebSocketMessage<T>} WebSocketMessage
+ */
 
 /**
  * @returns {GameManager}
  */
-export function useLocalGame() {
+export function useOnlineGame() {
   const { isOpen, popupContent, openPopup, closePopup } = usePopup();
   const { showAlert } = useAlert();
 
@@ -30,20 +34,22 @@ export function useLocalGame() {
     throw new Error("Game context not found or not initialized");
   }
 
+  const ws = useRef(/** @type {WebSocket} */ (null));
+
   useEffect(() => {
-    if (
-      !isOpen &&
-      popupContent &&
-      state.players[state.currentPlayer].state === "actionStarted"
-    ) {
-      updateState((prev) => {
-        prev.players[prev.currentPlayer].state = "actionEnded";
-        return {
-          ...prev,
-        };
-      });
-    }
-  }, [isOpen]);
+    ws.current = new WebSocket(`${SERVER_URL}/ws`);
+    ws.current.onmessage = handleMessage;
+    ws.current.onopen = () => {
+      console.log("WebSocket is open");
+    };
+    ws.current.onclose = () => {
+      console.log("WebSocket is closed");
+    };
+
+    return () => {
+      ws.current.close();
+    };
+  }, []);
 
   useEffect(() => {
     if (state.winningPlayerIndex !== -1) {
@@ -58,14 +64,6 @@ export function useLocalGame() {
      */
     (updater, callback = null) => {
       setState(updater, (newState) => {
-        if (meta.id !== "temp") {
-          const jsonData = JSON.stringify({
-            meta,
-            state: newState,
-          });
-          localStorage.setItem(`local-game-${meta.id}`, jsonData);
-        }
-
         if (callback) {
           callback(newState);
         }
@@ -107,22 +105,13 @@ export function useLocalGame() {
   /**
    * @param {number} playerIndex
    */
-  async function rollDice(playerIndex) {
-    if (FIXED_DICE_ROLL) {
-      updateState((prev) => {
-        prev.players[playerIndex].rollingDice = true;
-        prev.players[playerIndex].rolledDice = FIXED_DICE_ROLL;
-        return {
-          ...prev,
-        };
-      });
-      return;
-    }
-
-    const result = getRandomNumber(1, 6);
+  async function rollDiceCaller(playerIndex) {
+    sendMessage({
+      type: "roll-dice",
+      data: { playerIndex },
+    });
     updateState((prev) => {
       prev.players[playerIndex].rollingDice = true;
-      prev.players[playerIndex].rolledDice = result;
       return {
         ...prev,
       };
@@ -130,45 +119,46 @@ export function useLocalGame() {
   }
 
   /**
-   * @param {number} playerIndex
-   * @param {ShopItem} item
-   * @returns {Promise<Result<null>>}
+   * @param {WebSocketMessage<{playerIndex: number}>} message
    */
-  async function buyItem(playerIndex, item) {
-    const player = state.players[playerIndex];
-    if (player.money < item.price) {
-      return {
-        success: false,
-        error: "Nincs elég pénzed!",
-      };
-    }
-
+  async function rollDiceStartedReceiver(message) {
     updateState((prev) => {
-      const updatedPlayer = {
-        ...player,
-        money: player.money - item.price,
-        inventory: [...player.inventory, item.id],
-      };
+      prev.players[message.data.playerIndex].rollingDice = true;
       return {
         ...prev,
-        players: prev.players.map((p, index) =>
-          index === playerIndex ? updatedPlayer : p
-        ),
       };
     });
+  }
 
-    return {
-      success: true,
-      data: null,
-    };
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, result: number}>} message
+   */
+  async function rollDiceReceiver(message) {
+    updateState((prev) => {
+      prev.players[message.data.playerIndex].rolledDice = message.data.result;
+      return {
+        ...prev,
+      };
+    });
   }
 
   /**
    * @param {number} playerIndex
    * @param {number} steps
-   * @returns {Promise<void>}
    */
-  async function movePlayer(playerIndex, steps) {
+  async function movePlayerCaller(playerIndex, steps) {
+    sendMessage({
+      type: "move-player",
+      data: { playerIndex, steps },
+    });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, steps: number}>} message
+   */
+  async function movePlayerReceiver(message) {
+    const { playerIndex, steps } = message.data;
+
     const oldPlayer = state.players[playerIndex];
 
     if (state.players[playerIndex].inJail && steps !== 6) {
@@ -286,43 +276,38 @@ export function useLocalGame() {
     );
   }
 
-  /**
-   * @param {number} playerIndex
-   * @returns {Promise<Result<null>>}
-   */
-  async function endTurn(playerIndex) {
-    updateState((prev) => {
-      prev.currentPlayer = (playerIndex + 1) % prev.players.length;
-      prev.players[prev.currentPlayer].state = "justStarted";
-      prev.players[prev.currentPlayer].canRollDice = true;
-      prev.players[prev.currentPlayer].canEndTurn = false;
-      prev.players[prev.currentPlayer].rollingDice = false;
-      prev.players[prev.currentPlayer].rolledDice = null;
+  const sendMessage = useCallback(
+    /**
+     * @param {WebSocketMessage} message
+     */
+    (message) => {
+      ws.current.send(JSON.stringify(message));
+    },
+    [ws]
+  );
 
-      if (prev.players[prev.currentPlayer].inHospital) {
-        prev.players[prev.currentPlayer].canRollDice = false;
-        prev.players[prev.currentPlayer].canEndTurn = true;
-        prev.players[prev.currentPlayer].state = "actionEnded";
-        prev.players[prev.currentPlayer].inHospital = false;
+  const handleMessage = useCallback(
+    /**
+     * @param {MessageEvent} wsMessage
+     */
+    (wsMessage) => {
+      const message = JSON.parse(wsMessage.data);
+      console.log("message", message);
+
+      switch (message.type) {
+        case "roll-dice-started":
+          rollDiceStartedReceiver(message);
+          break;
+        case "roll-dice-result":
+          rollDiceReceiver(message);
+          break;
+        case "move-player-result":
+          movePlayerReceiver(message);
+          break;
       }
-
-      prev.winningPlayerIndex = prev.players.findIndex((player) => {
-        const allItems = Object.values(PURCHASEABLE_ITEMS);
-        return allItems
-          .filter((item) => !item.optional)
-          .every((item) => player.inventory.includes(item.id));
-      });
-
-      return {
-        ...prev,
-      };
-    });
-
-    return {
-      success: true,
-      data: null,
-    };
-  }
+    },
+    [updateState]
+  );
 
   return {
     meta,
@@ -333,10 +318,7 @@ export function useLocalGame() {
     updateState,
     updateCurrentPlayer,
 
-    rollDice,
-    movePlayer,
-    endTurn,
-
-    buyItem,
+    rollDice: rollDiceCaller,
+    movePlayer: movePlayerCaller,
   };
 }

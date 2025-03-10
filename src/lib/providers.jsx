@@ -1,4 +1,5 @@
 import { useLocalGame } from "@/hooks/managers/use-local-game";
+import { useOnlineGame } from "@/hooks/managers/use-online-game";
 import { useCallbackState } from "@/hooks/use-callback-state.js";
 import {
   alertContext,
@@ -67,7 +68,7 @@ export function Providers({ children }) {
  * @param {GameData} props.initialData
  * @param {React.ReactNode} props.children
  */
-export function LocalGameDataProvider({ initialData, children }) {
+export function GameDataProvider({ initialData, children }) {
   const [meta, setMeta] = useCallbackState(initialData.meta);
   const [state, setState] = useCallbackState(initialData.state);
 
@@ -78,8 +79,22 @@ export function LocalGameDataProvider({ initialData, children }) {
   );
 }
 
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} props.children
+ */
 export function LocalGameProvider({ children }) {
   const game = useLocalGame();
+
+  return <gameContext.Provider value={game}>{children}</gameContext.Provider>;
+}
+
+/**
+ * @param {Object} props
+ * @param {React.ReactNode} props.children
+ */
+export function OnlineGameProvider({ children }) {
+  const game = useOnlineGame();
 
   return <gameContext.Provider value={game}>{children}</gameContext.Provider>;
 }

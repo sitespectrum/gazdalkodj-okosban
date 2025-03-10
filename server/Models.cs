@@ -1,6 +1,7 @@
 namespace server;
 
 using Newtonsoft.Json;
+
 public record WebSocketMessage<T> {
     [JsonProperty("type")]
     public required string Type { get; set; }

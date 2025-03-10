@@ -2,6 +2,7 @@ import { useAlert } from "@/hooks/use-alert";
 import { useGame } from "@/hooks/use-game";
 import { INSTANT_DICE_ROLL } from "@/lib/constants";
 import { getRandomNumber } from "@/lib/utils";
+import { useMemo } from "react";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -16,74 +17,82 @@ export function RollDiceButton({ onDiceRoll }) {
   const [currentDice, setCurrentDice] = useState(1);
   const [isFinished, setIsFinished] = useState(false);
 
-  /**
-   * @type {React.MutableRefObject<number>}
-   */
-  const startingPlayerID = useRef(-1);
-  /**
-   * @type {React.MutableRefObject<NodeJS.Timeout | null>}
-   */
-  const interval = useRef(null);
-  /**
-   * @type {React.MutableRefObject<NodeJS.Timeout | null>}
-   */
-  const timeout = useRef(null);
+  const lastRandomDice = useRef(-1);
+  const shouldEndRollingAnimation = useRef(false);
+  const rolledDice = useRef(null);
+  const interval = useRef(/**@type {NodeJS.Timeout | null}*/ (null));
+  const timeout = useRef(/**@type {NodeJS.Timeout | null}*/ (null));
 
-  //TODO: also handle the roll again field
+  const isCurrentPlayerRolling = useMemo(() => {
+    return state.players[state.currentPlayer].rollingDice;
+  }, [state]);
+
   useEffect(() => {
-    console.log(state.currentPlayer);
-    console.log(state.players.findIndex((p) => p.name === currentPlayer.name));
-    if (startingPlayerID.current !== state.currentPlayer) {
-      startingPlayerID.current = state.currentPlayer;
-      setIsRolling(false);
-      setIsFinished(false);
-      clearInterval(interval.current ?? undefined);
-      clearTimeout(timeout.current ?? undefined);
+    if (isCurrentPlayerRolling && !isRolling) {
+      startRollingAnimation();
+      setIsRolling(true);
     }
-  }, [state.currentPlayer]);
+  }, [isCurrentPlayerRolling]);
 
-  /**
-   * @param {number} steps
-   */
-  async function startRollingAnimation(steps) {
-    setIsRolling(true);
-    return new Promise((resolve) => {
-      const tempSteps = [];
-      while (tempSteps.length < 5) {
-        const step = getRandomNumber(1, 6);
-        if (!tempSteps.includes(step) && step !== steps) {
-          tempSteps.push(step);
-        }
+  const currentRolledDice = useMemo(() => {
+    return state.players[currentPlayer.index].rolledDice;
+  }, [state]);
+
+  useEffect(() => {
+    rolledDice.current = currentRolledDice;
+    if (!currentRolledDice) {
+      resetState();
+    }
+  }, [currentRolledDice]);
+
+  async function startRollingAnimation() {
+    interval.current = setInterval(() => {
+      let step = lastRandomDice.current;
+      while (step === lastRandomDice.current) {
+        step = getRandomNumber(1, 6);
       }
 
-      interval.current = setInterval(() => {
-        const step = tempSteps.shift();
-        if (step) {
-          setCurrentDice(step);
-        }
-      }, 400);
+      setCurrentDice(step);
+      lastRandomDice.current = step;
 
-      timeout.current = setTimeout(
-        () => {
-          clearInterval(interval.current ?? undefined);
-          setCurrentDice(steps);
-          setIsFinished(true);
-          resolve(null);
-        },
-        INSTANT_DICE_ROLL ? 0 : 2000
-      );
-    });
+      if (rolledDice.current && shouldEndRollingAnimation.current) {
+        endRollingAnimation();
+        onDiceRoll(rolledDice.current);
+      }
+    }, 400);
+
+    timeout.current = setTimeout(
+      () => {
+        shouldEndRollingAnimation.current = true;
+        if (rolledDice.current) {
+          endRollingAnimation();
+          onDiceRoll(rolledDice.current);
+        }
+      },
+      INSTANT_DICE_ROLL ? 0 : 2000
+    );
+  }
+
+  function endRollingAnimation() {
+    setCurrentDice(rolledDice.current);
+    setIsRolling(false);
+    setIsFinished(true);
+    clearInterval(interval.current ?? undefined);
+    clearTimeout(timeout.current ?? undefined);
+  }
+
+  function resetState() {
+    setIsRolling(false);
+    setIsFinished(false);
+    setCurrentDice(1);
+    clearInterval(interval.current ?? undefined);
+    clearTimeout(timeout.current ?? undefined);
+    lastRandomDice.current = -1;
+    shouldEndRollingAnimation.current = false;
   }
 
   async function handleClick() {
-    const steps = await rollDice(currentPlayer.index);
-
-    if (steps.success === true) {
-      await startRollingAnimation(steps.data);
-      onDiceRoll(steps.data);
-    } else {
-      showAlert(steps.error);
-    }
+    rollDice(currentPlayer.index);
   }
 
   return (
@@ -92,7 +101,7 @@ export function RollDiceButton({ onDiceRoll }) {
       disabled={!currentPlayer.canRollDice || isRolling}
       className="w-full h-full text-2xl font-medium flex flex-col gap-10 items-center justify-center hover:bg-white/15 disabled:bg-black/15! disabled:text-white/50! active:not-disabled:scale-[.98] transition-all duration-100 bg-black/30 rounded-xl"
     >
-      {isRolling ? (
+      {isRolling || isFinished ? (
         <RollingDices currentDice={currentDice} isFinished={isFinished} />
       ) : (
         <DicesIcon />

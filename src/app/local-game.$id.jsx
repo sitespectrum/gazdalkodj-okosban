@@ -1,7 +1,7 @@
 import { Game } from "@/Components/Game";
 import { DEFAULT_GAME_STATE } from "@/lib/constants";
 import {
-  LocalGameDataProvider,
+  GameDataProvider,
   LocalGameProvider,
   Providers,
 } from "@/lib/providers";
@@ -24,11 +24,11 @@ export default function LocalGame() {
 
   return (
     <Providers>
-      <LocalGameDataProvider key={id} initialData={data}>
+      <GameDataProvider key={id} initialData={data}>
         <LocalGameProvider key={id}>
           <Game key={id} />
         </LocalGameProvider>
-      </LocalGameDataProvider>
+      </GameDataProvider>
     </Providers>
   );
 }

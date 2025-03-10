@@ -321,6 +321,8 @@ export const FIELDS = [
     action: ({ updateGameState, playerIndex }) =>
       updateGameState((prevGameState) => {
         prevGameState.players[playerIndex].canRollDice = true;
+        prevGameState.players[playerIndex].rollingDice = false;
+        prevGameState.players[playerIndex].rolledDice = null;
         return {
           ...prevGameState,
         };

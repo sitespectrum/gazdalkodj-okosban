@@ -9,8 +9,6 @@ builder.WebHost.UseUrls("http://localhost:42069");
 var app = builder.Build();
 app.UseWebSockets();
 
-var connections = new List<WebSocket>();
-
 app.MapGet("/", () => "Hello World!");
 
 app.MapGet("/ws", async (context) => {
@@ -20,7 +18,7 @@ app.MapGet("/ws", async (context) => {
     }
 
     var ws = await context.WebSockets.AcceptWebSocketAsync();
-    connections.Add(ws);
+    GlobalData.Connections.Add(ws);
 
     var buffer = new byte[1024 * 4];
     var receiveResult = await ws.ReceiveAsync(
@@ -41,7 +39,7 @@ app.MapGet("/ws", async (context) => {
     }
 
     await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
-    connections.Remove(ws);
+    GlobalData.Connections.Remove(ws);
 });
 
 await app.RunAsync();

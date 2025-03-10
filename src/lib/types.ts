@@ -19,8 +19,8 @@ export interface GameManagerActions {
   updateState: CallbackStateAction<GameState>;
   updateCurrentPlayer: CallbackStateAction<Player>;
 
-  rollDice: (playerIndex: number) => Promise<Result<number>>;
-  movePlayer: (playerIndex: number, steps: number) => Promise<Result<null>>;
+  rollDice: (playerIndex: number) => Promise<void>;
+  movePlayer: (playerIndex: number, steps: number) => Promise<void>;
   endTurn: (playerIndex: number) => Promise<Result<null>>;
 
   buyItem: (playerIndex: number, item: ShopItem) => Promise<Result<null>>;
@@ -73,6 +73,8 @@ export interface Player {
   canRollDice: boolean;
   canEndTurn: boolean;
   state: "justStarted" | "rolledDice" | "actionStarted" | "actionEnded";
+  rolledDice?: number;
+  rollingDice?: boolean;
 }
 
 export interface Field {
@@ -113,3 +115,8 @@ export type CallbackStateAction<T> = (
   newValueOrUpdater: T | ((prevState: T) => T),
   callback?: (newState: T) => void
 ) => void;
+
+export interface WebSocketMessage<T = any> {
+  type: string;
+  data: T;
+}

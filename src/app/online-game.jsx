@@ -2,7 +2,7 @@ import { Game } from "@/Components/Game";
 import { DEFAULT_GAME_STATE } from "@/lib/constants";
 import {
   GameDataProvider,
-  LocalGameProvider,
+  OnlineGameProvider,
   Providers,
 } from "@/lib/providers";
 
@@ -18,10 +18,10 @@ export default function LocalGame() {
 
   return (
     <Providers>
-      <GameDataProvider key="temp" initialData={data}>
-        <LocalGameProvider key="temp">
-          <Game key="temp" />
-        </LocalGameProvider>
+      <GameDataProvider key="online" initialData={data}>
+        <OnlineGameProvider key="online">
+          <Game key="online" />
+        </OnlineGameProvider>
       </GameDataProvider>
     </Providers>
   );
