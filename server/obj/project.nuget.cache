@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "zgxHBIG41FhL3HvLJND031EUsBxyZKC0L4Ye4Zv4apWjfvsne6lwKflVZM8yMKJHd6vbDFzOA/D0uVoxWXF1QA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\akosf\\Downloads\\Gazdálkodj okoban web új\\Gazdalkodj_okosban\\server\\server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\akosf\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

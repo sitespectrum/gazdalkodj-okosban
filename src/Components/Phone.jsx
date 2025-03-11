@@ -10,7 +10,7 @@ const Phone = ({ onClose }) => {
             setTime(new Date());
         }, 60000);
 
-        return () => clearInterval(timeInterval);
+        return () => clearInterval(timeInterval); 
     }, []);
 
     useEffect(() => {
