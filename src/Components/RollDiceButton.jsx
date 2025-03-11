@@ -1,17 +1,14 @@
-import { useAlert } from "@/hooks/use-alert";
 import { useGame } from "@/hooks/use-game";
 import { INSTANT_DICE_ROLL } from "@/lib/constants";
 import { getRandomNumber } from "@/lib/utils";
-import { useMemo } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * @param {Object} props
  * @param {(steps: number) => any} props.onDiceRoll
  */
 export function RollDiceButton({ onDiceRoll }) {
-  const { state, currentPlayer, rollDice } = useGame();
-  const { showAlert } = useAlert();
+  const { state, currentPlayer, isMyTurn, rollDice } = useGame();
 
   const [isRolling, setIsRolling] = useState(false);
   const [currentDice, setCurrentDice] = useState(1);
@@ -98,7 +95,7 @@ export function RollDiceButton({ onDiceRoll }) {
   return (
     <button
       onClick={handleClick}
-      disabled={!currentPlayer.canRollDice || isRolling}
+      disabled={!currentPlayer.canRollDice || isRolling || !isMyTurn}
       className="w-full h-full text-2xl font-medium flex flex-col gap-10 items-center justify-center hover:bg-white/15 disabled:bg-black/15! disabled:text-white/50! active:not-disabled:scale-[.98] transition-all duration-100 bg-black/30 rounded-xl"
     >
       {isRolling || isFinished ? (

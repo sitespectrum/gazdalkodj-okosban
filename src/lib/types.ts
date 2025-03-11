@@ -12,6 +12,7 @@ export interface GameManager extends GameManagerActions {
   meta: GameMeta;
   state: GameState;
   currentPlayer: Player;
+  isMyTurn: boolean;
 }
 
 export interface GameManagerActions {
@@ -119,4 +120,10 @@ export type CallbackStateAction<T> = (
 export interface WebSocketMessage<T = any> {
   type: string;
   data: T;
+}
+
+export interface OnlinePlayerData {
+  id: string;
+  name: string;
+  image: string;
 }

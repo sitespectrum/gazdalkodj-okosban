@@ -328,6 +328,7 @@ export function useLocalGame() {
     meta,
     state,
     currentPlayer: state.players[state.currentPlayer],
+    isMyTurn: true,
 
     updateMeta: setMeta,
     updateState,

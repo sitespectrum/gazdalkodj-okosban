@@ -13,7 +13,13 @@ export default function LocalGame() {
       id: "temp",
       name: "Temporary Local Game",
     },
-    state: DEFAULT_GAME_STATE,
+    state: {
+      ...DEFAULT_GAME_STATE,
+      players: DEFAULT_GAME_STATE.players.map((player, index) => ({
+        ...player,
+        id: `player-${index}`,
+      })),
+    },
   };
 
   return (

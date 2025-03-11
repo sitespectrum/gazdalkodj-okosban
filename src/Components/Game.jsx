@@ -28,6 +28,7 @@ export function Game() {
     state,
     updateState,
     currentPlayer,
+    isMyTurn,
     updateCurrentPlayer,
     movePlayer,
     endTurn,
@@ -38,6 +39,7 @@ export function Game() {
       currentPlayer.state === "actionStarted" ||
       currentPlayer.state === "rolledDice"
     ) {
+      if (!isMyTurn) return;
       const field = FIELDS[currentPlayer.position];
       field?.action({
         currentPlayer,
@@ -75,7 +77,9 @@ export function Game() {
                           ...prev,
                           rollingDice: false,
                         }));
-                        movePlayer(currentPlayer.index, steps);
+                        if (isMyTurn) {
+                          movePlayer(currentPlayer.index, steps);
+                        }
                       }}
                     />
                   </div>
@@ -83,7 +87,7 @@ export function Game() {
                   <button
                     className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
                     onClick={() => endTurn(currentPlayer.index)}
-                    disabled={!currentPlayer.canEndTurn}
+                    disabled={!currentPlayer.canEndTurn || !isMyTurn}
                   >
                     Kör vége
                   </button>

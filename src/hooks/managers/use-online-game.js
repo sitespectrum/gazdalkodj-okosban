@@ -7,6 +7,8 @@ import { useCallback } from "react";
 import { useRef } from "react";
 import { SERVER_URL } from "@/lib/constants";
 import { FIELDS } from "@/lib/fields-config";
+import { useOnlinePlayer } from "../use-online-player";
+import { useMemo } from "react";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -29,12 +31,17 @@ export function useOnlineGame() {
   const { showAlert } = useAlert();
 
   const { meta, setMeta, state, setState } = useContext(gameDataContext);
+  const { player } = useOnlinePlayer();
 
   if (!meta || !state || !setMeta || !setState) {
     throw new Error("Game context not found or not initialized");
   }
 
   const ws = useRef(/** @type {WebSocket} */ (null));
+
+  const isMyTurn = useMemo(() => {
+    return state.players[state.currentPlayer].id === player.id;
+  }, [state, player]);
 
   useEffect(() => {
     ws.current = new WebSocket(`${SERVER_URL}/ws`);
@@ -171,7 +178,9 @@ export function useOnlineGame() {
         },
         async () => {
           await new Promise((resolve) => setTimeout(resolve, 1000));
-          showAlert(`Csak hatos dobással lehet kiszabadulni a börtönből!`);
+          if (isMyTurn) {
+            showAlert(`Csak hatos dobással lehet kiszabadulni a börtönből!`);
+          }
           updateState((prevGameState) => {
             prevGameState.players[playerIndex].state = "rolledDice";
             return {
@@ -262,7 +271,11 @@ export function useOnlineGame() {
                       gameState: newState,
                       updateGameState: updateState,
                       playerIndex: playerIndex,
-                      openPopup: openPopup,
+                      openPopup: (popupClass, content) => {
+                        if (isMyTurn) {
+                          openPopup(popupClass, content);
+                        }
+                      },
                     });
                   }
                 );
@@ -313,6 +326,7 @@ export function useOnlineGame() {
     meta,
     state,
     currentPlayer: state.players[state.currentPlayer],
+    isMyTurn,
 
     updateMeta: setMeta,
     updateState,
