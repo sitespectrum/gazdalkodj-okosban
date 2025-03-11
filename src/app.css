@@ -59,6 +59,14 @@ input {
   background-color: #a0ecff;
 }
 
+.popup-content-yappel {
+  background: linear-gradient(to bottom, #b4ff00, #76a900);
+}
+
+.popup-content-phone {
+  background-color: black;
+}
+
 @keyframes slide-left {
   0% {
     transform: translateX(0);

@@ -218,7 +218,7 @@ export function Board({ children }) {
               <FieldTwentyIdea />
             </div>
             <div className="board-cell">
-              <FieldTwentyOneBank />
+              <FieldTwentyOneYappel />
             </div>
             <div className="board-cell">
               <FieldTwentyTwoABC />
@@ -616,10 +616,10 @@ function FieldTwentyIdea() {
   );
 }
 
-function FieldTwentyOneBank() {
+function FieldTwentyOneYappel() {
   return (
-    <div className="field-grid-bottom text-center text-black bg-[#030405]">
-      <div className="py-1 pt-1.5 bg-[#f9eb1b] font-semibold">21.</div>
+    <div className="field-grid-bottom text-center text-white bg-[#b4ff00]">
+      <div className="py-1 pt-1.5 bg-[#002340] font-semibold">21.</div>
       <div>
         <img
           className="p-2 w-full h-full object-contain"
@@ -627,8 +627,8 @@ function FieldTwentyOneBank() {
           alt="Bank field picture"
         />
       </div>
-      <div className="text-[0.65rem] text-center bg-[#f9eb1b] pt-3 px-1">
-        Terveid megvalósításához választhatsz kedvező kölcsöneint közül.
+      <div className="text-[0.65rem] text-center bg-[#002340] pt-3 px-1">
+        Vegyé telefont he.
       </div>
     </div>
   );
@@ -873,7 +873,7 @@ export function BigActiveField({ position }) {
   if (position === 21) {
     return (
       <div className="aspect-[360/566] h-[46%] scale-215">
-        <FieldTwentyOneBank />
+        <FieldTwentyOneYappel />
       </div>
     );
   }

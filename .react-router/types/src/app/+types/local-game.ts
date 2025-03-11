@@ -1,17 +1,17 @@
 // React Router generated types for route:
-// app/new-local-game.jsx
+// app/local-game.jsx
 
 import type * as T from "react-router/route-module"
 
 import type { Info as Parent0 } from "../../+types/root.js"
 
-type Module = typeof import("../new-local-game.js")
+type Module = typeof import("../local-game.js")
 
 export type Info = {
   parents: [Parent0],
-  id: "app/new-local-game"
-  file: "app/new-local-game.jsx"
-  path: "new-local-game"
+  id: "app/local-game"
+  file: "app/local-game.jsx"
+  path: "local-game"
   params: {} & { [key: string]: string | undefined }
   module: Module
   loaderData: T.CreateLoaderData<Module>

@@ -7,6 +7,7 @@ import { useGame } from "@/hooks/use-game";
 import { usePopup } from "@/hooks/use-popup.js";
 import { FIELDS } from "@/lib/fields-config";
 import { useEffect } from "react";
+import { Phone } from "./field-popups/Phone";
 
 export function Game() {
   const {
@@ -75,6 +76,14 @@ export function Game() {
                       }
                     />
                   </div>
+
+                  <button
+                    className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
+                    onClick={() => openPopup("phone", <Phone />)}
+                    disabled={!currentPlayer.inventory.includes("phone")}
+                  >
+                    Telefon
+                  </button>
 
                   <button
                     className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"

@@ -66,6 +66,7 @@ export interface Player {
   inventory: string[];
   hasCar: boolean;
   hasCASCO: boolean;
+  hasPhone: boolean;
   hasAccIns: boolean;
   hasHomeIns: boolean;
   inHospital: boolean;

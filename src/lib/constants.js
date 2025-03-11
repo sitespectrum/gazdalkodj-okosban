@@ -4,7 +4,7 @@
 export const IS_MENU_OPEN = true;
 
 /** @type {number} */
-export const FIXED_DICE_ROLL = 0;
+export const FIXED_DICE_ROLL = 21;
 
 /** @type {boolean} */
 export const INSTANT_DICE_ROLL = false;
@@ -19,10 +19,15 @@ export const PURCHASEABLE_ITEMS = {
     name: "Ház",
     price: 25_000_000,
   },
+  phone: {
+    id: "phone",
+    name: "Sumasang P25 Ultra Pro Max Slim 1TB",
+    price: 1_000_000,
+  },
   car: {
     id: "car",
     name: "Autó",
-    price: 1_000_000,
+    price: 2_500_000,
     optional: true,
   },
   tv: {
@@ -82,11 +87,12 @@ export const DEFAULT_GAME_STATE = {
       index: 0,
       name: "Játékos 1",
       image: "/src/Pictures/Puppets/Piros bábú 1.png",
-      money: 400_000,
+      money: 100_000_000,
       position: 0,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
+      hasPhone: false,
       hasAccIns: false,
       hasHomeIns: false,
       inHospital: false,
@@ -99,11 +105,12 @@ export const DEFAULT_GAME_STATE = {
       index: 1,
       name: "Játékos 2",
       image: "/src/Pictures/Puppets/Kék bábú 1.png",
-      money: 400_000,
+      money: 100_000_000,
       position: 0,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
+      hasPhone: false,
       hasAccIns: false,
       hasHomeIns: false,
       inHospital: false,
@@ -116,11 +123,12 @@ export const DEFAULT_GAME_STATE = {
       index: 2,
       name: "Játékos 3",
       image: "/src/Pictures/Puppets/Zöld bábú 1.png",
-      money: 400_000,
+      money: 100_000_000,
       position: 0,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
+      hasPhone: false,
       hasAccIns: false,
       hasHomeIns: false,
       inHospital: false,
@@ -133,11 +141,12 @@ export const DEFAULT_GAME_STATE = {
       index: 3,
       name: "Játékos 4",
       image: "/src/Pictures/Puppets/Sárga bábú 1.png",
-      money: 400_000,
+      money: 100_000_000,
       position: 0,
       inventory: [],
       hasCar: false,
       hasCASCO: false,
+      hasPhone: false,
       hasAccIns: false,
       hasHomeIns: false,
       inHospital: false,
