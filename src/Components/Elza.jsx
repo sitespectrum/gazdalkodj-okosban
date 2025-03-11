@@ -12,6 +12,7 @@ const Elza = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
   const [isFRButtonDisabled, setIsFRButtonDisabled] = useState(playerInventory[currentPlayer].includes('Görénye alulfagyasztós hűtő'));
   const [isDWButtonDisabled, setIsDWButtonDisabled] = useState(playerInventory[currentPlayer].includes('Kendi mosogatógép'));
   const [isVButtonDisabled, setIsVButtonDisabled] = useState(playerInventory[currentPlayer].includes('Dájszon porszívó'));
+  const [isPHButtonDisabled, setIsPHButtonDisabled] = useState(playerInventory[currentPlayer].includes("Sumasang P25 Ultra 1TB"));
 
   const handlePurchase = (item, price) => {
     if (playerMoney[currentPlayer] >= price) {
@@ -103,6 +104,19 @@ const Elza = ({ onClose, currentPlayer, playerInventory, reducePlayerMoney, addI
             onClick={() => {
               handlePurchase('Dájszon porszívó', 124990);
               setIsVButtonDisabled(true);
+            }}
+          >
+            Vásárlás
+          </button>
+        </p>
+        <p>
+          Sumasang P25 Ultra 1TB - 999 990 Ft
+          <button
+            className="buyButton"
+            disabled={isPHButtonDisabled}
+            onClick={() => {
+              handlePurchase('Sumasang P25 Ultra 1TB', 999990);
+              setIsPHButtonDisabled(true);
             }}
           >
             Vásárlás

@@ -106,7 +106,7 @@ const Steelroad = ({ onClose, currentPlayer, playerPositions, setPlayerPositions
     <div className="steelroad">
       <h2>Utazás a következő megállóra</h2>
         <div className='steelroad-text'>
-            <p className='simple'>{earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })} - {earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}</p>    
+            <p className='simple'>{earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })} - {earlierTime.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}</p>
             <p className='red'>{time.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })} - {time.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}</p>
             <p className='delay'>Biztosítóberendezési hiba miatti késés <br /> Pálya állapota miatti késés</p>
             <p className='question'>Játékos {currentPlayer + 1}, szeretnél jegyet vásárolni?</p>

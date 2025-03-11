@@ -15,6 +15,8 @@ import BankRobbery from './Components/BankRobbery.jsx'
 import Bobthebuilder from './Components/Bobthebuilder.jsx'
 import Insurance from './Components/Insurance.jsx'
 import Menu from './Components/Menu.jsx'
+import Phone from './Components/Phone.jsx'
+import Bank from './Components/Bank.jsx'
 import { CurrentPlayerPanel } from './Components/CurrentPlayerPanel.jsx'
 import { useContext } from 'react'
 import { alertContext, moneyContext } from './main.jsx'
@@ -37,7 +39,7 @@ function App()
 {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
 
-  const rollDice = () => Math.floor(Math.random() * 6) + 1;
+  const rollDice = () => 21;
 
   const [playerPositions, setPlayerPositions] = useState([0, 0, 0, 0]);
 
@@ -405,6 +407,16 @@ function App()
           )
         }
 
+      if (newPositions[playerIndex] === 21)
+      {
+        setPopupClass("bank");
+        setPopupContent(
+          <Bank
+            onClose={() => setPopupContent(null)}
+          />
+        )
+      }
+
       if (newPositions[playerIndex] === 24)
       {
         setPopupClass("insurance");
@@ -442,7 +454,8 @@ function App()
         setPopupContent(
         <>
         <img src="./src/Logos/MKV logo.png" className='steelroad-logo'/>
-        <Steelroad onClose={() => setPopupContent(null)}
+        <Steelroad 
+          onClose={() => setPopupContent(null)}
           currentPlayer={currentPlayer} 
           reducePlayerMoney={reducePlayerMoney}
           addPlayerMoney={addPlayerMoney}
@@ -477,6 +490,17 @@ function App()
     setIsThrowButtonDisabled(false);
   }
 
+  const phonePopup = () => {
+    setPopupClass("phone");
+    setPopupContent(
+      <>
+        <Phone 
+          onClose={() => setPopupContent(null)}
+        />
+      </>
+    )
+  }
+
   const ActivatePictures = () => 
   {
     return activePicture !== null ? (
@@ -490,19 +514,10 @@ function App()
     ) : null;
   };
 
-  /*
-  const handleSubmit = (event, prevPositions, playerIndex) => {
-    event.preventDefault(); 
-  
-    const cheatCode = parseInt(document.querySelector(".cheatInput").value, 10);
-    
-    if (!isNaN(cheatCode)) {
-      const newPositions = [...prevPositions];
-      newPositions[playerIndex] += cheatCode;
-      console.log("New Positions:", newPositions);
-    }
+  const handleThrow = () => 
+  {
+    movePlayer(currentPlayer, rollDice())
   };
-  */
 
   return (
     <div>
@@ -511,7 +526,13 @@ function App()
           document.documentElement.requestFullscreen();
           setIsMenuOpen(false)
         }} /> : <>
-          <button className='throwButton' disabled={isThrowButtonDisabled} onClick={() => movePlayer(currentPlayer, rollDice())}>Dobás</button>
+          <img
+            src={isThrowButtonDisabled ? "./src/HQ Pictures/Throw Button Disabled.png" : "./src/HQ Pictures/Throw Button.png"}
+            alt="Dobás"
+            className='throwButton'
+            onClick={!isThrowButtonDisabled ? handleThrow : undefined}
+            style={{ cursor: isThrowButtonDisabled ? "not-allowed" : "pointer"}}
+          />
           {popupContent && !(!showAlertOnPopup && alertContent) ? <>
             <div className={`popup-wrapper-${popupClass}`} onClick={() => setPopupContent(null)}>
               <div className={`popup-content-${popupClass}`} onClick={(e) => e.stopPropagation()}>
@@ -535,6 +556,7 @@ function App()
               </div>
             </div>
           </> : <></>}
+          <button className='phoneButton' onClick={() => phonePopup()}>Telefon</button>
           <CurrentPlayerPanel currentPlayer={currentPlayer} playerInventory={playerInventory[currentPlayer]} />
           <button className='nextPlayer' onClick={() => whosTurn()}>Kör vége</button>
         </>}
