@@ -5,10 +5,10 @@ import { useAlert } from "../use-alert";
 import { usePopup } from "../use-popup";
 import { useCallback } from "react";
 import { useRef } from "react";
-import { SERVER_URL } from "@/lib/constants";
+import { PURCHASEABLE_ITEMS, SERVER_URL } from "@/lib/constants";
 import { FIELDS } from "@/lib/fields-config";
 import { useOnlinePlayer } from "../use-online-player";
-import { useMemo } from "react";
+import { useState } from "react";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -38,10 +38,14 @@ export function useOnlineGame() {
   }
 
   const ws = useRef(/** @type {WebSocket} */ (null));
+  const [isMyTurn, setIsMyTurn] = useState(false);
+  const isMyTurnRef = useRef(false);
 
-  const isMyTurn = useMemo(() => {
-    return state.players[state.currentPlayer].id === player.id;
-  }, [state, player]);
+  useEffect(() => {
+    const value = state.players[state.currentPlayer].id === player.id;
+    setIsMyTurn(value);
+    isMyTurnRef.current = value;
+  }, [state.currentPlayer, player]);
 
   useEffect(() => {
     ws.current = new WebSocket(`${SERVER_URL}/ws`);
@@ -108,6 +112,51 @@ export function useOnlineGame() {
     },
     [updateState]
   );
+
+  function closePopupEndAction() {
+    closePopup();
+    if (isMyTurnRef.current) {
+      endActionCaller(state.currentPlayer);
+      updateState((prev) => {
+        prev.players[prev.currentPlayer].state = "actionEnded";
+        return {
+          ...prev,
+        };
+      });
+    }
+  }
+
+  /**
+   * @param {WebSocketMessage<GameState>} message
+   */
+  async function syncGameStateReceiver(message) {
+    updateState(
+      (prev) => {
+        return {
+          ...prev,
+          ...message.data,
+        };
+      },
+      (newState) => {
+        if (
+          newState.players[newState.currentPlayer].state === "actionStarted" ||
+          newState.players[newState.currentPlayer].state === "rolledDice"
+        ) {
+          if (!isMyTurnRef.current) return;
+          const field =
+            FIELDS[newState.players[newState.currentPlayer].position];
+          field?.action({
+            currentPlayer: newState.players[newState.currentPlayer],
+            updateCurrentPlayer,
+            gameState: newState,
+            updateGameState: updateState,
+            playerIndex: newState.currentPlayer,
+            openPopup,
+          });
+        }
+      }
+    );
+  }
 
   /**
    * @param {number} playerIndex
@@ -272,7 +321,7 @@ export function useOnlineGame() {
                       updateGameState: updateState,
                       playerIndex: playerIndex,
                       openPopup: (popupClass, content) => {
-                        if (isMyTurn) {
+                        if (isMyTurnRef.current) {
                           openPopup(popupClass, content);
                         }
                       },
@@ -287,6 +336,97 @@ export function useOnlineGame() {
         );
       }
     );
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function endActionCaller(playerIndex) {
+    sendMessage({
+      type: "end-action",
+      data: { playerIndex },
+    });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function endActionReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].state = "actionEnded";
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function endTurnCaller(playerIndex) {
+    sendMessage({
+      type: "end-turn",
+      data: { playerIndex },
+    });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function endTurnReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.currentPlayer = (playerIndex + 1) % prev.players.length;
+      prev.players[prev.currentPlayer].state = "justStarted";
+      prev.players[prev.currentPlayer].canRollDice = true;
+      prev.players[prev.currentPlayer].canEndTurn = false;
+      prev.players[prev.currentPlayer].rollingDice = false;
+      prev.players[prev.currentPlayer].rolledDice = null;
+
+      if (prev.players[prev.currentPlayer].inHospital) {
+        prev.players[prev.currentPlayer].canRollDice = false;
+        prev.players[prev.currentPlayer].canEndTurn = true;
+        prev.players[prev.currentPlayer].state = "actionEnded";
+        prev.players[prev.currentPlayer].inHospital = false;
+      }
+
+      prev.winningPlayerIndex = prev.players.findIndex((player) => {
+        const allItems = Object.values(PURCHASEABLE_ITEMS);
+        return allItems
+          .filter((item) => !item.optional)
+          .every((item) => player.inventory.includes(item.id));
+      });
+
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   * @param {ShopItem} item
+   */
+  async function buyItemCaller(playerIndex, item) {
+    sendMessage({ type: "buy-item", data: { playerIndex, itemId: item.id } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, itemId: string}>} message
+   */
+  async function buyItemReceiver(message) {
+    const { playerIndex, itemId } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money -= PURCHASEABLE_ITEMS[itemId].price;
+      prev.players[playerIndex].inventory = [
+        ...prev.players[playerIndex].inventory,
+        itemId,
+      ];
+      return {
+        ...prev,
+      };
+    });
   }
 
   const sendMessage = useCallback(
@@ -308,6 +448,9 @@ export function useOnlineGame() {
       console.log("message", message);
 
       switch (message.type) {
+        case "sync-game-state":
+          syncGameStateReceiver(message);
+          break;
         case "roll-dice-started":
           rollDiceStartedReceiver(message);
           break;
@@ -316,6 +459,15 @@ export function useOnlineGame() {
           break;
         case "move-player-result":
           movePlayerReceiver(message);
+          break;
+        case "action-ended":
+          endActionReceiver(message);
+          break;
+        case "end-turn-result":
+          endTurnReceiver(message);
+          break;
+        case "buy-item-result":
+          buyItemReceiver(message);
           break;
       }
     },
@@ -327,6 +479,9 @@ export function useOnlineGame() {
     state,
     currentPlayer: state.players[state.currentPlayer],
     isMyTurn,
+    isMyTurnRef,
+
+    closePopup: closePopupEndAction,
 
     updateMeta: setMeta,
     updateState,
@@ -334,5 +489,8 @@ export function useOnlineGame() {
 
     rollDice: rollDiceCaller,
     movePlayer: movePlayerCaller,
+    endTurn: endTurnCaller,
+
+    buyItem: buyItemCaller,
   };
 }

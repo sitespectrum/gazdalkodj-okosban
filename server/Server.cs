@@ -20,6 +20,8 @@ app.MapGet("/ws", async (context) => {
     var ws = await context.WebSockets.AcceptWebSocketAsync();
     GlobalData.Connections.Add(ws);
 
+    await Messages.SyncGameState(ws);
+
     var buffer = new byte[1024 * 4];
     var receiveResult = await ws.ReceiveAsync(
         new ArraySegment<byte>(buffer),
@@ -29,8 +31,11 @@ app.MapGet("/ws", async (context) => {
     Console.WriteLine(receiveResult);
 
     while (!receiveResult.CloseStatus.HasValue) {
+        var messageBytes = new byte[receiveResult.Count];
+        Array.Copy(buffer, messageBytes, receiveResult.Count);
+
         Console.WriteLine("Received message");
-        _ = Messages.HandleMessage(ws, buffer);
+        _ = Messages.HandleMessage(ws, messageBytes);
 
         receiveResult = await ws.ReceiveAsync(
             new ArraySegment<byte>(buffer),

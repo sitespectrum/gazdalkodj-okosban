@@ -1,13 +1,11 @@
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { PURCHASEABLE_ITEMS } from "@/lib/constants";
 import { formatMoney } from "@/lib/utils.js";
 
 /** @typedef {import("@/lib/types").ShopItem} ShopItem */
 
 export function Bobthebuilder() {
-  const { currentPlayer, buyItem } = useGame();
-  const { closePopup } = usePopup();
+  const { currentPlayer, buyItem, closePopup } = useGame();
 
   return (
     <>

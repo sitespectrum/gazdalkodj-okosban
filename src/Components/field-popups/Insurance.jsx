@@ -1,13 +1,11 @@
 import { useAlert } from "@/hooks/use-alert.js";
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { formatMoney } from "@/lib/utils.js";
 import { useState } from "react";
 
 export function Insurance() {
-  const { currentPlayer, updateCurrentPlayer } = useGame();
+  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
   const { showAlert } = useAlert();
-  const { closePopup } = usePopup();
 
   const [playerHasCASCO, setPlayerHasCASCO] = useState(false);
   const [playerHasAccIns, setPlayerHasAccIns] = useState(false);

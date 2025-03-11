@@ -1,12 +1,10 @@
 import { useAlert } from "@/hooks/use-alert.js";
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { FIELDS } from "@/lib/fields-config.jsx";
 import { useEffect, useState } from "react";
 
 export function Steelroad() {
-  const { currentPlayer, updateCurrentPlayer } = useGame();
-  const { closePopup } = usePopup();
+  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
   const { showAlert } = useAlert();
 
   const [time, setTime] = useState(new Date());

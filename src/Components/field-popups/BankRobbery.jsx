@@ -1,11 +1,9 @@
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { formatMoney } from "@/lib/utils.js";
 import { useEffect, useState } from "react";
 
 export function BankRobbery() {
-  const { currentPlayer, updateCurrentPlayer } = useGame();
-  const { closePopup } = usePopup();
+  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
 
   const [isRobbing, setIsRobbing] = useState(false);
   /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */

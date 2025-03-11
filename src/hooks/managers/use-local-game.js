@@ -7,6 +7,7 @@ import { createElement, useCallback, useContext } from "react";
 import { useAlert } from "../use-alert";
 import { usePopup } from "../use-popup";
 import { useEffect } from "react";
+import { useRef } from "react";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -25,6 +26,8 @@ export function useLocalGame() {
   const { showAlert } = useAlert();
 
   const { meta, setMeta, state, setState } = useContext(gameDataContext);
+
+  const isMyTurnRef = useRef(true);
 
   if (!meta || !state || !setMeta || !setState) {
     throw new Error("Game context not found or not initialized");
@@ -132,15 +135,17 @@ export function useLocalGame() {
   /**
    * @param {number} playerIndex
    * @param {ShopItem} item
-   * @returns {Promise<Result<null>>}
    */
   async function buyItem(playerIndex, item) {
     const player = state.players[playerIndex];
     if (player.money < item.price) {
-      return {
-        success: false,
-        error: "Nincs elég pénzed!",
-      };
+      showAlert(`Nincs elég pénzed!`);
+      return;
+    }
+
+    if (player.inventory.includes(item.id)) {
+      showAlert(`Már van ilyen terméked!`);
+      return;
     }
 
     updateState((prev) => {
@@ -156,11 +161,6 @@ export function useLocalGame() {
         ),
       };
     });
-
-    return {
-      success: true,
-      data: null,
-    };
   }
 
   /**
@@ -288,7 +288,7 @@ export function useLocalGame() {
 
   /**
    * @param {number} playerIndex
-   * @returns {Promise<Result<null>>}
+   * @returns {Promise<void>}
    */
   async function endTurn(playerIndex) {
     updateState((prev) => {
@@ -317,11 +317,6 @@ export function useLocalGame() {
         ...prev,
       };
     });
-
-    return {
-      success: true,
-      data: null,
-    };
   }
 
   return {
@@ -329,6 +324,9 @@ export function useLocalGame() {
     state,
     currentPlayer: state.players[state.currentPlayer],
     isMyTurn: true,
+    isMyTurnRef,
+
+    closePopup,
 
     updateMeta: setMeta,
     updateState,

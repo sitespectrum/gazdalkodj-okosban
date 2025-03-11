@@ -14,7 +14,6 @@ export function Game() {
     popupContent,
     isOpen: isPopupOpen,
     openPopup,
-    closePopup,
   } = usePopup();
   const {
     content: alertContent,
@@ -29,9 +28,11 @@ export function Game() {
     updateState,
     currentPlayer,
     isMyTurn,
+    isMyTurnRef,
     updateCurrentPlayer,
     movePlayer,
     endTurn,
+    closePopup,
   } = useGame();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function Game() {
       currentPlayer.state === "actionStarted" ||
       currentPlayer.state === "rolledDice"
     ) {
-      if (!isMyTurn) return;
+      if (!isMyTurnRef.current) return;
       const field = FIELDS[currentPlayer.position];
       field?.action({
         currentPlayer,
@@ -77,7 +78,7 @@ export function Game() {
                           ...prev,
                           rollingDice: false,
                         }));
-                        if (isMyTurn) {
+                        if (isMyTurnRef.current) {
                           movePlayer(currentPlayer.index, steps);
                         }
                       }}

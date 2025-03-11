@@ -1,12 +1,10 @@
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { useState } from "react";
 
 /** @typedef {import("@/lib/types").LuckyCard} LuckyCard */
 
 export function Lucky() {
-  const { currentPlayer, updateCurrentPlayer } = useGame();
-  const { closePopup } = usePopup();
+  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
 
   /** @type {LuckyCard[]} */
   const luckyCards = [

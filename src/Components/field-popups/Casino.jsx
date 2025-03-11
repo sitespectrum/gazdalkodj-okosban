@@ -1,13 +1,11 @@
 import { useAlert } from "@/hooks/use-alert";
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup";
 import { formatMoney } from "@/lib/utils.js";
 import { useState } from "react";
 
 export function Casino() {
-  const { currentPlayer, updateCurrentPlayer } = useGame();
+  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
   const { showAlert } = useAlert();
-  const { closePopup } = usePopup();
 
   const [playerCards, setPlayerCards] = useState([]);
   const [dealerCards, setDealerCards] = useState([]);

@@ -1,5 +1,4 @@
 import { useGame } from "@/hooks/use-game";
-import { usePopup } from "@/hooks/use-popup.js";
 import { PURCHASEABLE_ITEMS } from "@/lib/constants";
 import { formatMoney } from "@/lib/utils.js";
 import { Fragment, useEffect, useState } from "react";
@@ -11,8 +10,7 @@ const shopItems = [
 ];
 
 export function Idea() {
-  const { currentPlayer, buyItem } = useGame();
-  const { closePopup } = usePopup();
+  const { currentPlayer, buyItem, closePopup } = useGame();
 
   /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
   const [disabledItems, setDisabledItems] = useState(

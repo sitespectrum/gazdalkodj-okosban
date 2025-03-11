@@ -13,6 +13,7 @@ export interface GameManager extends GameManagerActions {
   state: GameState;
   currentPlayer: Player;
   isMyTurn: boolean;
+  isMyTurnRef: React.MutableRefObject<boolean>;
 }
 
 export interface GameManagerActions {
@@ -20,11 +21,13 @@ export interface GameManagerActions {
   updateState: CallbackStateAction<GameState>;
   updateCurrentPlayer: CallbackStateAction<Player>;
 
+  closePopup: () => void;
+
   rollDice: (playerIndex: number) => Promise<void>;
   movePlayer: (playerIndex: number, steps: number) => Promise<void>;
-  endTurn: (playerIndex: number) => Promise<Result<null>>;
+  endTurn: (playerIndex: number) => Promise<void>;
 
-  buyItem: (playerIndex: number, item: ShopItem) => Promise<Result<null>>;
+  buyItem: (playerIndex: number, item: ShopItem) => Promise<void>;
 }
 
 export interface GameContext {
