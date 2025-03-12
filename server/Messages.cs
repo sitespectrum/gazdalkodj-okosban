@@ -149,7 +149,6 @@ public static class Messages {
         });
 
         var result = new Random().Next(1, 7);
-        result = 4;
         if (GlobalData.GameState.Players[playerIndex ?? 0].RolledDice == null) {
             GlobalData.GameState.Players[playerIndex ?? 0].RolledDice = result;
         } else {
