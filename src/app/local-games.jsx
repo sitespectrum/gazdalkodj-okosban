@@ -83,7 +83,7 @@ export default function LocalGames() {
   }
 
   return (
-    <div className="w-full h-screen flex justify-center items-center bg-dot-white/20 relative flex-col gap-8 p-8">
+    <div className="w-full h-[100dvh] flex justify-center items-center bg-dot-white/20 relative flex-col gap-8 p-8">
       <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
 
       <h1 className="text-5xl z-10 pb-1 font-bold text-center bg-gradient-to-b from-white from-35% to-neutral-500 bg-clip-text text-transparent">
