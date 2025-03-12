@@ -53,6 +53,7 @@ export interface GameDataContext {
 export interface GameMeta {
   id: string;
   name: string;
+  lastPlayed: number;
 }
 
 export interface GameState {

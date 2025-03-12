@@ -1,3 +1,4 @@
+import "@/game.css";
 import { Game } from "@/Components/Game";
 import { DEFAULT_GAME_STATE } from "@/lib/constants";
 import {
@@ -12,6 +13,7 @@ export default function LocalGame() {
     meta: {
       id: "temp",
       name: "Temporary Local Game",
+      lastPlayed: 0,
     },
     state: DEFAULT_GAME_STATE,
   };

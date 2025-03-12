@@ -64,7 +64,10 @@ export function useLocalGame() {
       setState(updater, (newState) => {
         if (meta.id !== "temp") {
           const jsonData = JSON.stringify({
-            meta,
+            meta: {
+              ...meta,
+              lastPlayed: Date.now(),
+            },
             state: newState,
           });
           localStorage.setItem(`local-game-${meta.id}`, jsonData);

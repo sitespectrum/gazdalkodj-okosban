@@ -1,3 +1,4 @@
+import "@/game.css";
 import { Game } from "@/Components/Game";
 import { DEFAULT_GAME_STATE } from "@/lib/constants";
 import {

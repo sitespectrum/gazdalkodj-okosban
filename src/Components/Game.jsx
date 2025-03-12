@@ -54,7 +54,7 @@ export function Game() {
   }, []);
 
   return (
-    <div>
+    <div className="bg-[#0862e1] text-black">
       <Board>
         <div className="w-full h-full bg-[#0862e1] flex justify-between">
           <div className="flex w-full">

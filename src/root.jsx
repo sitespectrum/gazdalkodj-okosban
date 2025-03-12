@@ -1,15 +1,16 @@
 import "@/app.css";
+import { HeroUIProvider } from "@heroui/react";
+import { useEffect } from "react";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useHref,
   useLocation,
+  useNavigate,
 } from "react-router";
-import { Providers } from "./lib/providers";
-import { useEffect } from "react";
-import { useAlert } from "./hooks/use-alert";
 
 /**
  * @type {import("react-router").LinksFunction}
@@ -53,7 +54,7 @@ export function Layout({ children }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="dark bg-background text-foreground">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -64,6 +65,7 @@ export function Layout({ children }) {
 
 export default function App() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (
@@ -75,7 +77,11 @@ export default function App() {
     }
   }, [location]);
 
-  return <Outlet />;
+  return (
+    <HeroUIProvider navigate={navigate} useHref={useHref}>
+      <Outlet />
+    </HeroUIProvider>
+  );
 }
 
 export function HydrateFallback() {
