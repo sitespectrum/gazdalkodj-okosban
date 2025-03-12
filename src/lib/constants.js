@@ -10,7 +10,9 @@ export const FIXED_DICE_ROLL = 0;
 export const INSTANT_DICE_ROLL = false;
 
 /** @type {string} */
-export const SERVER_URL = "http://localhost:42069";
+export const SERVER_URL =
+  //@ts-ignore
+  import.meta.env.VITE_SERVER_URL || "http://localhost:42069";
 
 /** @type {Record<string, ShopItem>} */
 export const PURCHASEABLE_ITEMS = {
