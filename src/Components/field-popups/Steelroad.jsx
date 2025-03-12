@@ -1,11 +1,9 @@
-import { useAlert } from "@/hooks/use-alert.js";
 import { useGame } from "@/hooks/use-game";
-import { FIELDS } from "@/lib/fields-config.jsx";
 import { useEffect, useState } from "react";
 
 export function Steelroad() {
-  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
-  const { showAlert } = useAlert();
+  const { currentPlayer, closePopup, buyTrainTicket, freeRideTrain } =
+    useGame();
 
   const [time, setTime] = useState(new Date());
 
@@ -18,85 +16,6 @@ export function Steelroad() {
   }, []);
 
   const earlierTime = new Date(time.getTime() - 20 * 60000);
-
-  /**
-   * @returns {[number, boolean]}
-   */
-  function getNextStop() {
-    let nextStop = FIELDS.find(
-      (x) => x.isStop && x.id > currentPlayer.position
-    )?.id;
-    let crossedStart = false;
-    if (!nextStop) {
-      nextStop = FIELDS.find((x) => x.isStop)?.id;
-      crossedStart = true;
-    }
-    if (!nextStop) {
-      console.log("[steelroad] No next stop found", {
-        playerPosition: currentPlayer.position,
-        fields: FIELDS,
-      });
-      nextStop = currentPlayer.position;
-    }
-    return [nextStop, crossedStart];
-  }
-
-  function handleBuyTicket() {
-    if (currentPlayer.money < 3000) {
-      showAlert("Nincs elég pénzed a jegyvásárláshoz!");
-      return;
-    }
-
-    const [nextStop, crossedStart] = getNextStop();
-    let moneyAdjustment = -3000;
-    if (crossedStart) {
-      moneyAdjustment += 150_000;
-      if (!currentPlayer.inventory.includes("Ház")) {
-        moneyAdjustment -= 70_000;
-      }
-    }
-
-    updateCurrentPlayer((prevPlayer) => ({
-      ...prevPlayer,
-      money: currentPlayer.money + moneyAdjustment,
-      position: nextStop,
-    }));
-
-    closePopup();
-  }
-
-  function handleNoTicket() {
-    const shouldFine = Math.random();
-    const [nextStop, crossedStart] = getNextStop();
-
-    let moneyAdjustment = 0;
-    if (shouldFine < 0.5) {
-      moneyAdjustment = -40_000;
-    }
-    if (crossedStart) {
-      moneyAdjustment += 150_000;
-      if (!currentPlayer.inventory.includes("Ház")) {
-        moneyAdjustment -= 70_000;
-      }
-    }
-
-    updateCurrentPlayer((prevPlayer) => ({
-      ...prevPlayer,
-      position: nextStop,
-      money: currentPlayer.money + moneyAdjustment,
-    }));
-
-    closePopup();
-
-    if (shouldFine < 0.5) {
-      showAlert(
-        <>
-          {currentPlayer.name} büntetést kapott!
-          <br /> 40 000 Ft levonva.
-        </>
-      );
-    }
-  }
 
   return (
     <>
@@ -145,13 +64,17 @@ export function Steelroad() {
           <div className="flex gap-4 mt-1 mb-2">
             <button
               className="font-medium text-lg bg-[#c6eef8] hover:bg-[#d4f4fc] active:scale-95 border-[0.1rem] border-black rounded-lg py-2 w-36 transition-all duration-100"
-              onClick={handleBuyTicket}
+              onClick={() =>
+                buyTrainTicket(currentPlayer.index, currentPlayer.position)
+              }
             >
               Igen
             </button>
             <button
               className="font-medium text-lg bg-[#c6eef8] hover:bg-[#d4f4fc] active:scale-95 border-[0.1rem] border-black rounded-lg py-2 w-36 transition-all duration-100"
-              onClick={handleNoTicket}
+              onClick={() =>
+                freeRideTrain(currentPlayer.index, currentPlayer.position)
+              }
             >
               Bliccelek
             </button>

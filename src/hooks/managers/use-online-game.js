@@ -9,6 +9,7 @@ import { PURCHASEABLE_ITEMS, SERVER_URL } from "@/lib/constants";
 import { FIELDS } from "@/lib/fields-config";
 import { useOnlinePlayer } from "../use-online-player";
 import { useState } from "react";
+import { FineAlert } from "@/Components/FineAlert";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -27,7 +28,7 @@ import { useState } from "react";
  * @returns {GameManager}
  */
 export function useOnlineGame() {
-  const { isOpen, popupContent, openPopup, closePopup } = usePopup();
+  const { openPopup, closePopup } = usePopup();
   const { showAlert } = useAlert();
 
   const { meta, setMeta, state, setState } = useContext(gameDataContext);
@@ -429,6 +430,80 @@ export function useOnlineGame() {
     });
   }
 
+  /**
+   * @param {number} playerIndex
+   * @param {number} stop
+   */
+  async function buyTrainTicketCaller(playerIndex, stop) {
+    sendMessage({ type: "buy-train-ticket", data: { playerIndex, stop } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, stop: number}>} message
+   */
+  async function buyTrainTicketReceiver(message) {
+    const { playerIndex, stop } = message.data;
+    updateState((prev) => {
+      let moneyAdjustment = -3000;
+      if (prev.players[playerIndex].position > stop) {
+        moneyAdjustment += 150_000;
+        if (!prev.players[playerIndex].inventory.includes("house")) {
+          moneyAdjustment -= 70_000;
+        }
+      }
+      prev.players[playerIndex].money += moneyAdjustment;
+      prev.players[playerIndex].position = stop;
+      return {
+        ...prev,
+      };
+    });
+
+    if (isMyTurnRef.current) {
+      closePopupEndAction();
+    }
+  }
+
+  /**
+   * @param {number} playerIndex
+   * @param {number} stop
+   */
+  async function freeRideTrainCaller(playerIndex, stop) {
+    sendMessage({ type: "free-ride-train", data: { playerIndex, stop } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, stop: number, fined: boolean}>} message
+   */
+  async function freeRideTrainReceiver(message) {
+    const { playerIndex, stop, fined } = message.data;
+    updateState((prev) => {
+      let moneyAdjustment = 0;
+      if (fined) {
+        moneyAdjustment = -40_000;
+        if (isMyTurnRef.current) {
+          showAlert(
+            createElement(FineAlert, { name: prev.players[playerIndex].name })
+          );
+        }
+      }
+      if (prev.players[playerIndex].position > stop) {
+        moneyAdjustment += 150_000;
+        if (!prev.players[playerIndex].inventory.includes("house")) {
+          moneyAdjustment -= 70_000;
+        }
+      }
+      prev.players[playerIndex].money += moneyAdjustment;
+      prev.players[playerIndex].position = stop;
+      return {
+        ...prev,
+      };
+    });
+
+    if (isMyTurnRef.current) {
+      closePopupEndAction();
+    }
+  }
+
   const sendMessage = useCallback(
     /**
      * @param {WebSocketMessage} message
@@ -469,6 +544,12 @@ export function useOnlineGame() {
         case "buy-item-result":
           buyItemReceiver(message);
           break;
+        case "buy-train-ticket-result":
+          buyTrainTicketReceiver(message);
+          break;
+        case "free-ride-train-result":
+          freeRideTrainReceiver(message);
+          break;
       }
     },
     [updateState]
@@ -492,5 +573,7 @@ export function useOnlineGame() {
     endTurn: endTurnCaller,
 
     buyItem: buyItemCaller,
+    buyTrainTicket: buyTrainTicketCaller,
+    freeRideTrain: freeRideTrainCaller,
   };
 }

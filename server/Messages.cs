@@ -67,6 +67,12 @@ public static class Messages {
             case "buy-item":
                 await BuyItem(ws, message);
                 break;
+            case "buy-train-ticket":
+                await BuyTrainTicket(ws, message);
+                break;
+            case "free-ride-train":
+                await FreeRideTrain(ws, message);
+                break;
             default:
                 await UnknownMessage(ws, message);
                 break;
@@ -143,6 +149,7 @@ public static class Messages {
         });
 
         var result = new Random().Next(1, 7);
+        result = 4;
         if (GlobalData.GameState.Players[playerIndex ?? 0].RolledDice == null) {
             GlobalData.GameState.Players[playerIndex ?? 0].RolledDice = result;
         } else {
@@ -489,6 +496,151 @@ public static class Messages {
             Data = new {
                 playerIndex,
                 itemId
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    private static (int, bool) GetNextStop(int position) {
+        var nextStop = GlobalData.FIELDS.FirstOrDefault(f => f.ID > position && f.IsStop)?.ID;
+        var crossedStart = nextStop == null;
+        if (crossedStart) {
+            nextStop = GlobalData.FIELDS.FirstOrDefault(f => f.IsStop)?.ID;
+        }
+        if (nextStop == null) {
+            Console.WriteLine($"[steelroad] No next stop found, playerPosition: {position}, fields: {JsonConvert.SerializeObject(GlobalData.FIELDS)}");
+            nextStop = position;
+        }
+        return (nextStop ?? position, crossedStart);
+    }
+
+    public static async Task BuyTrainTicket(WebSocket ws, WebSocketMessage<dynamic> message) {
+        Console.WriteLine("buy-train-ticket message received");
+
+        int? playerIndex;
+        try {
+            playerIndex = (int?)message.Data.playerIndex;
+        } catch {
+            playerIndex = null;
+        }
+
+        if (playerIndex == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(ws, errorMessage);
+            return;
+        }
+
+        int? stop;
+        try {
+            stop = (int?)message.Data.stop;
+        } catch {
+            stop = null;
+        }
+
+        if (stop == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing stop"
+                }
+            };
+            await SendMessage(ws, errorMessage);
+            return;
+        }
+
+        var (nextStop, crossedStart) = GetNextStop(stop ?? 0);
+
+        var moneyAdjustment = -3000;
+        if (crossedStart) {
+            moneyAdjustment += 150_000;
+        }
+
+        if (!GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains("house")) {
+            moneyAdjustment -= 70_000;
+        }
+
+        GlobalData.GameState.Players[playerIndex ?? 0].Money += moneyAdjustment;
+        GlobalData.GameState.Players[playerIndex ?? 0].Position = nextStop;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "buy-train-ticket-result",
+            Data = new {
+                playerIndex,
+                stop = nextStop,
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public static async Task FreeRideTrain(WebSocket ws, WebSocketMessage<dynamic> message) {
+        Console.WriteLine("free-ride-train message received");
+
+        int? playerIndex;
+        try {
+            playerIndex = (int?)message.Data.playerIndex;
+        } catch {
+            playerIndex = null;
+        }
+
+        if (playerIndex == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(ws, errorMessage);
+            return;
+        }
+
+        int? stop;
+        try {
+            stop = (int?)message.Data.stop;
+        } catch {
+            stop = null;
+        }
+
+        if (stop == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing stop"
+                }
+            };
+            await SendMessage(ws, errorMessage);
+            return;
+        }
+
+        var (nextStop, crossedStart) = GetNextStop(stop ?? 0);
+        var shouldFine = new Random().NextDouble() < 0.5;
+
+        var moneyAdjustment = 0;
+        if (shouldFine) {
+            moneyAdjustment = -40_000;
+        }
+
+        if (crossedStart) {
+            moneyAdjustment += 150_000;
+        }
+
+        if (!GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains("house")) {
+            moneyAdjustment -= 70_000;
+        }
+
+        GlobalData.GameState.Players[playerIndex ?? 0].Money += moneyAdjustment;
+        GlobalData.GameState.Players[playerIndex ?? 0].Position = nextStop;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "free-ride-train-result",
+            Data = new {
+                playerIndex,
+                stop = nextStop,
+                fined = shouldFine,
             }
         };
         BroadcastMessage(responseMessage);

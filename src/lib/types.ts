@@ -28,6 +28,8 @@ export interface GameManagerActions {
   endTurn: (playerIndex: number) => Promise<void>;
 
   buyItem: (playerIndex: number, item: ShopItem) => Promise<void>;
+  buyTrainTicket: (playerIndex: number, stop: number) => Promise<void>;
+  freeRideTrain: (playerIndex: number, stop: number) => Promise<void>;
 }
 
 export interface GameContext {

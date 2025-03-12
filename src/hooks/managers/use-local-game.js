@@ -8,6 +8,7 @@ import { useAlert } from "../use-alert";
 import { usePopup } from "../use-popup";
 import { useEffect } from "react";
 import { useRef } from "react";
+import { FineAlert } from "@/Components/FineAlert";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -319,6 +320,87 @@ export function useLocalGame() {
     });
   }
 
+  /**
+   * @param {number} position
+   * @returns {[number, boolean]}
+   */
+  function getNextStop(position) {
+    let nextStop = FIELDS.find((x) => x.isStop && x.id > position)?.id;
+    let crossedStart = false;
+    if (!nextStop) {
+      nextStop = FIELDS.find((x) => x.isStop)?.id;
+      crossedStart = true;
+    }
+    if (!nextStop) {
+      console.log("[steelroad] No next stop found", {
+        playerPosition: position,
+        fields: FIELDS,
+      });
+      nextStop = position;
+    }
+    return [nextStop, crossedStart];
+  }
+
+  /**
+   * @param {number} playerIndex
+   * @param {number} stop
+   */
+  async function buyTrainTicket(playerIndex, stop) {
+    const player = state.players[playerIndex];
+    if (player.money < 3000) {
+      showAlert("Nincs elég pénzed a jegyvásárláshoz!");
+      return;
+    }
+
+    const [nextStop, crossedStart] = getNextStop(stop);
+    let moneyAdjustment = -3000;
+    if (crossedStart) {
+      moneyAdjustment += 150_000;
+      if (!player.inventory.includes("house")) {
+        moneyAdjustment -= 70_000;
+      }
+    }
+
+    updateCurrentPlayer((prev) => ({
+      ...prev,
+      money: prev.money + moneyAdjustment,
+      position: nextStop,
+    }));
+
+    closePopup();
+  }
+
+  /**
+   * @param {number} playerIndex
+   * @param {number} stop
+   */
+  async function freeRideTrain(playerIndex, stop) {
+    const player = state.players[playerIndex];
+    const [nextStop, crossedStart] = getNextStop(stop);
+
+    let moneyAdjustment = 0;
+
+    const shouldFine = Math.random();
+    if (shouldFine < 0.5) {
+      moneyAdjustment = -40_000;
+      showAlert(createElement(FineAlert, { name: player.name }));
+    }
+    if (crossedStart) {
+      moneyAdjustment += 150_000;
+      if (!player.inventory.includes("house")) {
+        moneyAdjustment -= 70_000;
+      }
+    }
+
+    updateCurrentPlayer((prev) => ({
+      ...prev,
+      money: prev.money + moneyAdjustment,
+      position: nextStop,
+    }));
+
+    closePopup();
+  }
+
   return {
     meta,
     state,
@@ -337,5 +419,7 @@ export function useLocalGame() {
     endTurn,
 
     buyItem,
+    buyTrainTicket,
+    freeRideTrain,
   };
 }
