@@ -4,7 +4,7 @@ WORKDIR /src
 
 # Copy csproj and restore dependencies
 COPY *.csproj .
-RUN dotnet restore
+RUN dotnet restore server.csproj
 
 # Copy the rest of the source code
 COPY . .
