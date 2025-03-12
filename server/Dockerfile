@@ -16,10 +16,10 @@ WORKDIR /app
 COPY --from=build /app .
 
 # Configure the container to listen on all interfaces
-ENV ASPNETCORE_URLS=http://0.0.0.0:80
+ENV ASPNETCORE_URLS=http://0.0.0.0:10000
 
 # Expose the port the app runs on
-EXPOSE 80
+EXPOSE 10000
 
 # Start the application
 ENTRYPOINT ["dotnet", "server.dll"] 
