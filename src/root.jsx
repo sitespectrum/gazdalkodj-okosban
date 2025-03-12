@@ -47,7 +47,7 @@ export const meta = () => [
  */
 export function Layout({ children }) {
   return (
-    <html lang="hu">
+    <html lang="hu" className="overflow-hidden">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
