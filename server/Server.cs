@@ -1,10 +1,11 @@
 using System.Net.WebSockets;
-using System.Text;
-using System.Text.Json;
 using server;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://localhost:42069");
+builder.WebHost.UseUrls(
+    Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
+    ?? "http://localhost:42069"
+);
 
 var app = builder.Build();
 app.UseWebSockets();
