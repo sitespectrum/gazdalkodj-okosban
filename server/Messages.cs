@@ -64,6 +64,9 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             case "start-game":
                 await StartGame();
                 break;
+            case "update-player":
+                AnnouncePlayerUpdated(message);
+                break;
             case "roll-dice":
                 await RollDice(message);
                 break;
@@ -153,6 +156,35 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
         BroadcastLobbyMessage(responseMessage);
     }
 
+    public void AnnouncePlayerUpdated(WebSocketMessage<dynamic> message) {
+        try {
+            var player = JsonConvert.DeserializeObject<PublicPlayer>(
+                JsonConvert.SerializeObject(message.Data)
+            );
+
+            var lobbyConnection = game.LobbyConnections.FirstOrDefault(c => c.ID == player.ID);
+            if (lobbyConnection == null) {
+                return;
+            }
+
+            lobbyConnection.Name = player.Name ?? lobbyConnection.Name;
+            lobbyConnection.Image = player.Image ?? lobbyConnection.Image;
+
+            var responseMessage = new WebSocketMessage<object> {
+                Type = "player-updated",
+                Data = new PublicPlayer {
+                    ID = lobbyConnection.ID,
+                    Name = lobbyConnection.Name,
+                    Image = lobbyConnection.Image,
+                    IsHost = lobbyConnection.IsHost
+                }
+            };
+            BroadcastLobbyMessage(responseMessage);
+        } catch (Exception e) {
+            Console.WriteLine($"Error: {e.Message}");
+        }
+    }
+
     public async Task StartGame() {
         if (!connection.IsHost) {
             var errorMessage = new WebSocketMessage<object> {
@@ -191,6 +223,8 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
                 RollingDice = GlobalData.DefaultPlayer.RollingDice,
             })]
         };
+
+        Console.WriteLine(JsonConvert.SerializeObject(game.State));
 
         BroadcastLobbyMessage(new WebSocketMessage<object> {
             Type = "game-started",

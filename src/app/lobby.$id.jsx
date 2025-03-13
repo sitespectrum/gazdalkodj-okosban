@@ -1,9 +1,23 @@
 import { useLobby } from "@/hooks/use-lobby";
 import { useOnlinePlayer } from "@/hooks/use-online-player";
-import { Button } from "@heroui/react";
-import { Avatar, Chip } from "@heroui/react";
-import { Card, CardBody, Progress, ScrollShadow } from "@heroui/react";
-import { useNavigate, useParams } from "react-router";
+import { DEFAULT_PLAYER_IMAGES } from "@/lib/constants";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  Chip,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Progress,
+  ScrollShadow,
+  Spinner,
+} from "@heroui/react";
+import { useState } from "react";
+import { useParams } from "react-router";
 
 /** @typedef {import("@/lib/types").OnlineGameData} OnlineGameData */
 
@@ -27,11 +41,32 @@ function CrownIcon() {
   );
 }
 
+function LockIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1rem"
+      height="1rem"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className=""
+    >
+      <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
 export default function Lobby() {
-  const navigate = useNavigate();
   const { id } = useParams();
-  const { lobby, startGame } = useLobby(id);
+  const { lobby, startGame, updatePlayer } = useLobby(id);
   const { player: onlinePlayer } = useOnlinePlayer();
+
+  const [isStartLoading, setIsStartLoading] = useState(false);
 
   return (
     <div className="w-full h-[100dvh] flex justify-center items-center bg-dot-white/20 relative flex-col gap-8 p-8">
@@ -44,9 +79,19 @@ export default function Lobby() {
       <div className="w-full h-full md:w-xl flex flex-col gap-8">
         <Card isBlurred className="w-full border-1 border-default-200 shrink-0">
           <CardBody className="flex flex-row gap-4 shrink-0">
-            <div className="size-16 shrink-0 bg-blue-500/15 border-1 border-blue-500/50 shadow-md shadow-blue-500/20 rounded-lg text-2xl font-bold text-blue-500 flex items-center justify-center">
-              {lobby?.name.slice(0, 2).toUpperCase()}
-            </div>
+            <Badge
+              color="primary"
+              placement="bottom-right"
+              classNames={{
+                badge: "p-1 rounded-lg right-[11%] bottom-[11%]",
+              }}
+              isInvisible={lobby?.isPublic}
+              content={<LockIcon />}
+            >
+              <div className="size-16 shrink-0 bg-blue-500/15 border-1 border-blue-500/50 shadow-md shadow-blue-500/20 rounded-lg text-2xl font-bold text-blue-500 flex items-center justify-center">
+                {lobby?.name.slice(0, 2).toUpperCase()}
+              </div>
+            </Badge>
             <div className="flex-1 flex flex-col">
               <span className="text-lg font-bold flex items-center justify-between w-full gap-2 h-fit">
                 {lobby?.name}{" "}
@@ -80,7 +125,87 @@ export default function Lobby() {
                 className="w-full border-1 border-default-200 shrink-0"
               >
                 <CardBody className="flex flex-row gap-4 items-center">
-                  <Avatar className="rounded-lg" src={player.image} />
+                  <Dropdown
+                    showArrow
+                    isTriggerDisabled={player.id !== onlinePlayer.id}
+                  >
+                    <DropdownTrigger className="opacity-100 cursor-pointer disabled:cursor-default">
+                      <Avatar
+                        classNames={{
+                          base: "rounded-lg bg-transparent",
+                          img: "object-contain",
+                        }}
+                        src={player.image}
+                      />
+                    </DropdownTrigger>
+                    <DropdownMenu
+                      selectionMode="single"
+                      selectedKeys={[
+                        DEFAULT_PLAYER_IMAGES.find(
+                          (x) => x.image === player.image
+                        )?.id ?? "custom",
+                      ]}
+                      onSelectionChange={(value) => {
+                        if (value.currentKey === "custom") {
+                          updatePlayer({
+                            ...player,
+                            image: onlinePlayer.image,
+                          });
+                          return;
+                        }
+
+                        updatePlayer({
+                          ...player,
+                          image: DEFAULT_PLAYER_IMAGES.find(
+                            (x) => x.id === value.currentKey
+                          ).image,
+                        });
+                      }}
+                      children={[
+                        onlinePlayer.image && (
+                          <DropdownItem
+                            key="custom"
+                            classNames={{
+                              title: "font-medium ml-2",
+                            }}
+                            startContent={
+                              <Avatar
+                                classNames={{
+                                  base: "rounded-lg h-8 bg-transparent w-fit",
+                                  img: "object-contain",
+                                }}
+                                src={onlinePlayer.image}
+                                size="sm"
+                                isBordered
+                                className="border-1 border-default-200"
+                              />
+                            }
+                          >
+                            Egyéni
+                          </DropdownItem>
+                        ),
+                        ...DEFAULT_PLAYER_IMAGES.map((image) => (
+                          <DropdownItem
+                            key={image.id}
+                            classNames={{
+                              title: "font-medium ml-2",
+                            }}
+                            startContent={
+                              <Avatar
+                                classNames={{
+                                  base: "rounded-lg h-8 w-8 bg-transparent",
+                                  img: "object-contain",
+                                }}
+                                src={image.image}
+                              />
+                            }
+                          >
+                            {image.name}
+                          </DropdownItem>
+                        )),
+                      ].filter(Boolean)}
+                    ></DropdownMenu>
+                  </Dropdown>
                   <div className="flex-1 flex flex-col">
                     <span className="font-bold flex items-center gap-2">
                       {player.name}
@@ -112,7 +237,12 @@ export default function Lobby() {
           <Button
             className="mt-auto"
             color="primary"
-            onPress={() => startGame()}
+            onPress={async () => {
+              setIsStartLoading(true);
+              await startGame();
+            }}
+            isLoading={isStartLoading}
+            spinner={<Spinner variant="simple" size="sm" color="current" />}
           >
             Kezdés
           </Button>

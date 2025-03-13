@@ -16,12 +16,12 @@ export function useOnlinePlayer() {
   }, [player]);
 
   useEffect(() => {
-    if (!player) {
+    if (!player || localStorage.getItem("online-player") === null) {
       const player = {
         id: crypto.randomUUID(),
         key: crypto.randomUUID(),
-        name: "Player",
-        image: "https://placedog.net/500/500",
+        name: "Névtelen játékos",
+        image: "",
       };
       setPlayer(player);
     }

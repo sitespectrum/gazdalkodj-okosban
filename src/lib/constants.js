@@ -150,3 +150,27 @@ export const DEFAULT_GAME_STATE = {
     },
   ],
 };
+
+/** @type {{ id: string; image: string; name: string; }[]} */
+export const DEFAULT_PLAYER_IMAGES = [
+  {
+    id: "red",
+    image: "/src/Pictures/Puppets/Piros bábú 1.png",
+    name: "Piros bábú",
+  },
+  {
+    id: "blue",
+    image: "/src/Pictures/Puppets/Kék bábú 1.png",
+    name: "Kék bábú",
+  },
+  {
+    id: "green",
+    image: "/src/Pictures/Puppets/Zöld bábú 1.png",
+    name: "Zöld bábú",
+  },
+  {
+    id: "yellow",
+    image: "/src/Pictures/Puppets/Sárga bábú 1.png",
+    name: "Sárga bábú",
+  },
+];

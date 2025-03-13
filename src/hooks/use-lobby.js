@@ -1,7 +1,7 @@
 import { SERVER_URL } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
-import { useOnlinePlayer } from "./use-online-player";
 import { useNavigate } from "react-router";
+import { useOnlinePlayer } from "./use-online-player";
 
 /** @typedef {import("@/lib/types").GameState} GameState */
 /** @typedef {{id: string, name: string, image: string, isHost: boolean}} PublicPlayer */
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 
 /**
  * @param {string} gameID
- * @returns {{lobby: Lobby, startGame: () => Promise<void>}}
+ * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>}}
  */
 export function useLobby(gameID) {
   const { player } = useOnlinePlayer();
@@ -83,6 +83,35 @@ export function useLobby(gameID) {
   }
 
   /**
+   * @param {PublicPlayer} player
+   */
+  async function playerUpdatedCaller(player) {
+    ws.current.send(
+      JSON.stringify({
+        type: "update-player",
+        data: {
+          ...player,
+          id: player?.id,
+        },
+      })
+    );
+  }
+
+  /**
+   * @param {WebSocketMessage<PublicPlayer>} message
+   */
+  async function playerUpdatedReceiver(message) {
+    setLobby((prev) => {
+      return {
+        ...prev,
+        players: prev.players.map((p) =>
+          p?.id === message.data?.id ? message.data : p
+        ),
+      };
+    });
+  }
+
+  /**
    * @param {WebSocketMessage<{playerCount: number}>} message
    */
   async function gameStartedReceiver(message) {
@@ -107,6 +136,9 @@ export function useLobby(gameID) {
       case "player-left":
         playerLeftReceiver(message);
         break;
+      case "player-updated":
+        playerUpdatedReceiver(message);
+        break;
       case "game-started":
         gameStartedReceiver(message);
         break;
@@ -117,5 +149,5 @@ export function useLobby(gameID) {
     ws.current.send(JSON.stringify({ type: "start-game" }));
   }
 
-  return { lobby, startGame };
+  return { lobby, startGame, updatePlayer: playerUpdatedCaller };
 }

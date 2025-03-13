@@ -1,15 +1,19 @@
-import { WinnerAlert } from "@/Components/WinnerAlert";
-import { gameDataContext } from "@/lib/contexts";
-import { createElement, useContext, useEffect } from "react";
-import { useAlert } from "../use-alert";
-import { usePopup } from "../use-popup";
-import { useCallback } from "react";
-import { useRef } from "react";
-import { PURCHASEABLE_ITEMS, SERVER_URL } from "@/lib/constants";
-import { FIELDS } from "@/lib/fields-config";
-import { useOnlinePlayer } from "../use-online-player";
-import { useState } from "react";
 import { FineAlert } from "@/Components/FineAlert";
+import { WinnerAlert } from "@/Components/WinnerAlert";
+import { PURCHASEABLE_ITEMS, SERVER_URL } from "@/lib/constants";
+import { gameDataContext } from "@/lib/contexts";
+import { FIELDS } from "@/lib/fields-config";
+import {
+  createElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { useAlert } from "../use-alert";
+import { useOnlinePlayer } from "../use-online-player";
+import { usePopup } from "../use-popup";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -44,10 +48,10 @@ export function useOnlineGame(id) {
   const isMyTurnRef = useRef(false);
 
   useEffect(() => {
-    const value = state.players[state.currentPlayer].id === player.id;
+    const value = state.players[state.currentPlayer].id === player?.id;
     setIsMyTurn(value);
     isMyTurnRef.current = value;
-  }, [state.currentPlayer, player]);
+  }, [state, player]);
 
   useEffect(() => {
     ws.current = new WebSocket(

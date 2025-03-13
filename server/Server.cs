@@ -24,7 +24,7 @@ app.UseCors("AllowAllOrigins");
 app.MapGet("/", () => "Hello World!");
 
 app.MapGet("/games", () => {
-    return Results.Json(GlobalData.Games.Select(g => new {
+    return Results.Json(GlobalData.Games.Where(g => !g.HasStarted && g.IsPublic).Select(g => new {
         g.ID,
         g.Name,
         g.MaxPlayers,
