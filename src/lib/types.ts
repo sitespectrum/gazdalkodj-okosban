@@ -43,6 +43,14 @@ export interface GameData {
   state?: GameState;
 }
 
+export interface OnlineGameData {
+  id: string;
+  name: string;
+  isPublic: boolean;
+  maxPlayers: number;
+  playerCount: number;
+}
+
 export interface GameDataContext {
   meta?: GameMeta;
   setMeta?: CallbackStateAction<GameMeta>;
@@ -130,6 +138,7 @@ export interface WebSocketMessage<T = any> {
 
 export interface OnlinePlayerData {
   id: string;
+  key: string;
   name: string;
   image: string;
 }

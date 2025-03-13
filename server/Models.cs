@@ -13,12 +13,63 @@ public record WebSocketMessage<T> {
 public record PlayerConnection {
     [JsonProperty("id")]
     public required string ID { get; set; }
+    [JsonProperty("key")]
+    public required string Key { get; set; }
     [JsonProperty("name")]
     public required string Name { get; set; }
     [JsonProperty("image")]
     public required string Image { get; set; }
+    [JsonProperty("isHost")]
+    public required bool IsHost { get; set; }
     [JsonIgnore]
-    public required WebSocket WSConnection { get; set; }
+    public required WebSocket WSConnection { get; set; } = null!;
+}
+
+public record Game {
+    [JsonProperty("id")]
+    public string ID { get; set; } = "";
+    [JsonProperty("name")]
+    public string Name { get; set; } = "";
+    [JsonProperty("state")]
+    public GameState? State { get; set; }
+
+    [JsonIgnore]
+    public List<PlayerConnection> LobbyConnections { get; set; } = [];
+    [JsonIgnore]
+    public List<PlayerConnection> Connections { get; set; } = [];
+
+    [JsonProperty("hasStarted")]
+    public bool HasStarted { get; set; } = false;
+    [JsonProperty("maxPlayers")]
+    public int MaxPlayers { get; set; } = 4;
+    [JsonProperty("isPublic")]
+    public bool IsPublic { get; set; } = true;
+    [JsonProperty("hostID")]
+    public string? HostID { get; set; }
+}
+
+public record LobbyData {
+    [JsonProperty("id")]
+    public required string ID { get; set; }
+    [JsonProperty("name")]
+    public required string Name { get; set; }
+    [JsonProperty("isPublic")]
+    public required bool IsPublic { get; set; }
+    [JsonProperty("maxPlayers")]
+    public required int MaxPlayers { get; set; }
+    [JsonProperty("players")]
+    public required List<PublicPlayer> Players { get; set; } = [];
+}
+
+public record PublicPlayer {
+    [JsonProperty("id")]
+    public required string ID { get; set; }
+    [JsonProperty("name")]
+    public required string Name { get; set; }
+    [JsonProperty("image")]
+    public required string Image { get; set; }
+    [JsonProperty("isHost")]
+    public required bool IsHost { get; set; }
 }
 
 public record GameState {
@@ -29,7 +80,7 @@ public record GameState {
     [JsonProperty("currentPlayer")]
     public required int CurrentPlayer { get; set; }
     [JsonProperty("players")]
-    public required Player[] Players { get; set; }
+    public required List<Player> Players { get; set; } = [];
 }
 
 public record Player {

@@ -25,9 +25,10 @@ import { FineAlert } from "@/Components/FineAlert";
  */
 
 /**
+ * @param {string} id
  * @returns {GameManager}
  */
-export function useOnlineGame() {
+export function useOnlineGame(id) {
   const { openPopup, closePopup } = usePopup();
   const { showAlert } = useAlert();
 
@@ -49,7 +50,9 @@ export function useOnlineGame() {
   }, [state.currentPlayer, player]);
 
   useEffect(() => {
-    ws.current = new WebSocket(`${SERVER_URL}/ws`);
+    ws.current = new WebSocket(
+      `${SERVER_URL}/ws/game-${id}?playerID=${player.id}`
+    );
     ws.current.onmessage = handleMessage;
     ws.current.onopen = () => {
       console.log("WebSocket is open");

@@ -91,10 +91,11 @@ export function LocalGameProvider({ children }) {
 
 /**
  * @param {Object} props
+ * @param {string} props.id
  * @param {React.ReactNode} props.children
  */
-export function OnlineGameProvider({ children }) {
-  const game = useOnlineGame();
+export function OnlineGameProvider({ id, children }) {
+  const game = useOnlineGame(id);
 
   return <gameContext.Provider value={game}>{children}</gameContext.Provider>;
 }

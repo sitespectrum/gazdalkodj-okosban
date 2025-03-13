@@ -4,9 +4,12 @@ using System.Net.WebSockets;
 using System.Text;
 using Newtonsoft.Json;
 
-public static class Messages {
-    public static async Task SendMessage(WebSocket ws, WebSocketMessage<dynamic> message) {
-        await ws.SendAsync(
+public class MessagesHandler(Game game, PlayerConnection connection) {
+    private readonly Game game = game;
+    private readonly PlayerConnection connection = connection;
+
+    public async Task SendMessage(WebSocketMessage<dynamic> message, PlayerConnection? conn = null) {
+        await (conn ?? connection).WSConnection.SendAsync(
             new ArraySegment<byte>(
                 Encoding.UTF8.GetBytes(
                     JsonConvert.SerializeObject(message))),
@@ -16,13 +19,19 @@ public static class Messages {
         );
     }
 
-    public static void BroadcastMessage(WebSocketMessage<dynamic> message) {
-        foreach (var connection in GlobalData.Connections) {
-            _ = SendMessage(connection, message);
+    public void BroadcastMessage(WebSocketMessage<dynamic> message) {
+        foreach (var connection in game.Connections) {
+            _ = SendMessage(message, connection);
         }
     }
 
-    public static async Task HandleMessage(WebSocket ws, byte[] messageBytes) {
+    public void BroadcastLobbyMessage(WebSocketMessage<dynamic> message) {
+        foreach (var connection in game.LobbyConnections) {
+            _ = SendMessage(message, connection);
+        }
+    }
+
+    public async Task HandleMessage(byte[] messageBytes) {
         var messageString = Encoding.UTF8.GetString(messageBytes);
 
         Console.WriteLine(Encoding.UTF8.GetString(messageBytes));
@@ -36,7 +45,7 @@ public static class Messages {
                     message = $"Invalid JSON: {e.Message}"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -47,39 +56,42 @@ public static class Messages {
                     message = "Invalid message format"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
         switch (message.Type) {
+            case "start-game":
+                await StartGame();
+                break;
             case "roll-dice":
-                await RollDice(ws, message);
+                await RollDice(message);
                 break;
             case "move-player":
-                await MovePlayer(ws, message);
+                await MovePlayer(message);
                 break;
             case "end-action":
-                await EndAction(ws, message);
+                await EndAction(message);
                 break;
             case "end-turn":
-                await EndTurn(ws, message);
+                await EndTurn(message);
                 break;
             case "buy-item":
-                await BuyItem(ws, message);
+                await BuyItem(message);
                 break;
             case "buy-train-ticket":
-                await BuyTrainTicket(ws, message);
+                await BuyTrainTicket(message);
                 break;
             case "free-ride-train":
-                await FreeRideTrain(ws, message);
+                await FreeRideTrain(message);
                 break;
             default:
-                await UnknownMessage(ws, message);
+                await UnknownMessage(message);
                 break;
         }
     }
 
-    public static async Task UnknownMessage(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task UnknownMessage(WebSocketMessage<dynamic> message) {
         Console.WriteLine($"Unknown message type: {message.Type}");
         var errorMessage = new WebSocketMessage<object> {
             Type = "error",
@@ -87,18 +99,114 @@ public static class Messages {
                 message = $"Unknown message type '{message.Type}'"
             }
         };
-        await SendMessage(ws, errorMessage);
+        await SendMessage(errorMessage);
     }
 
-    public static async Task SyncGameState(WebSocket ws) {
+    public async Task SyncLobbyState() {
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "sync-lobby-state",
+            Data = new LobbyData {
+                ID = game.ID,
+                Name = game.Name,
+                IsPublic = game.IsPublic,
+                MaxPlayers = game.MaxPlayers,
+                Players = [.. game.LobbyConnections.DistinctBy(c => c.ID).Select(c => new PublicPlayer {
+                    ID = c.ID,
+                    Name = c.Name,
+                    Image = c.Image,
+                    IsHost = c.IsHost
+                })]
+            }
+        };
+        await SendMessage(responseMessage);
+    }
+
+    public void AnnouncePlayerJoined() {
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "player-joined",
+            Data = new {
+                playerCount = game.LobbyConnections.DistinctBy(c => c.ID).Count(),
+                player = new PublicPlayer {
+                    ID = connection.ID,
+                    Name = connection.Name,
+                    Image = connection.Image,
+                    IsHost = connection.IsHost
+                }
+            }
+        };
+        BroadcastLobbyMessage(responseMessage);
+    }
+
+    public void AnnouncePlayerLeft() {
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "player-left",
+            Data = new {
+                playerCount = game.LobbyConnections.DistinctBy(c => c.ID).Count(),
+                player = new PublicPlayer {
+                    ID = connection.ID,
+                    Name = connection.Name,
+                    Image = connection.Image,
+                    IsHost = connection.IsHost
+                }
+            }
+        };
+        BroadcastLobbyMessage(responseMessage);
+    }
+
+    public async Task StartGame() {
+        if (!connection.IsHost) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "You are not the host"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.HasStarted = true;
+        game.State = new GameState {
+            IsGameOver = false,
+            WinningPlayerIndex = -1,
+            CurrentPlayer = 0,
+            Players = [.. game.LobbyConnections.DistinctBy(c => c.ID).Select((c, i) => new Player {
+                ID = c.ID,
+                Index = i,
+                Name = c.Name,
+                Image = c.Image,
+                Money = GlobalData.DefaultPlayer.Money,
+                Position = GlobalData.DefaultPlayer.Position,
+                Inventory = GlobalData.DefaultPlayer.Inventory,
+                HasCar = GlobalData.DefaultPlayer.HasCar,
+                HasCASCO = GlobalData.DefaultPlayer.HasCASCO,
+                HasAccIns = GlobalData.DefaultPlayer.HasAccIns,
+                HasHomeIns = GlobalData.DefaultPlayer.HasHomeIns,
+                InHospital = GlobalData.DefaultPlayer.InHospital,
+                InJail = GlobalData.DefaultPlayer.InJail,
+                CanRollDice = GlobalData.DefaultPlayer.CanRollDice,
+                CanEndTurn = GlobalData.DefaultPlayer.CanEndTurn,
+                State = GlobalData.DefaultPlayer.State,
+                RolledDice = GlobalData.DefaultPlayer.RolledDice,
+                RollingDice = GlobalData.DefaultPlayer.RollingDice,
+            })]
+        };
+
+        BroadcastLobbyMessage(new WebSocketMessage<object> {
+            Type = "game-started",
+            Data = new { }
+        });
+    }
+
+    public async Task SyncGameState() {
         var responseMessage = new WebSocketMessage<object> {
             Type = "sync-game-state",
-            Data = GlobalData.GameState
+            Data = game.State!
         };
-        await SendMessage(ws, responseMessage);
+        await SendMessage(responseMessage);
     }
 
-    public static async Task RollDice(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task RollDice(WebSocketMessage<dynamic> message) {
         Console.WriteLine("roll-dice message received");
 
         int? playerIndex;
@@ -115,29 +223,29 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.CurrentPlayer != playerIndex) {
+        if (game.State?.CurrentPlayer != playerIndex) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "It's not your turn"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (!GlobalData.GameState.Players[playerIndex ?? 0].CanRollDice) {
+        if (!game.State.Players[playerIndex ?? 0].CanRollDice) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You can't roll the dice right now"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -149,17 +257,16 @@ public static class Messages {
         });
 
         var result = new Random().Next(1, 7);
-        if (GlobalData.GameState.Players[playerIndex ?? 0].RolledDice == null) {
-            GlobalData.GameState.Players[playerIndex ?? 0].RolledDice = result;
+        if (game.State.Players[playerIndex ?? 0].RolledDice == null) {
+            game.State.Players[playerIndex ?? 0].RolledDice = result;
         } else {
-            result = GlobalData.GameState.Players[playerIndex ?? 0].RolledDice ?? 0;
+            result = game.State.Players[playerIndex ?? 0].RolledDice ?? 0;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].RollingDice = false;
-        GlobalData.GameState.Players[playerIndex ?? 0].CanRollDice = false;
-        GlobalData.GameState.Players[playerIndex ?? 0].CanEndTurn = true;
-        GlobalData.GameState.Players[playerIndex ?? 0].State = "rolledDice";
-
+        game.State.Players[playerIndex ?? 0].RollingDice = false;
+        game.State.Players[playerIndex ?? 0].CanRollDice = false;
+        game.State.Players[playerIndex ?? 0].CanEndTurn = true;
+        game.State.Players[playerIndex ?? 0].State = "rolledDice";
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "roll-dice-result",
@@ -171,7 +278,7 @@ public static class Messages {
         BroadcastMessage(responseMessage);
     }
 
-    public static async Task MovePlayer(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task MovePlayer(WebSocketMessage<dynamic> message) {
         Console.WriteLine("move-player message received");
 
         int? playerIndex;
@@ -188,7 +295,7 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -206,46 +313,46 @@ public static class Messages {
                     message = "Invalid or missing steps"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (playerIndex != GlobalData.GameState.CurrentPlayer) {
+        if (playerIndex != game.State?.CurrentPlayer) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "It's not your turn"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (steps != GlobalData.GameState.Players[playerIndex ?? 0].RolledDice) {
+        if (steps != game.State.Players[playerIndex ?? 0].RolledDice) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You rolled a different number than the dice"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.Players[playerIndex ?? 0].InHospital) {
+        if (game.State.Players[playerIndex ?? 0].InHospital) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You can't move right now"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.Players[playerIndex ?? 0].InJail && steps != 6) {
-            GlobalData.GameState.Players[playerIndex ?? 0].CanRollDice = false;
-            GlobalData.GameState.Players[playerIndex ?? 0].State = "rolledDice";
+        if (game.State.Players[playerIndex ?? 0].InJail && steps != 6) {
+            game.State.Players[playerIndex ?? 0].CanRollDice = false;
+            game.State.Players[playerIndex ?? 0].State = "rolledDice";
 
             BroadcastMessage(new WebSocketMessage<object> {
                 Type = "move-player-result",
@@ -258,35 +365,35 @@ public static class Messages {
         }
 
         var isStartingGame =
-            GlobalData.GameState.Players[playerIndex ?? 0].Position == 0 &&
-            GlobalData.GameState.Players[playerIndex ?? 0].Money == 400_000 &&
-            GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Length == 0;
+            game.State.Players[playerIndex ?? 0].Position == 0 &&
+            game.State.Players[playerIndex ?? 0].Money == 400_000 &&
+            game.State.Players[playerIndex ?? 0].Inventory.Length == 0;
 
-        var oldPlayerPosition = GlobalData.GameState.Players[playerIndex ?? 0].Position;
-        var oldPlayerHasHouse = GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains("house");
-        var oldPlayerInJail = GlobalData.GameState.Players[playerIndex ?? 0].InJail;
+        var oldPlayerPosition = game.State.Players[playerIndex ?? 0].Position;
+        var oldPlayerHasHouse = game.State.Players[playerIndex ?? 0].Inventory.Contains("house");
+        var oldPlayerInJail = game.State.Players[playerIndex ?? 0].InJail;
 
-        GlobalData.GameState.Players[playerIndex ?? 0].CanRollDice = false;
+        game.State.Players[playerIndex ?? 0].CanRollDice = false;
         if (oldPlayerInJail) {
-            GlobalData.GameState.Players[playerIndex ?? 0].InJail = false;
-            GlobalData.GameState.Players[playerIndex ?? 0].Position = 9 + steps ?? 0;
+            game.State.Players[playerIndex ?? 0].InJail = false;
+            game.State.Players[playerIndex ?? 0].Position = 9 + steps ?? 0;
             return;
         } else {
-            GlobalData.GameState.Players[playerIndex ?? 0].Position =
-                (GlobalData.GameState.Players[playerIndex ?? 0].Position + steps ?? 0) % 27;
-            GlobalData.GameState.Players[playerIndex ?? 0].CanEndTurn = false;
-            GlobalData.GameState.Players[playerIndex ?? 0].State = "rolledDice";
+            game.State.Players[playerIndex ?? 0].Position =
+                (game.State.Players[playerIndex ?? 0].Position + steps ?? 0) % 27;
+            game.State.Players[playerIndex ?? 0].CanEndTurn = false;
+            game.State.Players[playerIndex ?? 0].State = "rolledDice";
         }
 
-        var newField = GlobalData.FIELDS[GlobalData.GameState.Players[playerIndex ?? 0].Position];
+        var newField = GlobalData.FIELDS[game.State.Players[playerIndex ?? 0].Position];
 
         var crossedStart =
-            oldPlayerPosition > GlobalData.GameState.Players[playerIndex ?? 0].Position &&
-            GlobalData.GameState.Players[playerIndex ?? 0].Position != 0 &&
+            oldPlayerPosition > game.State.Players[playerIndex ?? 0].Position &&
+            game.State.Players[playerIndex ?? 0].Position != 0 &&
             !oldPlayerInJail;
 
         if (crossedStart && newField.ID != 0) {
-            GlobalData.GameState.Players[playerIndex ?? 0].Money += 150_000;
+            game.State.Players[playerIndex ?? 0].Money += 150_000;
         }
 
         if (
@@ -294,15 +401,15 @@ public static class Messages {
             !oldPlayerHasHouse &&
             !isStartingGame
         ) {
-            GlobalData.GameState.Players[playerIndex ?? 0].Money -= 70_000;
+            game.State.Players[playerIndex ?? 0].Money -= 70_000;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].CanEndTurn = true;
-        GlobalData.GameState.Players[playerIndex ?? 0].State = newField.IsActionInstant
+        game.State.Players[playerIndex ?? 0].CanEndTurn = true;
+        game.State.Players[playerIndex ?? 0].State = newField.IsActionInstant
             ? "actionEnded"
             : "actionStarted";
 
-        newField.Action?.Invoke(GlobalData.GameState);
+        newField.Action?.Invoke(game.State);
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "move-player-result",
@@ -314,7 +421,7 @@ public static class Messages {
         BroadcastMessage(responseMessage);
     }
 
-    public static async Task EndAction(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task EndAction(WebSocketMessage<dynamic> message) {
         Console.WriteLine("end-action message received");
 
         int? playerIndex;
@@ -331,22 +438,22 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.CurrentPlayer != playerIndex) {
+        if (game.State?.CurrentPlayer != playerIndex) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "It's not your turn"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].State = "actionEnded";
+        game.State.Players[playerIndex ?? 0].State = "actionEnded";
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "action-ended",
@@ -357,7 +464,7 @@ public static class Messages {
         BroadcastMessage(responseMessage);
     }
 
-    public static async Task EndTurn(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task EndTurn(WebSocketMessage<dynamic> message) {
         Console.WriteLine("end-turn message received");
 
         int? playerIndex;
@@ -374,48 +481,48 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.CurrentPlayer != playerIndex) {
+        if (game.State?.CurrentPlayer != playerIndex) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "It's not your turn"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (!GlobalData.GameState.Players[playerIndex ?? 0].CanEndTurn) {
+        if (!game.State.Players[playerIndex ?? 0].CanEndTurn) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You can't end your turn right now"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        var newPlayerIndex = (playerIndex + 1) % GlobalData.GameState.Players.Length;
+        var newPlayerIndex = (playerIndex + 1) % game.State.Players.Count;
 
-        GlobalData.GameState.Players[newPlayerIndex ?? 0].State = "justStarted";
-        GlobalData.GameState.Players[newPlayerIndex ?? 0].CanRollDice = true;
-        GlobalData.GameState.Players[newPlayerIndex ?? 0].CanEndTurn = false;
-        GlobalData.GameState.Players[newPlayerIndex ?? 0].RollingDice = false;
-        GlobalData.GameState.Players[newPlayerIndex ?? 0].RolledDice = null;
+        game.State.Players[newPlayerIndex ?? 0].State = "justStarted";
+        game.State.Players[newPlayerIndex ?? 0].CanRollDice = true;
+        game.State.Players[newPlayerIndex ?? 0].CanEndTurn = false;
+        game.State.Players[newPlayerIndex ?? 0].RollingDice = false;
+        game.State.Players[newPlayerIndex ?? 0].RolledDice = null;
 
-        if (GlobalData.GameState.Players[newPlayerIndex ?? 0].InHospital) {
-            GlobalData.GameState.Players[newPlayerIndex ?? 0].CanRollDice = false;
-            GlobalData.GameState.Players[newPlayerIndex ?? 0].CanEndTurn = true;
-            GlobalData.GameState.Players[newPlayerIndex ?? 0].State = "actionEnded";
-            GlobalData.GameState.Players[newPlayerIndex ?? 0].InHospital = false;
+        if (game.State.Players[newPlayerIndex ?? 0].InHospital) {
+            game.State.Players[newPlayerIndex ?? 0].CanRollDice = false;
+            game.State.Players[newPlayerIndex ?? 0].CanEndTurn = true;
+            game.State.Players[newPlayerIndex ?? 0].State = "actionEnded";
+            game.State.Players[newPlayerIndex ?? 0].InHospital = false;
         }
 
-        GlobalData.GameState.CurrentPlayer = newPlayerIndex ?? 0;
+        game.State.CurrentPlayer = newPlayerIndex ?? 0;
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "end-turn-result",
@@ -426,7 +533,7 @@ public static class Messages {
         BroadcastMessage(responseMessage);
     }
 
-    public static async Task BuyItem(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task BuyItem(WebSocketMessage<dynamic> message) {
         Console.WriteLine("buy-item message received");
 
         int? playerIndex;
@@ -443,7 +550,7 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -461,34 +568,34 @@ public static class Messages {
                     message = "Invalid or missing itemId"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.Players[playerIndex ?? 0].Money < item.Price) {
+        if (game.State?.Players[playerIndex ?? 0].Money < item.Price) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You don't have enough money to buy this item"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        if (GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains(item.ID)) {
+        if (game.State?.Players[playerIndex ?? 0].Inventory.Contains(item.ID) ?? false) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
                     message = "You already have this item"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].Money -= item.Price;
-        GlobalData.GameState.Players[playerIndex ?? 0].Inventory = [.. GlobalData.GameState.Players[playerIndex ?? 0].Inventory, item.ID];
+        game.State!.Players[playerIndex ?? 0].Money -= item.Price;
+        game.State!.Players[playerIndex ?? 0].Inventory = [.. game.State!.Players[playerIndex ?? 0].Inventory, item.ID];
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "buy-item-result",
@@ -513,7 +620,7 @@ public static class Messages {
         return (nextStop ?? position, crossedStart);
     }
 
-    public static async Task BuyTrainTicket(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task BuyTrainTicket(WebSocketMessage<dynamic> message) {
         Console.WriteLine("buy-train-ticket message received");
 
         int? playerIndex;
@@ -530,7 +637,7 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -548,7 +655,7 @@ public static class Messages {
                     message = "Invalid or missing stop"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -559,12 +666,12 @@ public static class Messages {
             moneyAdjustment += 150_000;
         }
 
-        if (!GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains("house")) {
+        if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
             moneyAdjustment -= 70_000;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].Money += moneyAdjustment;
-        GlobalData.GameState.Players[playerIndex ?? 0].Position = nextStop;
+        game.State!.Players[playerIndex ?? 0].Money += moneyAdjustment;
+        game.State!.Players[playerIndex ?? 0].Position = nextStop;
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "buy-train-ticket-result",
@@ -576,7 +683,7 @@ public static class Messages {
         BroadcastMessage(responseMessage);
     }
 
-    public static async Task FreeRideTrain(WebSocket ws, WebSocketMessage<dynamic> message) {
+    public async Task FreeRideTrain(WebSocketMessage<dynamic> message) {
         Console.WriteLine("free-ride-train message received");
 
         int? playerIndex;
@@ -593,7 +700,7 @@ public static class Messages {
                     message = "Invalid or missing playerIndex"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -611,7 +718,7 @@ public static class Messages {
                     message = "Invalid or missing stop"
                 }
             };
-            await SendMessage(ws, errorMessage);
+            await SendMessage(errorMessage);
             return;
         }
 
@@ -627,12 +734,12 @@ public static class Messages {
             moneyAdjustment += 150_000;
         }
 
-        if (!GlobalData.GameState.Players[playerIndex ?? 0].Inventory.Contains("house")) {
+        if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
             moneyAdjustment -= 70_000;
         }
 
-        GlobalData.GameState.Players[playerIndex ?? 0].Money += moneyAdjustment;
-        GlobalData.GameState.Players[playerIndex ?? 0].Position = nextStop;
+        game.State!.Players[playerIndex ?? 0].Money += moneyAdjustment;
+        game.State!.Players[playerIndex ?? 0].Position = nextStop;
 
         var responseMessage = new WebSocketMessage<object> {
             Type = "free-ride-train-result",

@@ -1,54 +1,27 @@
 namespace server;
 
-using System.Net.WebSockets;
-
 public static class GlobalData {
-    public static readonly List<WebSocket> Connections = [];
+    public static readonly List<Game> Games = [];
 
-    public static GameState GameState = new() {
-        IsGameOver = false,
-        WinningPlayerIndex = -1,
-        CurrentPlayer = 0,
-        Players = [
-            new Player {
-                ID = "player-0",
-                Index = 0,
-                Name = "Player 1",
-                Image = "/src/Pictures/Puppets/Piros bábú 1.png",
-                Money = 400_000,
-                Position = 0,
-                Inventory = [],
-                HasCar = false,
-                HasCASCO = false,
-                HasAccIns = false,
-                HasHomeIns = false,
-                InHospital = false,
-                InJail = false,
-                CanRollDice = true,
-                CanEndTurn = false,
-                State = "justStarted",
-                RolledDice = null,
-            },
-            new Player {
-                ID = "player-1",
-                Index = 1,
-                Name = "Player 2",
-                Image = "/src/Pictures/Puppets/Kék bábú 1.png",
-                Money = 400_000,
-                Position = 0,
-                Inventory = [],
-                HasCar = false,
-                HasCASCO = false,
-                HasAccIns = false,
-                HasHomeIns = false,
-                InHospital = false,
-                InJail = false,
-                CanRollDice = true,
-                CanEndTurn = false,
-                State = "justStarted",
-                RolledDice = null,
-            },
-        ],
+    public static readonly Player DefaultPlayer = new() {
+        ID = "player-0",
+        Index = 0,
+        Name = "Player 1",
+        Image = "/src/Pictures/Puppets/Piros bábú 1.png",
+        Money = 400_000,
+        Position = 0,
+        Inventory = [],
+        HasCar = false,
+        HasCASCO = false,
+        HasAccIns = false,
+        HasHomeIns = false,
+        InHospital = false,
+        InJail = false,
+        CanRollDice = true,
+        CanEndTurn = false,
+        State = "justStarted",
+        RolledDice = null,
+        RollingDice = false,
     };
 
     public static readonly Field[] FIELDS = [

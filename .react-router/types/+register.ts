@@ -8,12 +8,18 @@ declare module "react-router" {
 
 type Params = {
   "/": {};
+  "/online-game/:id": {
+    "id": string;
+  };
   "/local-game/:id": {
     "id": string;
   };
   "/new-local-game": {};
+  "/online-games": {};
   "/local-games": {};
-  "/online-game": {};
+  "/lobby/:id": {
+    "id": string;
+  };
   "/temp-game": {};
   "/new-game": {};
 };

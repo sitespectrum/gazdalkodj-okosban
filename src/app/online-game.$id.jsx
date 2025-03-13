@@ -6,8 +6,11 @@ import {
   OnlineGameProvider,
   Providers,
 } from "@/lib/providers";
+import { useParams } from "react-router";
 
-export default function LocalGame() {
+export default function OnlineGame() {
+  const { id } = useParams();
+
   /** @type {import("@/lib/types").GameData} */
   const data = {
     meta: {
@@ -27,7 +30,7 @@ export default function LocalGame() {
   return (
     <Providers>
       <GameDataProvider key="online" initialData={data}>
-        <OnlineGameProvider key="online">
+        <OnlineGameProvider key="online" id={id}>
           <Game key="online" />
         </OnlineGameProvider>
       </GameDataProvider>
