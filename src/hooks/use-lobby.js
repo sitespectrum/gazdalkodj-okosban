@@ -1,4 +1,4 @@
-import { SERVER_URL } from "@/lib/constants";
+import { DEFAULT_PLAYER_IMAGES, SERVER_URL } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useOnlinePlayer } from "./use-online-player";
@@ -15,12 +15,15 @@ import { useOnlinePlayer } from "./use-online-player";
 
 /**
  * @param {string} gameID
- * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>}}
+ * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>, isNotFound: boolean, loading: boolean}}
  */
 export function useLobby(gameID) {
   const { player } = useOnlinePlayer();
   const navigate = useNavigate();
+
   const [lobby, setLobby] = useState(/** @type {Lobby} */ (null));
+  const [isNotFound, setIsNotFound] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const ws = useRef(/** @type {WebSocket} */ (null));
 
@@ -34,8 +37,11 @@ export function useLobby(gameID) {
     ws.current.onopen = () => {
       console.log("WebSocket is open");
     };
-    ws.current.onclose = () => {
-      console.log("WebSocket is closed");
+    ws.current.onclose = (e) => {
+      console.log("WebSocket is closed", e);
+      if (e.reason === "lobby-not-found") {
+        setIsNotFound(true);
+      }
     };
 
     return () => {
@@ -53,6 +59,7 @@ export function useLobby(gameID) {
         ...message.data,
       };
     });
+    setLoading(false);
   }
 
   /**
@@ -63,7 +70,9 @@ export function useLobby(gameID) {
       return {
         ...prev,
         players: [
-          ...prev.players.filter((p) => p.id !== message.data.player.id),
+          ...(prev.players ?? []).filter(
+            (p) => p.id !== message.data.player.id
+          ),
           message.data.player,
         ],
       };
@@ -77,7 +86,9 @@ export function useLobby(gameID) {
     setLobby((prev) => {
       return {
         ...prev,
-        players: prev.players.filter((p) => p.id !== message.data.player.id),
+        players: (prev.players ?? []).filter(
+          (p) => p.id !== message.data.player.id
+        ),
       };
     });
   }
@@ -86,15 +97,17 @@ export function useLobby(gameID) {
    * @param {PublicPlayer} player
    */
   async function playerUpdatedCaller(player) {
-    ws.current.send(
-      JSON.stringify({
-        type: "update-player",
-        data: {
-          ...player,
-          id: player?.id,
-        },
-      })
-    );
+    if (ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(
+        JSON.stringify({
+          type: "update-player",
+          data: {
+            ...player,
+            id: player?.id,
+          },
+        })
+      );
+    }
   }
 
   /**
@@ -104,7 +117,7 @@ export function useLobby(gameID) {
     setLobby((prev) => {
       return {
         ...prev,
-        players: prev.players.map((p) =>
+        players: (prev.players ?? []).map((p) =>
           p?.id === message.data?.id ? message.data : p
         ),
       };
@@ -149,5 +162,11 @@ export function useLobby(gameID) {
     ws.current.send(JSON.stringify({ type: "start-game" }));
   }
 
-  return { lobby, startGame, updatePlayer: playerUpdatedCaller };
+  return {
+    lobby,
+    startGame,
+    updatePlayer: playerUpdatedCaller,
+    isNotFound,
+    loading,
+  };
 }

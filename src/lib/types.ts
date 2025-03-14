@@ -14,6 +14,7 @@ export interface GameManager extends GameManagerActions {
   currentPlayer: Player;
   isMyTurn: boolean;
   isMyTurnRef: React.MutableRefObject<boolean>;
+  isNotFound?: boolean;
 }
 
 export interface GameManagerActions {

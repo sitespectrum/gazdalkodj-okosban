@@ -64,12 +64,12 @@ app.MapGet("/ws/lobby-{gameID}", async (string gameID, string playerData, HttpCo
     var game = GlobalData.Games.FirstOrDefault(g => g.ID == gameID);
 
     if (game == null) {
-        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "lobby-not-found", CancellationToken.None);
         return;
     }
 
     if (player == null) {
-        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "player-not-found", CancellationToken.None);
         return;
     }
 
@@ -129,14 +129,14 @@ app.MapGet("/ws/game-{gameID}", async (string gameID, string playerID, HttpConte
     var game = GlobalData.Games.FirstOrDefault(g => g.ID == gameID);
 
     if (game == null) {
-        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "game-not-found", CancellationToken.None);
         return;
     }
 
     var player = game.LobbyConnections.First(c => c.ID == playerID);
 
     if (player == null) {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "player-not-found", CancellationToken.None);
         return;
     }
 

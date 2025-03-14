@@ -7,6 +7,9 @@ import {
   gameDataContext,
   popupContext,
 } from "@/lib/contexts.js";
+import { Button, Link, Modal } from "@heroui/react";
+import { ModalContent } from "@heroui/react";
+import { useDisclosure } from "@heroui/react";
 import { useState } from "react";
 
 /** @typedef {import("@/lib/types").GameData} GameData */
@@ -97,5 +100,31 @@ export function LocalGameProvider({ children }) {
 export function OnlineGameProvider({ id, children }) {
   const game = useOnlineGame(id);
 
-  return <gameContext.Provider value={game}>{children}</gameContext.Provider>;
+  return (
+    <>
+      <gameContext.Provider value={game}>{children}</gameContext.Provider>
+
+      <Modal
+        isOpen={game.isNotFound}
+        backdrop="blur"
+        className="light text-foreground bg-background"
+        hideCloseButton
+      >
+        <ModalContent>
+          <div className="p-8 flex flex-col gap-8 items-center justify-center">
+            <span className="text-3xl">Játék nem található</span>
+            <Button
+              as={Link}
+              href="/"
+              size="lg"
+              color="primary"
+              className="text-3xl px-10 py-8"
+            >
+              Vissza a főoldalra
+            </Button>
+          </div>
+        </ModalContent>
+      </Modal>
+    </>
+  );
 }

@@ -46,6 +46,7 @@ export function useOnlineGame(id) {
   const ws = useRef(/** @type {WebSocket} */ (null));
   const [isMyTurn, setIsMyTurn] = useState(false);
   const isMyTurnRef = useRef(false);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     const value = state.players[state.currentPlayer].id === player?.id;
@@ -61,8 +62,9 @@ export function useOnlineGame(id) {
     ws.current.onopen = () => {
       console.log("WebSocket is open");
     };
-    ws.current.onclose = () => {
-      console.log("WebSocket is closed");
+    ws.current.onclose = (e) => {
+      console.log("WebSocket is closed", e);
+      setIsNotFound(true);
     };
 
     return () => {
@@ -568,6 +570,7 @@ export function useOnlineGame(id) {
     currentPlayer: state.players[state.currentPlayer],
     isMyTurn,
     isMyTurnRef,
+    isNotFound,
 
     closePopup: closePopupEndAction,
 

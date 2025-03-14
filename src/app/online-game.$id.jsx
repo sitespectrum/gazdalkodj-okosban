@@ -7,6 +7,7 @@ import {
   Providers,
 } from "@/lib/providers";
 import { useParams } from "react-router";
+import { Modal } from "@heroui/react";
 
 export default function OnlineGame() {
   const { id } = useParams();

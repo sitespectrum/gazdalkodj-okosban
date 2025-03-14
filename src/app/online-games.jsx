@@ -97,7 +97,27 @@ export default function OnlineGames() {
         </div>
       )}
 
-      {!gamesLoading && (
+      {!gamesLoading && onlineGames.length === 0 && (
+        <div className="w-full flex-1 h-full flex items-center justify-center">
+          <Card
+            isBlurred
+            className="text-2xl flex flex-col gap-6 text-center font-semibold py-6 px-10 text-foreground/50 border-3 border-default-100"
+          >
+            <span>Még nincsenek online játékok.</span>
+            <Button
+              variant="flat"
+              className="text-lg font-medium"
+              size="lg"
+              color="primary"
+              onPress={onOpen}
+            >
+              Hozz létre egyet!
+            </Button>
+          </Card>
+        </div>
+      )}
+
+      {!gamesLoading && onlineGames.length > 0 && (
         <ScrollShadow
           hideScrollBar
           visibility="auto"
