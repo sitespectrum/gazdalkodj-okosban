@@ -42,7 +42,7 @@ export function Game() {
     ) {
       if (!isMyTurnRef.current) return;
       const field = FIELDS[currentPlayer.position];
-      field?.action({
+      field?.action?.({
         currentPlayer,
         updateCurrentPlayer,
         gameState: state,

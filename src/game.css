@@ -245,18 +245,8 @@ button:disabled {
 }
 
 .popup-content-insurance {
-  position: relative;
-  background-color: #7a70b2;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  color: black;
-  width: 30%;
-  height: 55%;
-  top: -6px;
+  background: linear-gradient(to bottom, #cbc2ff, #ca47ae);
+  min-width: 40rem;
 }
 
 .insurance {

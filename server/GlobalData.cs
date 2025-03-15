@@ -11,10 +11,7 @@ public static class GlobalData {
         Money = 400_000,
         Position = 0,
         Inventory = [],
-        HasCar = false,
-        HasCASCO = false,
-        HasAccIns = false,
-        HasHomeIns = false,
+        Insurances = [],
         InHospital = false,
         InJail = false,
         CanRollDice = true,
@@ -92,7 +89,7 @@ public static class GlobalData {
             Name = "Car travel",
             IsActionInstant = false,
             Action = (gameState) => {
-                if (gameState.Players[gameState.CurrentPlayer].HasCar) {
+                if (gameState.Players[gameState.CurrentPlayer].Inventory.Contains("car")) {
                     gameState.Players[gameState.CurrentPlayer].Position += 10;
                     var newField = FIELDS?[gameState.Players[gameState.CurrentPlayer].Position];
                     gameState.Players[gameState.CurrentPlayer].State = newField?.IsActionInstant ?? false
@@ -202,5 +199,114 @@ public static class GlobalData {
             Price = 349_990
         }
     };
+
+    public static readonly List<Insurance> INSURANCES = [
+        new() {
+            ID = "casco",
+            Name = "CASCO",
+            Price = 120_000
+        },
+        new() {
+            ID = "accident",
+            Name = "Balesetbiztosítás",
+            Price = 100_000
+        },
+        new() {
+            ID = "home",
+            Name = "Lakásbiztosítás",
+            Price = 1_000_000
+        }
+    ];
+
+    public static readonly List<LuckyCard> LUCKY_CARDS = [
+        new() {
+            ID = "tipszmix",
+            Text = "Tipszmixen 100 000 forintot nyertél.",
+            Weight = 150,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money += 100_000;
+            }
+        },
+        new() {
+            ID = "etterem",
+            Text = "Étteremben ebédeltél, fizess 20 000 Ft-ot.",
+            Weight = 150,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money -= 20_000;
+            }
+        },
+        new() {
+            ID = "foci",
+            Text = "Szeretsz focizni, ezért meglepted magad egy 20 000 Ft értékű Pumba cipővel.",
+            Weight = 150,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money -= 20_000;
+            }
+        },
+        new() {
+            ID = "tulora",
+            Text = "Munkahelyeden túlóráztál, ezért kapsz 60 000 forintot.",
+            Weight = 150,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money += 60_000;
+            }
+        },
+        new() {
+            ID = "scam",
+            Text = "Egy kétes megbízhatóságú weboldalon ingyen Sumasang P25 Ultrákat osztottak, neked csak meg kellett adnod a kártyaadataidat. Ellopták az összes pénzed.",
+            Weight = 10,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money = 0;
+            }
+        },
+        new() {
+            ID = "car-accident",
+            Text = "Összetörted az autód. Ha nincs rá biztosításod, fizess 200 000 Ft-ot.",
+            Weight = 150,
+            Condition = (gameState, playerIndex) => gameState.Players[playerIndex].Inventory.Contains("car"),
+            Action = (gameState, playerIndex) => {
+                if (!gameState.Players[playerIndex].Insurances.Contains("casco")) {
+                    gameState.Players[playerIndex].Money -= 200_000;
+                }
+            }
+        },
+        new() {
+            ID = "accident",
+            Text = "Balesetet szenvedtél. Ha nincs rá biztosításod, fizess a 50 000 Ft-ot.",
+            Weight = 150,
+            Action = (gameState, playerIndex) => {
+                if (!gameState.Players[playerIndex].Insurances.Contains("accident")) {
+                    gameState.Players[playerIndex].Money -= 50_000;
+                }
+            }
+        },
+        new() {
+            ID = "house-fire",
+            Text = "Kigyulladt a házad. Ha nincs rá biztosításod, fizess a 500 000 Ft-ot.",
+            Weight = 40,
+            Condition = (gameState, playerIndex) => gameState.Players[playerIndex].Inventory.Contains("house"),
+            Action = (gameState, playerIndex) => {
+                if (!gameState.Players[playerIndex].Insurances.Contains("home")) {
+                    gameState.Players[playerIndex].Money -= 500_000;
+                }
+            }
+        },
+        new() {
+            ID = "lottery",
+            Text = "Vettél munkába menet egy kaparós sorsjegyet 5000 Forintért. ÉS MILYEN JÓL TETTED! LEKAPARTAD A FŐDÍJAT, AMI 25 000 000 FT!",
+            Weight = 10,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money += 25_000_000;
+            }
+        },
+        new() {
+            ID = "tax",
+            Text = "Adóztál.",
+            Weight = 40,
+            Action = (gameState, playerIndex) => {
+                gameState.Players[playerIndex].Money = (int)(gameState.Players[playerIndex].Money * 0.45);
+            }
+        }
+    ];
 }
 

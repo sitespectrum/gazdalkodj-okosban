@@ -1,5 +1,9 @@
 import { WinnerAlert } from "@/Components/WinnerAlert";
-import { FIXED_DICE_ROLL, PURCHASEABLE_ITEMS } from "@/lib/constants";
+import {
+  FIXED_DICE_ROLL,
+  LUCKY_CARDS,
+  PURCHASEABLE_ITEMS,
+} from "@/lib/constants";
 import { gameDataContext } from "@/lib/contexts";
 import { FIELDS } from "@/lib/fields-config";
 import { getRandomNumber } from "@/lib/utils";
@@ -14,6 +18,7 @@ import { FineAlert } from "@/Components/FineAlert";
 /** @typedef {import("@/lib/types").GameState} GameState */
 /** @typedef {import("@/lib/types").Player} Player */
 /** @typedef {import("@/lib/types").ShopItem} ShopItem */
+/** @typedef {import("@/lib/types").Insurance} Insurance */
 /**
  * @template T
  * @typedef {import("@/lib/types").Result<T>} Result
@@ -169,6 +174,37 @@ export function useLocalGame() {
 
   /**
    * @param {number} playerIndex
+   * @param {Insurance} insurance
+   */
+  async function buyInsurance(playerIndex, insurance) {
+    const player = state.players[playerIndex];
+    if (player.money < insurance.price) {
+      showAlert(`Nincs elég pénzed!`);
+      return;
+    }
+
+    if (player.insurances.includes(insurance.id)) {
+      showAlert(`Már van ilyen biztosításod!`);
+      return;
+    }
+
+    updateState((prev) => {
+      const updatedPlayer = {
+        ...player,
+        money: player.money - insurance.price,
+        insurances: [...player.insurances, insurance.id],
+      };
+      return {
+        ...prev,
+        players: prev.players.map((p, index) =>
+          index === playerIndex ? updatedPlayer : p
+        ),
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
    * @param {number} steps
    * @returns {Promise<void>}
    */
@@ -270,7 +306,7 @@ export function useLocalGame() {
                     };
                   },
                   (newState) => {
-                    newField.action?.({
+                    newField?.action?.({
                       currentPlayer: newState.players[playerIndex],
                       updateCurrentPlayer: updateCurrentPlayer,
                       gameState: newState,
@@ -302,6 +338,8 @@ export function useLocalGame() {
       prev.players[prev.currentPlayer].canEndTurn = false;
       prev.players[prev.currentPlayer].rollingDice = false;
       prev.players[prev.currentPlayer].rolledDice = null;
+      prev.players[prev.currentPlayer].luckyID = null;
+      prev.players[prev.currentPlayer].luckyFlipped = false;
 
       if (prev.players[prev.currentPlayer].inHospital) {
         prev.players[prev.currentPlayer].canRollDice = false;
@@ -404,6 +442,67 @@ export function useLocalGame() {
     closePopup();
   }
 
+  /**
+   * @param {number} playerIndex
+   */
+  async function flipLuckyCard(playerIndex) {
+    const cards = LUCKY_CARDS.filter(
+      (card) =>
+        card.condition?.({
+          currentPlayer: state.players[playerIndex],
+          gameState: state,
+          playerIndex: playerIndex,
+        }) ?? true
+    );
+
+    const totalWeight = cards
+      .map((card) => card.weight)
+      .reduce((a, b) => a + b, 0);
+
+    if (cards.length === 0) {
+      showAlert("Nincs elérhető szerencsekártya!");
+      return;
+    }
+
+    const random = getRandomNumber(0, totalWeight);
+
+    console.log("[lucky] Random", {
+      cards,
+      totalWeight,
+      random,
+    });
+
+    let currentWeight = 0;
+    let chosenCard = null;
+    for (const card of cards) {
+      currentWeight += card.weight;
+      if (random <= currentWeight) {
+        chosenCard = card;
+        break;
+      }
+    }
+
+    updateState(
+      (prev) => {
+        prev.players[playerIndex].luckyID = chosenCard.id;
+        prev.players[playerIndex].luckyFlipped = true;
+        return {
+          ...prev,
+        };
+      },
+      () => {
+        chosenCard.action({
+          currentPlayer: state.players[playerIndex],
+          updateCurrentPlayer: updateCurrentPlayer,
+          gameState: state,
+          updateGameState: updateState,
+          playerIndex: playerIndex,
+          openPopup: openPopup,
+        });
+      }
+    );
+  }
+
   return {
     meta,
     state,
@@ -422,7 +521,9 @@ export function useLocalGame() {
     endTurn,
 
     buyItem,
+    buyInsurance,
     buyTrainTicket,
     freeRideTrain,
+    flipLuckyCard,
   };
 }

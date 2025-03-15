@@ -82,11 +82,17 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             case "buy-item":
                 await BuyItem(message);
                 break;
+            case "buy-insurance":
+                await BuyInsurance(message);
+                break;
             case "buy-train-ticket":
                 await BuyTrainTicket(message);
                 break;
             case "free-ride-train":
                 await FreeRideTrain(message);
+                break;
+            case "flip-lucky-card":
+                await FlipLuckyCard(message);
                 break;
             default:
                 await UnknownMessage(message);
@@ -210,10 +216,7 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
                 Money = GlobalData.DefaultPlayer.Money,
                 Position = GlobalData.DefaultPlayer.Position,
                 Inventory = GlobalData.DefaultPlayer.Inventory,
-                HasCar = GlobalData.DefaultPlayer.HasCar,
-                HasCASCO = GlobalData.DefaultPlayer.HasCASCO,
-                HasAccIns = GlobalData.DefaultPlayer.HasAccIns,
-                HasHomeIns = GlobalData.DefaultPlayer.HasHomeIns,
+                Insurances = GlobalData.DefaultPlayer.Insurances,
                 InHospital = GlobalData.DefaultPlayer.InHospital,
                 InJail = GlobalData.DefaultPlayer.InJail,
                 CanRollDice = GlobalData.DefaultPlayer.CanRollDice,
@@ -548,6 +551,8 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
         game.State.Players[newPlayerIndex ?? 0].CanEndTurn = false;
         game.State.Players[newPlayerIndex ?? 0].RollingDice = false;
         game.State.Players[newPlayerIndex ?? 0].RolledDice = null;
+        game.State.Players[newPlayerIndex ?? 0].LuckyID = null;
+        game.State.Players[newPlayerIndex ?? 0].LuckyFlipped = false;
 
         if (game.State.Players[newPlayerIndex ?? 0].InHospital) {
             game.State.Players[newPlayerIndex ?? 0].CanRollDice = false;
@@ -636,6 +641,82 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             Data = new {
                 playerIndex,
                 itemId
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task BuyInsurance(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("buy-insurance message received");
+
+        int? playerIndex;
+        try {
+            playerIndex = (int?)message.Data.playerIndex;
+        } catch {
+            playerIndex = null;
+        }
+
+        if (playerIndex == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        string? insuranceId;
+        try {
+            insuranceId = (string?)message.Data.insuranceId;
+        } catch {
+            insuranceId = null;
+        }
+
+        if (insuranceId == null || !GlobalData.INSURANCES.Any(i => i.ID == insuranceId)) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing insuranceId"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        var insurance = GlobalData.INSURANCES.First(i => i.ID == insuranceId);
+
+        if (game.State?.Players[playerIndex ?? 0].Money < insurance.Price) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "You don't have enough money to buy this insurance"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        if (game.State?.Players[playerIndex ?? 0].Insurances.Contains(insurance.ID) ?? false) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "You already have this insurance"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.State!.Players[playerIndex ?? 0].Money -= insurance.Price;
+        game.State!.Players[playerIndex ?? 0].Insurances = [.. game.State!.Players[playerIndex ?? 0].Insurances, insurance.ID];
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "buy-insurance-result",
+            Data = new {
+                playerIndex,
+                insuranceId
             }
         };
         BroadcastMessage(responseMessage);
@@ -781,6 +862,71 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
                 playerIndex,
                 stop = nextStop,
                 fined = shouldFine,
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task FlipLuckyCard(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("flip-lucky-card message received");
+
+        int? playerIndex;
+        try {
+            playerIndex = (int?)message.Data.playerIndex;
+        } catch {
+            playerIndex = null;
+        }
+
+        if (playerIndex == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        if (game.State?.Players[playerIndex ?? 0].LuckyID != null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "You already flipped a lucky card"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        var cards = GlobalData.LUCKY_CARDS.Where(c => c.Condition == null || c.Condition(game.State!, playerIndex ?? 0)).ToList();
+
+        var totalWeight = cards.Sum(c => c.Weight);
+        var random = Random.Shared.Next(0, totalWeight);
+
+        var chosenCard = cards.FirstOrDefault(c => {
+            var cumulativeWeight = cards.Take(cards.IndexOf(c)).Sum(c => c.Weight);
+            return cumulativeWeight <= random && cumulativeWeight + c.Weight > random;
+        });
+
+        if (chosenCard == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "No lucky card found"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        chosenCard.Action(game.State!, playerIndex ?? 0);
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "flip-lucky-card-result",
+            Data = new {
+                playerIndex,
+                cardId = chosenCard.ID
             }
         };
         BroadcastMessage(responseMessage);

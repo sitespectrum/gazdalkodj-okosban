@@ -68,6 +68,11 @@ app.MapGet("/ws/lobby-{gameID}", async (string gameID, string playerData, HttpCo
         return;
     }
 
+    if (game.HasStarted) {
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "game-already-started", CancellationToken.None);
+        return;
+    }
+
     if (player == null) {
         await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "player-not-found", CancellationToken.None);
         return;
@@ -133,7 +138,7 @@ app.MapGet("/ws/game-{gameID}", async (string gameID, string playerID, HttpConte
         return;
     }
 
-    var player = game.LobbyConnections.First(c => c.ID == playerID);
+    var player = game.LobbyConnections.FirstOrDefault(c => c.ID == playerID);
 
     if (player == null) {
         await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "player-not-found", CancellationToken.None);

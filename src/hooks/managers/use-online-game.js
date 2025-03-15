@@ -1,6 +1,11 @@
 import { FineAlert } from "@/Components/FineAlert";
 import { WinnerAlert } from "@/Components/WinnerAlert";
-import { PURCHASEABLE_ITEMS, SERVER_URL } from "@/lib/constants";
+import {
+  INSURANCES,
+  LUCKY_CARDS,
+  PURCHASEABLE_ITEMS,
+  SERVER_URL,
+} from "@/lib/constants";
 import { gameDataContext } from "@/lib/contexts";
 import { FIELDS } from "@/lib/fields-config";
 import {
@@ -19,6 +24,7 @@ import { usePopup } from "../use-popup";
 /** @typedef {import("@/lib/types").GameState} GameState */
 /** @typedef {import("@/lib/types").Player} Player */
 /** @typedef {import("@/lib/types").ShopItem} ShopItem */
+/** @typedef {import("@/lib/types").Insurance} Insurance */
 /**
  * @template T
  * @typedef {import("@/lib/types").Result<T>} Result
@@ -46,7 +52,9 @@ export function useOnlineGame(id) {
   const ws = useRef(/** @type {WebSocket} */ (null));
   const [isMyTurn, setIsMyTurn] = useState(false);
   const isMyTurnRef = useRef(false);
-  const [isNotFound, setIsNotFound] = useState(false);
+  const [connectionError, setConnectionError] = useState(
+    /** @type {string | null} */ (null)
+  );
 
   useEffect(() => {
     const value = state.players[state.currentPlayer].id === player?.id;
@@ -64,7 +72,7 @@ export function useOnlineGame(id) {
     };
     ws.current.onclose = (e) => {
       console.log("WebSocket is closed", e);
-      setIsNotFound(true);
+      setConnectionError(e.reason);
     };
 
     return () => {
@@ -155,7 +163,7 @@ export function useOnlineGame(id) {
           if (!isMyTurnRef.current) return;
           const field =
             FIELDS[newState.players[newState.currentPlayer].position];
-          field?.action({
+          field?.action?.({
             currentPlayer: newState.players[newState.currentPlayer],
             updateCurrentPlayer,
             gameState: newState,
@@ -324,7 +332,7 @@ export function useOnlineGame(id) {
                     };
                   },
                   (newState) => {
-                    newField.action?.({
+                    newField?.action?.({
                       currentPlayer: newState.players[playerIndex],
                       updateCurrentPlayer: updateCurrentPlayer,
                       gameState: newState,
@@ -393,6 +401,8 @@ export function useOnlineGame(id) {
       prev.players[prev.currentPlayer].canEndTurn = false;
       prev.players[prev.currentPlayer].rollingDice = false;
       prev.players[prev.currentPlayer].rolledDice = null;
+      prev.players[prev.currentPlayer].luckyID = null;
+      prev.players[prev.currentPlayer].luckyFlipped = false;
 
       if (prev.players[prev.currentPlayer].inHospital) {
         prev.players[prev.currentPlayer].canRollDice = false;
@@ -432,6 +442,36 @@ export function useOnlineGame(id) {
       prev.players[playerIndex].inventory = [
         ...prev.players[playerIndex].inventory,
         itemId,
+      ];
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   * @param {Insurance} insurance
+   */
+  async function buyInsuranceCaller(playerIndex, insurance) {
+    sendMessage({
+      type: "buy-insurance",
+      data: { playerIndex, insuranceId: insurance.id },
+    });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, insuranceId: string}>} message
+   */
+  async function buyInsuranceReceiver(message) {
+    const { playerIndex, insuranceId } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money -= INSURANCES.find(
+        (i) => i.id === insuranceId
+      ).price;
+      prev.players[playerIndex].insurances = [
+        ...prev.players[playerIndex].insurances,
+        insuranceId,
       ];
       return {
         ...prev,
@@ -513,6 +553,44 @@ export function useOnlineGame(id) {
     }
   }
 
+  /**
+   * @param {number} playerIndex
+   */
+  async function flipLuckyCardCaller(playerIndex) {
+    sendMessage({ type: "flip-lucky-card", data: { playerIndex } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, cardId: string}>} message
+   */
+  async function flipLuckyCardReceiver(message) {
+    const { playerIndex, cardId } = message.data;
+    updateState(
+      (prev) => {
+        prev.players[playerIndex].luckyID = cardId;
+        prev.players[playerIndex].luckyFlipped = true;
+        return {
+          ...prev,
+        };
+      },
+      (newState) => {
+        const luckyCard = LUCKY_CARDS.find((card) => card.id === cardId);
+        luckyCard.action({
+          currentPlayer: newState.players[playerIndex],
+          updateCurrentPlayer: updateCurrentPlayer,
+          gameState: newState,
+          updateGameState: updateState,
+          playerIndex: playerIndex,
+          openPopup: (popupClass, content) => {
+            if (isMyTurnRef.current) {
+              openPopup(popupClass, content);
+            }
+          },
+        });
+      }
+    );
+  }
+
   const sendMessage = useCallback(
     /**
      * @param {WebSocketMessage} message
@@ -553,11 +631,17 @@ export function useOnlineGame(id) {
         case "buy-item-result":
           buyItemReceiver(message);
           break;
+        case "buy-insurance-result":
+          buyInsuranceReceiver(message);
+          break;
         case "buy-train-ticket-result":
           buyTrainTicketReceiver(message);
           break;
         case "free-ride-train-result":
           freeRideTrainReceiver(message);
+          break;
+        case "flip-lucky-card-result":
+          flipLuckyCardReceiver(message);
           break;
       }
     },
@@ -570,7 +654,7 @@ export function useOnlineGame(id) {
     currentPlayer: state.players[state.currentPlayer],
     isMyTurn,
     isMyTurnRef,
-    isNotFound,
+    connectionError,
 
     closePopup: closePopupEndAction,
 
@@ -583,7 +667,9 @@ export function useOnlineGame(id) {
     endTurn: endTurnCaller,
 
     buyItem: buyItemCaller,
+    buyInsurance: buyInsuranceCaller,
     buyTrainTicket: buyTrainTicketCaller,
     freeRideTrain: freeRideTrainCaller,
+    flipLuckyCard: flipLuckyCardCaller,
   };
 }

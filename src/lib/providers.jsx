@@ -105,14 +105,32 @@ export function OnlineGameProvider({ id, children }) {
       <gameContext.Provider value={game}>{children}</gameContext.Provider>
 
       <Modal
-        isOpen={game.isNotFound}
+        isOpen={game.connectionError !== null}
         backdrop="blur"
         className="light text-foreground bg-background"
         hideCloseButton
+        placement="center"
+        classNames={{
+          backdrop: "z-[10000]",
+          wrapper: "z-[10001]",
+          body: "z-[10002]",
+        }}
       >
         <ModalContent>
-          <div className="p-8 flex flex-col gap-8 items-center justify-center">
-            <span className="text-3xl">Játék nem található</span>
+          <div className="p-8 flex flex-col gap-8 items-center text-center justify-center">
+            {game.connectionError === "game-not-found" && (
+              <span className="text-3xl">Játék nem található</span>
+            )}
+            {game.connectionError === "game-already-started" && (
+              <span className="text-3xl">Játék már elkezdődött</span>
+            )}
+            {game.connectionError === "player-not-found" && (
+              <span className="text-3xl">Nem vagy benne ebben a játékban</span>
+            )}
+            {game.connectionError === "Closing" && (
+              <span className="text-3xl">A kapcsolat megszakadt</span>
+            )}
+
             <Button
               as={Link}
               href="/"

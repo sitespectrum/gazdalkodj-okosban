@@ -4,6 +4,7 @@ import { Carshop } from "@/Components/field-popups/Carshop";
 import { Elza } from "@/Components/field-popups/Elza";
 import { ElzaAndIdea } from "@/Components/field-popups/ElzaAndIdea";
 import { Idea } from "@/Components/field-popups/Idea";
+import { Insurance } from "@/Components/field-popups/Insurance";
 import { Lucky } from "@/Components/field-popups/Lucky";
 import { Steelroad } from "@/Components/field-popups/Steelroad";
 
@@ -197,7 +198,9 @@ export const FIELDS = [
     y: 7.5,
     isActionInstant: false,
     action: async (props) => {
-      if (props.gameState.players[props.playerIndex].hasCar) {
+      if (
+        props.gameState.players[props.playerIndex].inventory.includes("car")
+      ) {
         props.updateGameState(
           (prevGameState) => {
             prevGameState.players[props.playerIndex].position += 10;
@@ -302,7 +305,14 @@ export const FIELDS = [
       });
     },
   },
-  { id: 24, name: "Insurance", x: 93, y: 26 },
+  {
+    id: 24,
+    name: "Insurance",
+    x: 93,
+    y: 26,
+    isActionInstant: false,
+    action: ({ openPopup }) => openPopup("insurance", <Insurance />),
+  },
   {
     id: 25,
     name: "East Station",

@@ -98,14 +98,8 @@ public record Player {
     public required int Position { get; set; }
     [JsonProperty("inventory")]
     public required string[] Inventory { get; set; }
-    [JsonProperty("hasCar")]
-    public required bool HasCar { get; set; }
-    [JsonProperty("hasCASCO")]
-    public required bool HasCASCO { get; set; }
-    [JsonProperty("hasAccIns")]
-    public required bool HasAccIns { get; set; }
-    [JsonProperty("hasHomeIns")]
-    public required bool HasHomeIns { get; set; }
+    [JsonProperty("insurances")]
+    public required string[] Insurances { get; set; }
     [JsonProperty("inHospital")]
     public required bool InHospital { get; set; }
     [JsonProperty("inJail")]
@@ -120,6 +114,10 @@ public record Player {
     public int? RolledDice { get; set; }
     [JsonProperty("rollingDice")]
     public bool? RollingDice { get; set; }
+    [JsonProperty("luckyID")]
+    public string? LuckyID { get; set; } = null;
+    [JsonProperty("luckyFlipped")]
+    public bool? LuckyFlipped { get; set; } = false;
 }
 
 public delegate void FieldAction(GameState gameState);
@@ -147,4 +145,25 @@ public record ShopItem {
     public required int Price { get; set; }
     [JsonProperty("optional")]
     public bool Optional { get; set; }
+}
+
+public record Insurance {
+    [JsonProperty("id")]
+    public required string ID { get; set; }
+    [JsonProperty("name")]
+    public required string Name { get; set; }
+    [JsonProperty("price")]
+    public required int Price { get; set; }
+}
+public record LuckyCard {
+    [JsonProperty("id")]
+    public required string ID { get; set; }
+    [JsonProperty("text")]
+    public required string Text { get; set; }
+    [JsonProperty("weight")]
+    public required int Weight { get; set; }
+    [JsonIgnore]
+    public Func<GameState, int, bool>? Condition { get; set; } = null;
+    [JsonIgnore]
+    public required Action<GameState, int> Action { get; set; }
 }

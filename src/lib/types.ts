@@ -14,7 +14,7 @@ export interface GameManager extends GameManagerActions {
   currentPlayer: Player;
   isMyTurn: boolean;
   isMyTurnRef: React.MutableRefObject<boolean>;
-  isNotFound?: boolean;
+  connectionError?: string;
 }
 
 export interface GameManagerActions {
@@ -29,8 +29,10 @@ export interface GameManagerActions {
   endTurn: (playerIndex: number) => Promise<void>;
 
   buyItem: (playerIndex: number, item: ShopItem) => Promise<void>;
+  buyInsurance: (playerIndex: number, insurance: Insurance) => Promise<void>;
   buyTrainTicket: (playerIndex: number, stop: number) => Promise<void>;
   freeRideTrain: (playerIndex: number, stop: number) => Promise<void>;
+  flipLuckyCard: (playerIndex: number) => Promise<void>;
 }
 
 export interface GameContext {
@@ -80,10 +82,7 @@ export interface Player {
   money: number;
   position: number;
   inventory: string[];
-  hasCar: boolean;
-  hasCASCO: boolean;
-  hasAccIns: boolean;
-  hasHomeIns: boolean;
+  insurances: string[];
   inHospital: boolean;
   inJail: boolean;
   canRollDice: boolean;
@@ -91,6 +90,8 @@ export interface Player {
   state: "justStarted" | "rolledDice" | "actionStarted" | "actionEnded";
   rolledDice?: number;
   rollingDice?: boolean;
+  luckyID?: string;
+  luckyFlipped?: boolean;
 }
 
 export interface Field {
@@ -113,9 +114,26 @@ export interface FieldActionProps {
 }
 
 export interface LuckyCard {
-  id: number;
+  id: string;
   text: string;
-  action: () => void;
+  weight: number;
+  condition?: (props: LuckyCardConditionProps) => boolean;
+  action: (props: LuckyCardActionProps) => void;
+}
+
+export interface LuckyCardConditionProps {
+  currentPlayer: Player;
+  gameState: GameState;
+  playerIndex: number;
+}
+
+export interface LuckyCardActionProps {
+  currentPlayer: Player;
+  updateCurrentPlayer: React.Dispatch<React.SetStateAction<Player>>;
+  gameState: GameState;
+  updateGameState: CallbackStateAction<GameState>;
+  playerIndex: number;
+  openPopup: (popupName: string, content: React.ReactNode) => void;
 }
 
 export interface ShopItem {
@@ -123,6 +141,19 @@ export interface ShopItem {
   name: string;
   price: number;
   optional?: boolean;
+}
+
+export interface Insurance {
+  id: string;
+  name: string;
+  price: number;
+  condition?: (props: InsuranceConditionProps) => boolean;
+}
+
+export interface InsuranceConditionProps {
+  currentPlayer: Player;
+  gameState: GameState;
+  playerIndex: number;
 }
 
 export type CallbackState<T> = [T, CallbackStateAction<T>];

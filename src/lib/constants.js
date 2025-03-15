@@ -1,10 +1,12 @@
 /** @typedef {import('@/lib/types').ShopItem} ShopItem */
+/** @typedef {import('@/lib/types').LuckyCard} LuckyCard */
+/** @typedef {import('@/lib/types').Insurance} Insurance */
 
 /** @type {boolean} */
 export const IS_MENU_OPEN = true;
 
 /** @type {number} */
-export const FIXED_DICE_ROLL = 0;
+export const FIXED_DICE_ROLL = 24;
 
 /** @type {boolean} */
 export const INSTANT_DICE_ROLL = false;
@@ -74,6 +76,138 @@ export const PURCHASEABLE_ITEMS = {
   },
 };
 
+/** @type {LuckyCard[]} */
+export const LUCKY_CARDS = [
+  {
+    id: "tipszmix",
+    text: "Tipszmixen 100 000 forintot nyertél.",
+    weight: 150,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + 100_000,
+      }),
+  },
+  {
+    id: "etterem",
+    text: "Étteremben ebédeltél, fizess 20 000 Ft-ot.",
+    weight: 150,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money - 20_000,
+      }),
+  },
+  {
+    id: "foci",
+    text: "Szeretsz focizni, ezért meglepted magad egy 20 000 Ft értékű Pumba cipővel.",
+    weight: 150,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money - 20_000,
+      }),
+  },
+  {
+    id: "tulora",
+    text: "Munkahelyeden túlóráztál, ezért kapsz 60 000 forintot.",
+    weight: 150,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + 60_000,
+      }),
+  },
+  {
+    id: "scam",
+    text: "Egy kétes megbízhatóságú weboldalon ingyen Sumasang P25 Ultrákat osztottak, neked csak meg kellett adnod a kártyaadataidat. Ellopták az összes pénzed.",
+    weight: 10,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({ ...currentPlayer, money: 0 }),
+  },
+  {
+    id: "car-accident",
+    text: "Összetörted az autód. Ha nincs rá biztosításod, fizess 200 000 Ft-ot.",
+    weight: 150,
+    condition: (props) => props.currentPlayer.inventory.includes("car"),
+    action: ({ currentPlayer, updateCurrentPlayer }) => {
+      if (!currentPlayer.insurances.includes("casco")) {
+        updateCurrentPlayer({
+          ...currentPlayer,
+          money: currentPlayer.money - 200_000,
+        });
+      }
+    },
+  },
+  {
+    id: "accident",
+    text: "Balesetet szenvedtél. Ha nincs rá biztosításod, fizess a 50 000 Ft-ot.",
+    weight: 150,
+    action: ({ currentPlayer, updateCurrentPlayer }) => {
+      if (!currentPlayer.insurances.includes("accident")) {
+        updateCurrentPlayer({
+          ...currentPlayer,
+          money: currentPlayer.money - 50_000,
+        });
+      }
+    },
+  },
+  {
+    id: "house-fire",
+    text: "Kigyulladt a házad. Ha nincs rá biztosításod, fizess a 500 000 Ft-ot.",
+    weight: 40,
+    condition: (props) => props.currentPlayer.inventory.includes("house"),
+    action: ({ currentPlayer, updateCurrentPlayer }) => {
+      if (!currentPlayer.insurances.includes("home")) {
+        updateCurrentPlayer({
+          ...currentPlayer,
+          money: currentPlayer.money - 500_000,
+        });
+      }
+    },
+  },
+  {
+    id: "lottery",
+    text: "Vettél munkába menet egy kaparós sorsjegyet 5000 Forintért. ÉS MILYEN JÓL TETTED! LEKAPARTAD A FŐDÍJAT, AMI 25 000 000 FT!",
+    weight: 10,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money + 25_000_000,
+      }),
+  },
+  {
+    id: "tax",
+    text: "Adóztál.",
+    weight: 40,
+    action: ({ currentPlayer, updateCurrentPlayer }) =>
+      updateCurrentPlayer({
+        ...currentPlayer,
+        money: currentPlayer.money * 0.45,
+      }),
+  },
+];
+
+/** @type {Insurance[]} */
+export const INSURANCES = [
+  {
+    id: "casco",
+    name: "CASCO",
+    price: 120_000,
+    condition: (props) => props.currentPlayer.inventory.includes("car"),
+  },
+  {
+    id: "accident",
+    name: "Balesetbiztosítás",
+    price: 100_000,
+  },
+  {
+    id: "home",
+    name: "Lakásbiztosítás",
+    price: 1_000_000,
+  },
+];
+
 /** @type {import('@/lib/types').GameState} */
 export const DEFAULT_GAME_STATE = {
   isGameOver: false,
@@ -87,15 +221,14 @@ export const DEFAULT_GAME_STATE = {
       money: 400_000,
       position: 0,
       inventory: [],
-      hasCar: false,
-      hasCASCO: false,
-      hasAccIns: false,
-      hasHomeIns: false,
+      insurances: [],
       inHospital: false,
       inJail: false,
       canRollDice: true,
       canEndTurn: false,
       state: "justStarted",
+      luckyID: null,
+      luckyFlipped: false,
     },
     {
       index: 1,
@@ -104,15 +237,14 @@ export const DEFAULT_GAME_STATE = {
       money: 400_000,
       position: 0,
       inventory: [],
-      hasCar: false,
-      hasCASCO: false,
-      hasAccIns: false,
-      hasHomeIns: false,
+      insurances: [],
       inHospital: false,
       inJail: false,
       canRollDice: true,
       canEndTurn: false,
       state: "justStarted",
+      luckyID: null,
+      luckyFlipped: false,
     },
     {
       index: 2,
@@ -121,15 +253,14 @@ export const DEFAULT_GAME_STATE = {
       money: 400_000,
       position: 0,
       inventory: [],
-      hasCar: false,
-      hasCASCO: false,
-      hasAccIns: false,
-      hasHomeIns: false,
+      insurances: [],
       inHospital: false,
       inJail: false,
       canRollDice: true,
       canEndTurn: false,
       state: "justStarted",
+      luckyID: null,
+      luckyFlipped: false,
     },
     {
       index: 3,
@@ -138,15 +269,14 @@ export const DEFAULT_GAME_STATE = {
       money: 400_000,
       position: 0,
       inventory: [],
-      hasCar: false,
-      hasCASCO: false,
-      hasAccIns: false,
-      hasHomeIns: false,
+      insurances: [],
       inHospital: false,
       inJail: false,
       canRollDice: true,
       canEndTurn: false,
       state: "justStarted",
+      luckyID: null,
+      luckyFlipped: false,
     },
   ],
 };
