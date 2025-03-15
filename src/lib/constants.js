@@ -6,7 +6,7 @@
 export const IS_MENU_OPEN = true;
 
 /** @type {number} */
-export const FIXED_DICE_ROLL = 24;
+export const FIXED_DICE_ROLL = 0;
 
 /** @type {boolean} */
 export const INSTANT_DICE_ROLL = false;

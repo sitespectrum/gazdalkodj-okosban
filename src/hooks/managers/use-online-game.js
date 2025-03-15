@@ -45,6 +45,12 @@ export function useOnlineGame(id) {
   const { meta, setMeta, state, setState } = useContext(gameDataContext);
   const { player } = useOnlinePlayer();
 
+  const stateRef = useRef(state);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   if (!meta || !state || !setMeta || !setState) {
     throw new Error("Game context not found or not initialized");
   }
@@ -134,7 +140,7 @@ export function useOnlineGame(id) {
   function closePopupEndAction() {
     closePopup();
     if (isMyTurnRef.current) {
-      endActionCaller(state.currentPlayer);
+      endActionCaller(stateRef.current.currentPlayer);
       updateState((prev) => {
         prev.players[prev.currentPlayer].state = "actionEnded";
         return {
@@ -233,9 +239,12 @@ export function useOnlineGame(id) {
   async function movePlayerReceiver(message) {
     const { playerIndex, steps } = message.data;
 
-    const oldPlayer = state.players[playerIndex];
+    const oldPlayerPosition = stateRef.current.players[playerIndex].position;
+    const oldPlayerHasHouse =
+      stateRef.current.players[playerIndex].inventory.includes("house");
+    const oldPlayerInJail = stateRef.current.players[playerIndex].inJail;
 
-    if (state.players[playerIndex].inJail && steps !== 6) {
+    if (stateRef.current.players[playerIndex].inJail && steps !== 6) {
       updateState(
         (prevGameState) => {
           prevGameState.players[playerIndex].canRollDice = false;
@@ -260,9 +269,9 @@ export function useOnlineGame(id) {
     }
 
     const isStartingGame =
-      oldPlayer.position === 0 &&
-      oldPlayer.money === 400_000 &&
-      oldPlayer.inventory.length === 0;
+      stateRef.current.players[playerIndex].position === 0 &&
+      stateRef.current.players[playerIndex].money === 400_000 &&
+      stateRef.current.players[playerIndex].inventory.length === 0;
 
     updateState(
       (prevGameState) => {
@@ -288,9 +297,9 @@ export function useOnlineGame(id) {
         const newField = FIELDS[newGameState.players[playerIndex].position];
 
         const crossedStart =
-          oldPlayer.position > newGameState.players[playerIndex].position &&
+          oldPlayerPosition > newGameState.players[playerIndex].position &&
           newGameState.players[playerIndex].position !== 0 &&
-          !oldPlayer.inJail;
+          !oldPlayerInJail;
 
         updateState(
           (prevGameState) => {
@@ -299,8 +308,8 @@ export function useOnlineGame(id) {
             }
 
             if (
-              (crossedStart || oldPlayer.position === 0) &&
-              !oldPlayer.inventory.includes("Ház") &&
+              (crossedStart || oldPlayerPosition === 0) &&
+              !oldPlayerHasHouse &&
               !isStartingGame
             ) {
               prevGameState.players[playerIndex].money -= 70_000;

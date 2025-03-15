@@ -779,11 +779,11 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
         var moneyAdjustment = -3000;
         if (crossedStart) {
             moneyAdjustment += 150_000;
+            if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
+                moneyAdjustment -= 70_000;
+            }
         }
 
-        if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
-            moneyAdjustment -= 70_000;
-        }
 
         game.State!.Players[playerIndex ?? 0].Money += moneyAdjustment;
         game.State!.Players[playerIndex ?? 0].Position = nextStop;
@@ -847,11 +847,11 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
 
         if (crossedStart) {
             moneyAdjustment += 150_000;
+            if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
+                moneyAdjustment -= 70_000;
+            }
         }
 
-        if (!game.State?.Players[playerIndex ?? 0].Inventory.Contains("house") ?? false) {
-            moneyAdjustment -= 70_000;
-        }
 
         game.State!.Players[playerIndex ?? 0].Money += moneyAdjustment;
         game.State!.Players[playerIndex ?? 0].Position = nextStop;

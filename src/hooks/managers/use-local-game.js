@@ -33,6 +33,12 @@ export function useLocalGame() {
 
   const { meta, setMeta, state, setState } = useContext(gameDataContext);
 
+  const stateRef = useRef(state);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const isMyTurnRef = useRef(true);
 
   if (!meta || !state || !setMeta || !setState) {
@@ -177,7 +183,7 @@ export function useLocalGame() {
    * @param {Insurance} insurance
    */
   async function buyInsurance(playerIndex, insurance) {
-    const player = state.players[playerIndex];
+    const player = stateRef.current.players[playerIndex];
     if (player.money < insurance.price) {
       showAlert(`Nincs elég pénzed!`);
       return;
@@ -209,9 +215,12 @@ export function useLocalGame() {
    * @returns {Promise<void>}
    */
   async function movePlayer(playerIndex, steps) {
-    const oldPlayer = state.players[playerIndex];
+    const oldPlayerPosition = stateRef.current.players[playerIndex].position;
+    const oldPlayerHasHouse =
+      stateRef.current.players[playerIndex].inventory.includes("house");
+    const oldPlayerInJail = stateRef.current.players[playerIndex].inJail;
 
-    if (state.players[playerIndex].inJail && steps !== 6) {
+    if (oldPlayerInJail && steps !== 6) {
       updateState(
         (prevGameState) => {
           prevGameState.players[playerIndex].canRollDice = false;
@@ -234,9 +243,9 @@ export function useLocalGame() {
     }
 
     const isStartingGame =
-      oldPlayer.position === 0 &&
-      oldPlayer.money === 400_000 &&
-      oldPlayer.inventory.length === 0;
+      stateRef.current.players[playerIndex].position === 0 &&
+      stateRef.current.players[playerIndex].money === 400_000 &&
+      stateRef.current.players[playerIndex].inventory.length === 0;
 
     updateState(
       (prevGameState) => {
@@ -262,9 +271,9 @@ export function useLocalGame() {
         const newField = FIELDS[newGameState.players[playerIndex].position];
 
         const crossedStart =
-          oldPlayer.position > newGameState.players[playerIndex].position &&
+          oldPlayerPosition > newGameState.players[playerIndex].position &&
           newGameState.players[playerIndex].position !== 0 &&
-          !oldPlayer.inJail;
+          !oldPlayerInJail;
 
         updateState(
           (prevGameState) => {
@@ -273,8 +282,8 @@ export function useLocalGame() {
             }
 
             if (
-              (crossedStart || oldPlayer.position === 0) &&
-              !oldPlayer.inventory.includes("Ház") &&
+              (crossedStart || oldPlayerPosition === 0) &&
+              !oldPlayerHasHouse &&
               !isStartingGame
             ) {
               prevGameState.players[playerIndex].money -= 70_000;
@@ -387,7 +396,7 @@ export function useLocalGame() {
    * @param {number} stop
    */
   async function buyTrainTicket(playerIndex, stop) {
-    const player = state.players[playerIndex];
+    const player = stateRef.current.players[playerIndex];
     if (player.money < 3000) {
       showAlert("Nincs elég pénzed a jegyvásárláshoz!");
       return;
@@ -416,7 +425,7 @@ export function useLocalGame() {
    * @param {number} stop
    */
   async function freeRideTrain(playerIndex, stop) {
-    const player = state.players[playerIndex];
+    const player = stateRef.current.players[playerIndex];
     const [nextStop, crossedStart] = getNextStop(stop);
 
     let moneyAdjustment = 0;
@@ -449,8 +458,8 @@ export function useLocalGame() {
     const cards = LUCKY_CARDS.filter(
       (card) =>
         card.condition?.({
-          currentPlayer: state.players[playerIndex],
-          gameState: state,
+          currentPlayer: stateRef.current.players[playerIndex],
+          gameState: stateRef.current,
           playerIndex: playerIndex,
         }) ?? true
     );
@@ -492,9 +501,9 @@ export function useLocalGame() {
       },
       () => {
         chosenCard.action({
-          currentPlayer: state.players[playerIndex],
+          currentPlayer: stateRef.current.players[playerIndex],
           updateCurrentPlayer: updateCurrentPlayer,
-          gameState: state,
+          gameState: stateRef.current,
           updateGameState: updateState,
           playerIndex: playerIndex,
           openPopup: openPopup,
