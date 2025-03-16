@@ -34,11 +34,36 @@ const defaultPlayer = {
   state: "justStarted",
 };
 
+function TrashIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="2rem"
+      height="2rem"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18" />
+      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+      <line x1="10" x2="10" y1="11" y2="17" />
+      <line x1="14" x2="14" y1="11" y2="17" />
+    </svg>
+  );
+}
+
 export default function LocalGames() {
   const navigate = useNavigate();
 
   const [localGames, setLocalGames] = useState(/** @type {GameData[]} */ ([]));
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [toDelete, setToDelete] = useState(/** @type {string} */ (null));
+  const deleteModal = useDisclosure();
 
   /** @type {[GameData, React.Dispatch<React.SetStateAction<GameData>>]} */
   const [newGame, setNewGame] = useState({
@@ -90,23 +115,35 @@ export default function LocalGames() {
       <ScrollShadow
         hideScrollBar
         visibility="auto"
-        className="w-fit min-w-2xl overflow-y-auto flex flex-col items-center"
+        className="w-full md:w-2xl overflow-y-auto flex flex-col items-center"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <div className="grid w-full grid-cols-1 md:grid-cols-2 gap-4 items-center">
           {localGames.map((game) => (
             <Card
               key={game.meta.id}
-              className="w-full max-w-md border-1 border-default-200 shrink-0"
+              className="w-full border-1 border-default-200 shrink-0"
               isPressable
               onPress={() => enterGame(game.meta.id)}
             >
               <CardBody className="flex flex-row gap-4 bg-[#050505] shrink-0">
-                <div className="size-16 shrink-0 bg-blue-500/15 border-1 border-blue-500/50 shadow-md shadow-blue-500/20 rounded-lg text-2xl font-bold text-blue-500 flex items-center justify-center">
-                  {game.meta.name.slice(0, 2).toUpperCase()}
+                <div className="size-16 relative shrink-0 bg-blue-500/15 border-1 border-blue-500/50 shadow-md shadow-blue-500/20 rounded-lg text-2xl font-bold text-blue-500 flex items-center justify-center">
+                  <span
+                    className="absolute flex items-center justify-center -inset-0.5 opacity-0 bg-red-900 rounded-lg text-red-400 px-2 border-1 border-red-500 shadow-md shadow-red-400/20 py-1 hover:opacity-100 transition-colors cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setToDelete(game.meta.id);
+                      deleteModal.onOpen();
+                    }}
+                  >
+                    <TrashIcon />
+                  </span>
+                  <span>{game.meta.name.slice(0, 2).toUpperCase()}</span>
                 </div>
                 <div className="flex-1 flex flex-col">
                   <span className="text-lg font-bold flex items-center justify-between w-full gap-2 h-fit">
-                    {game.meta.name}{" "}
+                    <span className="line-clamp-1" title={game.meta.name}>
+                      {game.meta.name}
+                    </span>
                     <span className="text-sm text-default-400">
                       {game.meta.id}
                     </span>
@@ -168,6 +205,32 @@ export default function LocalGames() {
             >
               Játék létrehozása
             </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      <Modal
+        backdrop="blur"
+        isOpen={deleteModal.isOpen}
+        onClose={deleteModal.onClose}
+      >
+        <ModalContent>
+          <ModalHeader>Játék törlése</ModalHeader>
+          <ModalBody>
+            <p>Biztosan törölni szeretnéd ezt a játékot?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="danger"
+              onPress={() => {
+                localStorage.removeItem(`local-game-${toDelete}`);
+                setLocalGames(listLocalGames());
+                deleteModal.onClose();
+              }}
+            >
+              Törlés
+            </Button>
+            <Button onPress={deleteModal.onClose}>Mégsem</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
