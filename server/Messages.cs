@@ -107,6 +107,18 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             case "failed-bank-robbery":
                 await FailedBankRobbery(message);
                 break;
+            case "place-bet":
+                await PlaceBet(message);
+                break;
+            case "win-bet":
+                await WinBet(message);
+                break;
+            case "lose-bet":
+                await LoseBet(message);
+                break;
+            case "refund-bet":
+                await RefundBet(message);
+                break;
             default:
                 await UnknownMessage(message);
                 break;
@@ -960,6 +972,132 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             Type = "failed-bank-robbery-result",
             Data = new {
                 playerIndex
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task PlaceBet(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("place-bet message received");
+
+        int playerIndex = GetPlayerIndex(message);
+        if (playerIndex == -1) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        int? bet;
+        try {
+            bet = (int?)message.Data.bet;
+        } catch {
+            bet = null;
+        }
+
+        if (bet == null) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing bet"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.State!.Players[playerIndex].Money -= bet ?? 0;
+        game.State!.Players[playerIndex].CurrentBet = bet ?? 0;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "place-bet-result",
+            Data = new {
+                playerIndex,
+                bet = bet ?? 0
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task LoseBet(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("lose-bet message received");
+
+        int playerIndex = GetPlayerIndex(message);
+        if (playerIndex == -1) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.State!.Players[playerIndex].CurrentBet = null;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "lose-bet-result",
+            Data = new {
+                playerIndex,
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task WinBet(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("win-bet message received");
+
+        int playerIndex = GetPlayerIndex(message);
+        if (playerIndex == -1) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.State!.Players[playerIndex].Money += (game.State!.Players[playerIndex].CurrentBet ?? 0) * 2;
+        game.State!.Players[playerIndex].CurrentBet = null;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "win-bet-result",
+            Data = new {
+                playerIndex,
+            }
+        };
+        BroadcastMessage(responseMessage);
+    }
+
+    public async Task RefundBet(WebSocketMessage<dynamic> message) {
+        Console.WriteLine("refund-bet message received");
+
+        int playerIndex = GetPlayerIndex(message);
+        if (playerIndex == -1) {
+            var errorMessage = new WebSocketMessage<object> {
+                Type = "error",
+                Data = new {
+                    message = "Invalid or missing playerIndex"
+                }
+            };
+            await SendMessage(errorMessage);
+            return;
+        }
+
+        game.State!.Players[playerIndex].Money += game.State!.Players[playerIndex].CurrentBet ?? 0;
+        game.State!.Players[playerIndex].CurrentBet = null;
+
+        var responseMessage = new WebSocketMessage<object> {
+            Type = "refund-bet-result",
+            Data = new {
+                playerIndex,
             }
         };
         BroadcastMessage(responseMessage);

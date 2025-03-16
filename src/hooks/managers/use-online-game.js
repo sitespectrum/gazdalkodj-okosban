@@ -647,6 +647,91 @@ export function useOnlineGame(id) {
     });
   }
 
+  /**
+   * @param {number} playerIndex
+   * @param {number} bet
+   */
+  async function placeBetCaller(playerIndex, bet) {
+    sendMessage({ type: "place-bet", data: { playerIndex, bet } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, bet: number}>} message
+   */
+  async function placeBetReceiver(message) {
+    const { playerIndex, bet } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money -= bet;
+      prev.players[playerIndex].currentBet = bet;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function loseBetCaller(playerIndex) {
+    sendMessage({ type: "lose-bet", data: { playerIndex } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function loseBetReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function winBetCaller(playerIndex) {
+    sendMessage({ type: "win-bet", data: { playerIndex } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function winBetReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money +=
+        prev.players[playerIndex].currentBet * 2;
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function refundBetCaller(playerIndex) {
+    sendMessage({ type: "refund-bet", data: { playerIndex } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function refundBetReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money += prev.players[playerIndex].currentBet;
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
   const sendMessage = useCallback(
     /**
      * @param {WebSocketMessage} message
@@ -705,6 +790,18 @@ export function useOnlineGame(id) {
         case "failed-bank-robbery-result":
           failedBankRobberyReceiver(message);
           break;
+        case "place-bet-result":
+          placeBetReceiver(message);
+          break;
+        case "lose-bet-result":
+          loseBetReceiver(message);
+          break;
+        case "win-bet-result":
+          winBetReceiver(message);
+          break;
+        case "refund-bet-result":
+          refundBetReceiver(message);
+          break;
       }
     },
     [updateState]
@@ -733,7 +830,13 @@ export function useOnlineGame(id) {
     buyTrainTicket: buyTrainTicketCaller,
     freeRideTrain: freeRideTrainCaller,
     flipLuckyCard: flipLuckyCardCaller,
+
     successfulBankRobbery: successfulBankRobberyCaller,
     failedBankRobbery: failedBankRobberyCaller,
+
+    placeBet: placeBetCaller,
+    loseBet: loseBetCaller,
+    winBet: winBetCaller,
+    refundBet: refundBetCaller,
   };
 }

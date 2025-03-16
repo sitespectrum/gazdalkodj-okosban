@@ -1,16 +1,13 @@
 import { BankRobbery } from "@/Components/field-popups/BankRobbery";
 import { Bobthebuilder } from "@/Components/field-popups/Bobthebuilder";
 import { Carshop } from "@/Components/field-popups/Carshop";
+import { Casino } from "@/Components/field-popups/Casino";
 import { Elza } from "@/Components/field-popups/Elza";
 import { ElzaAndIdea } from "@/Components/field-popups/ElzaAndIdea";
 import { Idea } from "@/Components/field-popups/Idea";
 import { Insurance } from "@/Components/field-popups/Insurance";
 import { Lucky } from "@/Components/field-popups/Lucky";
 import { Steelroad } from "@/Components/field-popups/Steelroad";
-
-// Missing actions:
-// TODO: add casino
-// TODO: add insurance
 
 /** @type {import("@/lib/types").Field[]} */
 export const FIELDS = [
@@ -132,7 +129,14 @@ export const FIELDS = [
     isActionInstant: false,
     action: ({ openPopup }) => openPopup("steelroad", <Steelroad />),
   },
-  { id: 12, name: "Casino", x: 5, y: 26.5 },
+  {
+    id: 12,
+    name: "Casino",
+    x: 5,
+    y: 26.5,
+    isActionInstant: false,
+    action: ({ openPopup }) => openPopup("casino", <Casino />),
+  },
 
   {
     id: 13,

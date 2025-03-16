@@ -540,6 +540,59 @@ export function useLocalGame() {
     });
   }
 
+  /**
+   * @param {number} playerIndex
+   * @param {number} bet
+   */
+  async function placeBet(playerIndex, bet) {
+    updateState((prev) => {
+      prev.players[playerIndex].money -= bet;
+      prev.players[playerIndex].currentBet = bet;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function loseBet(playerIndex) {
+    updateState((prev) => {
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function winBet(playerIndex) {
+    updateState((prev) => {
+      prev.players[playerIndex].money +=
+        prev.players[playerIndex].currentBet * 2;
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function refundBet(playerIndex) {
+    updateState((prev) => {
+      prev.players[playerIndex].money += prev.players[playerIndex].currentBet;
+      prev.players[playerIndex].currentBet = null;
+      return {
+        ...prev,
+      };
+    });
+  }
+
   return {
     meta,
     state,
@@ -562,7 +615,13 @@ export function useLocalGame() {
     buyTrainTicket,
     freeRideTrain,
     flipLuckyCard,
+
     successfulBankRobbery,
     failedBankRobbery,
+
+    placeBet,
+    loseBet,
+    winBet,
+    refundBet,
   };
 }

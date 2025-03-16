@@ -120,6 +120,8 @@ public record Player {
     public string? LuckyID { get; set; } = null;
     [JsonProperty("luckyFlipped")]
     public bool? LuckyFlipped { get; set; } = false;
+    [JsonProperty("currentBet")]
+    public int? CurrentBet { get; set; } = null;
 }
 
 public delegate void FieldAction(GameState gameState);

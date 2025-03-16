@@ -35,6 +35,10 @@ export interface GameManagerActions {
   flipLuckyCard: (playerIndex: number) => Promise<void>;
   successfulBankRobbery: (playerIndex: number, money: number) => Promise<void>;
   failedBankRobbery: (playerIndex: number) => Promise<void>;
+  placeBet: (playerIndex: number, bet: number) => Promise<void>;
+  loseBet: (playerIndex: number) => Promise<void>;
+  winBet: (playerIndex: number) => Promise<void>;
+  refundBet: (playerIndex: number) => Promise<void>;
 }
 
 export interface GameContext {
@@ -94,6 +98,7 @@ export interface Player {
   rollingDice?: boolean;
   luckyID?: string;
   luckyFlipped?: boolean;
+  currentBet?: number;
 }
 
 export interface Field {
