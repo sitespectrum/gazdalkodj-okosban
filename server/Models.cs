@@ -21,6 +21,8 @@ public record PlayerConnection {
     public required string Image { get; set; }
     [JsonProperty("isHost")]
     public required bool IsHost { get; set; }
+    [JsonProperty("isAdmin")]
+    public bool IsAdmin { get; set; } = false;
     [JsonIgnore]
     public required WebSocket WSConnection { get; set; } = null!;
 }

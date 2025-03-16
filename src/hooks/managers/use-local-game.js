@@ -512,6 +512,34 @@ export function useLocalGame() {
     );
   }
 
+  /**
+   * @param {number} playerIndex
+   * @param {number} money
+   */
+  async function successfulBankRobbery(playerIndex, money) {
+    updateState((prev) => {
+      prev.players[playerIndex].money += money;
+      prev.players[playerIndex].state = "actionEnded";
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function failedBankRobbery(playerIndex) {
+    updateState((prev) => {
+      prev.players[playerIndex].inJail = true;
+      prev.players[playerIndex].position = 27;
+      prev.players[playerIndex].state = "actionEnded";
+      return {
+        ...prev,
+      };
+    });
+  }
+
   return {
     meta,
     state,
@@ -534,5 +562,7 @@ export function useLocalGame() {
     buyTrainTicket,
     freeRideTrain,
     flipLuckyCard,
+    successfulBankRobbery,
+    failedBankRobbery,
   };
 }

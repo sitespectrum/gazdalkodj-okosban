@@ -3,10 +3,14 @@ import { formatMoney } from "@/lib/utils.js";
 import { useEffect, useState } from "react";
 
 export function BankRobbery() {
-  const { currentPlayer, updateCurrentPlayer, closePopup } = useGame();
+  const {
+    currentPlayer,
+    successfulBankRobbery,
+    failedBankRobbery,
+    closePopup,
+  } = useGame();
 
   const [isRobbing, setIsRobbing] = useState(false);
-  /** @type {[number | null, React.Dispatch<React.SetStateAction<number | null>>]} */
   const [countdown, setCountdown] = useState(
     /** @type {number | null} */ (null)
   );
@@ -30,41 +34,27 @@ export function BankRobbery() {
     }
   }, [isRobbing, countdown]);
 
-  const handleStartRobbery = () => {
+  function startRobbery() {
     setIsRobbing(true);
     setCountdown(Math.floor(Math.random() * 6) + 20);
     setClickCount(0);
     setEscapeVisible(false);
-  };
+  }
 
-  const handleClick = () => {
-    if (isRobbing) {
-      setClickCount((prev) => prev + 1);
-    }
-  };
-
-  const handleEscape = () => {
+  function handleEscape() {
     if (isRobbing && escapeVisible) {
-      updateCurrentPlayer({
-        ...currentPlayer,
-        money: currentPlayer.money + clickCount * 10000,
-      });
       setGameOver(true);
+      successfulBankRobbery(currentPlayer.index, clickCount * 10000);
     }
-  };
+  }
 
-  const handleFail = () => {
+  function handleFail() {
     if (!gameOver) {
       setEscapeVisible(false);
-
-      updateCurrentPlayer({
-        ...currentPlayer,
-        inJail: true,
-        position: 27,
-      });
+      failedBankRobbery(currentPlayer.index);
       setGameOver(true);
     }
-  };
+  }
 
   return (
     <>
@@ -78,7 +68,7 @@ export function BankRobbery() {
             <div className="flex gap-6">
               <button
                 className="bg-white font-medium text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
-                onClick={handleStartRobbery}
+                onClick={startRobbery}
               >
                 Igen
               </button>
@@ -105,7 +95,7 @@ export function BankRobbery() {
               </button>
               <button
                 className="bg-[#c6eef8] text-xl text-black px-6 py-3 rounded-lg border-[0.1rem] border-black"
-                onClick={handleClick}
+                onClick={() => setClickCount((prev) => prev + 1)}
               >
                 💰 Rablás ({clickCount})
               </button>

@@ -600,6 +600,53 @@ export function useOnlineGame(id) {
     );
   }
 
+  /**
+   * @param {number} playerIndex
+   * @param {number} money
+   */
+  async function successfulBankRobberyCaller(playerIndex, money) {
+    sendMessage({
+      type: "successful-bank-robbery",
+      data: { playerIndex, money },
+    });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number, money: number}>} message
+   */
+  async function successfulBankRobberyReceiver(message) {
+    const { playerIndex, money } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].money += money;
+      prev.players[playerIndex].state = "actionEnded";
+      return {
+        ...prev,
+      };
+    });
+  }
+
+  /**
+   * @param {number} playerIndex
+   */
+  async function failedBankRobberyCaller(playerIndex) {
+    sendMessage({ type: "failed-bank-robbery", data: { playerIndex } });
+  }
+
+  /**
+   * @param {WebSocketMessage<{playerIndex: number}>} message
+   */
+  async function failedBankRobberyReceiver(message) {
+    const { playerIndex } = message.data;
+    updateState((prev) => {
+      prev.players[playerIndex].inJail = true;
+      prev.players[playerIndex].position = 27;
+      prev.players[playerIndex].state = "actionEnded";
+      return {
+        ...prev,
+      };
+    });
+  }
+
   const sendMessage = useCallback(
     /**
      * @param {WebSocketMessage} message
@@ -652,6 +699,12 @@ export function useOnlineGame(id) {
         case "flip-lucky-card-result":
           flipLuckyCardReceiver(message);
           break;
+        case "successful-bank-robbery-result":
+          successfulBankRobberyReceiver(message);
+          break;
+        case "failed-bank-robbery-result":
+          failedBankRobberyReceiver(message);
+          break;
       }
     },
     [updateState]
@@ -680,5 +733,7 @@ export function useOnlineGame(id) {
     buyTrainTicket: buyTrainTicketCaller,
     freeRideTrain: freeRideTrainCaller,
     flipLuckyCard: flipLuckyCardCaller,
+    successfulBankRobbery: successfulBankRobberyCaller,
+    failedBankRobbery: failedBankRobberyCaller,
   };
 }

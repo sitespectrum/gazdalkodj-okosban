@@ -33,6 +33,8 @@ export interface GameManagerActions {
   buyTrainTicket: (playerIndex: number, stop: number) => Promise<void>;
   freeRideTrain: (playerIndex: number, stop: number) => Promise<void>;
   flipLuckyCard: (playerIndex: number) => Promise<void>;
+  successfulBankRobbery: (playerIndex: number, money: number) => Promise<void>;
+  failedBankRobbery: (playerIndex: number) => Promise<void>;
 }
 
 export interface GameContext {
