@@ -1,9 +1,11 @@
 namespace server;
 
-public static class GlobalData {
+public static class GlobalData
+{
     public static readonly List<Game> Games = [];
 
-    public static readonly Player DefaultPlayer = new() {
+    public static readonly Player DefaultPlayer = new()
+    {
         ID = "player-0",
         Index = 0,
         Name = "Player 1",
@@ -141,59 +143,77 @@ public static class GlobalData {
         new() { ID = 27, Name = "Jail (locked up)" }
     ];
 
-    public static readonly Dictionary<string, ShopItem> PURCHASEABLE_ITEMS = new() {
-        ["house"] = new() {
+    public static readonly Dictionary<string, ShopItem> PURCHASEABLE_ITEMS = new()
+    {
+        ["house"] = new()
+        {
             ID = "house",
             Name = "Ház",
             Price = 25_000_000
         },
-        ["car"] = new() {
+        ["car"] = new()
+        {
             ID = "car",
             Name = "Autó",
-            Price = 1_000_000,
+            Price = 2_500_000,
             Optional = true
         },
-        ["tv"] = new() {
+        ["phone"] = new()
+        {
+            ID = "phone",
+            Name = "Sumasang P25 Ultra Pro Max Slim 1TB",
+            Price = 1_000_000
+        },
+        ["tv"] = new()
+        {
             ID = "tv",
             Name = "Sumasang 4K TV",
             Price = 119_990
         },
-        ["washingMachine"] = new() {
+        ["washingMachine"] = new()
+        {
             ID = "washingMachine",
             Name = "GL előltöltős mosógép",
             Price = 99_990
         },
-        ["dryer"] = new() {
+        ["dryer"] = new()
+        {
             ID = "dryer",
             Name = "Boss előltöltős szárítógép",
             Price = 129_990
         },
-        ["fridge"] = new() {
+        ["fridge"] = new()
+        {
             ID = "fridge",
             Name = "Görénye alulfagyasztós hűtő",
             Price = 84_990
         },
-        ["dishwasher"] = new() {
+        ["dishwasher"] = new()
+        {
             ID = "dishwasher",
             Name = "Kendi mosogatógép",
             Price = 109_990
         },
-        ["vacuumCleaner"] = new() {
+        ["vacuumCleaner"] = new()
+        {
             ID = "vacuumCleaner",
             Name = "Dájszon porszívó",
             Price = 124_990
         },
-        ["kitchenFurniture"] = new() {
+        ["kitchenFurniture"] = new()
+        {
             ID = "kitchenFurniture",
             Name = "Konyhabútor",
             Price = 549_990
         },
-        ["livingRoomFurniture"] = new() {
+        ["livingRoomFurniture"] = new()
+        {
             ID = "livingRoomFurniture",
             Name = "Szobabútor",
             Price = 999_990
         },
-        ["bathroomFurniture"] = new() {
+        ["bathroomFurniture"] = new()
+        {
             ID = "bathroomFurniture",
             Name = "Fürdőszobabútor",
             Price = 349_990
