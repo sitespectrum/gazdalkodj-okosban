@@ -101,6 +101,7 @@ export interface Player {
   luckyID?: string;
   luckyFlipped?: boolean;
   currentBet?: number;
+  batteryPercentage: number;
 }
 
 export interface Field {

@@ -6,14 +6,11 @@ import { useAlert } from "@/hooks/use-alert.js";
 import { useGame } from "@/hooks/use-game";
 import { usePopup } from "@/hooks/use-popup.js";
 import { FIELDS } from "@/lib/fields-config";
-import { useState } from "react";
-import { useEffect } from "react";
-import { TimeTravel } from "./TimeTravel";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Phone } from "./field-popups/Phone";
+import { TimeTravel } from "./TimeTravel";
 
 export function Game() {
-  const [BatteryDied, setBatteryDied] = useState(false);
   const {
     popupClass,
     popupContent,
@@ -115,18 +112,10 @@ export function Game() {
 
                     <button
                       className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
-                      onClick={() =>
-                        openPopup(
-                          "phone",
-                          <Phone
-                            BatteryDied={BatteryDied}
-                            setBatteryDied={setBatteryDied}
-                          />
-                        )
-                      }
+                      onClick={() => openPopup("phone", <Phone />)}
                       disabled={
                         !currentPlayer.inventory.includes("phone") ||
-                        BatteryDied
+                        currentPlayer.batteryPercentage <= 0
                       }
                     >
                       Telefon
@@ -134,9 +123,7 @@ export function Game() {
 
                     <button
                       className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
-                      onClick={() =>
-                        endTurn(currentPlayer.index) && setBatteryDied(false)
-                      }
+                      onClick={() => endTurn(currentPlayer.index)}
                       disabled={!currentPlayer.canEndTurn || !isMyTurn}
                     >
                       Kör vége

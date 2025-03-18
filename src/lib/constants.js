@@ -225,7 +225,7 @@ export const DEFAULT_GAME_STATE = {
       image: "/src/Pictures/Puppets/Piros bábú 1.png",
       money: 400_000,
       position: 0,
-      inventory: ["phone"],
+      inventory: [],
       insurances: [],
       inHospital: false,
       inJail: false,
@@ -234,6 +234,7 @@ export const DEFAULT_GAME_STATE = {
       state: "justStarted",
       luckyID: null,
       luckyFlipped: false,
+      batteryPercentage: 100,
     },
     {
       index: 1,
@@ -250,6 +251,7 @@ export const DEFAULT_GAME_STATE = {
       state: "justStarted",
       luckyID: null,
       luckyFlipped: false,
+      batteryPercentage: 100,
     },
     {
       index: 2,
@@ -266,6 +268,7 @@ export const DEFAULT_GAME_STATE = {
       state: "justStarted",
       luckyID: null,
       luckyFlipped: false,
+      batteryPercentage: 100,
     },
     {
       index: 3,
@@ -282,6 +285,7 @@ export const DEFAULT_GAME_STATE = {
       state: "justStarted",
       luckyID: null,
       luckyFlipped: false,
+      batteryPercentage: 100,
     },
   ],
 };

@@ -417,6 +417,7 @@ export function useOnlineGame(id) {
       prev.players[prev.currentPlayer].rolledDice = null;
       prev.players[prev.currentPlayer].luckyID = null;
       prev.players[prev.currentPlayer].luckyFlipped = false;
+      prev.players[prev.currentPlayer].batteryPercentage = 100;
 
       if (prev.players[prev.currentPlayer].inHospital) {
         prev.players[prev.currentPlayer].canRollDice = false;
