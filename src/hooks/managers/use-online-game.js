@@ -61,6 +61,8 @@ export function useOnlineGame(id) {
   const [connectionError, setConnectionError] = useState(
     /** @type {string | null} */ (null)
   );
+  const [loading, setLoading] = useState(true);
+  const loadingRef = useRef(true);
 
   useEffect(() => {
     const value = state.players[state.currentPlayer].id === player?.id;
@@ -162,6 +164,9 @@ export function useOnlineGame(id) {
         };
       },
       (newState) => {
+        setLoading(false);
+        loadingRef.current = false;
+
         if (
           newState.players[newState.currentPlayer].state === "actionStarted" ||
           newState.players[newState.currentPlayer].state === "rolledDice"
@@ -814,6 +819,8 @@ export function useOnlineGame(id) {
     isMyTurn,
     isMyTurnRef,
     connectionError,
+    loading,
+    loadingRef,
 
     closePopup: closePopupEndAction,
 

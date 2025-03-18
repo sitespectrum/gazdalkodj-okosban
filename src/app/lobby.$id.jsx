@@ -69,7 +69,8 @@ function LockIcon() {
 
 export default function Lobby() {
   const { id } = useParams();
-  const { lobby, startGame, updatePlayer, isNotFound, loading } = useLobby(id);
+  const { lobby, fading, startGame, updatePlayer, isNotFound, loading } =
+    useLobby(id);
   const { player: onlinePlayer, setPlayer: setOnlinePlayer } =
     useOnlinePlayer();
 
@@ -355,6 +356,14 @@ export default function Lobby() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <div
+        className={`absolute z-10 bg-black inset-0 transition-opacity duration-500 ${
+          fading
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      ></div>
     </div>
   );
 }

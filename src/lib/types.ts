@@ -15,6 +15,8 @@ export interface GameManager extends GameManagerActions {
   isMyTurn: boolean;
   isMyTurnRef: React.MutableRefObject<boolean>;
   connectionError?: string;
+  loading: boolean;
+  loadingRef: React.MutableRefObject<boolean>;
 }
 
 export interface GameManagerActions {

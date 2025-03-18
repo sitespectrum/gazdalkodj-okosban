@@ -65,6 +65,8 @@ export default function LocalGames() {
   const [toDelete, setToDelete] = useState(/** @type {string} */ (null));
   const deleteModal = useDisclosure();
 
+  const [fading, setFading] = useState(false);
+
   /** @type {[GameData, React.Dispatch<React.SetStateAction<GameData>>]} */
   const [newGame, setNewGame] = useState({
     meta: {
@@ -99,9 +101,10 @@ export default function LocalGames() {
   /**
    * @param {string} gameID
    */
-  function enterGame(gameID) {
+  async function enterGame(gameID) {
+    setFading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     navigate(`/local-game/${gameID}`);
-    console.log(gameID);
   }
 
   return (
@@ -234,6 +237,14 @@ export default function LocalGames() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <div
+        className={`absolute z-10 bg-black inset-0 transition-opacity duration-500 ${
+          fading
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      ></div>
     </div>
   );
 }

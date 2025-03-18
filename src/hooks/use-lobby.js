@@ -15,7 +15,7 @@ import { useOnlinePlayer } from "./use-online-player";
 
 /**
  * @param {string} gameID
- * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>, isNotFound: boolean, loading: boolean}}
+ * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>, isNotFound: boolean, loading: boolean, fading: boolean}}
  */
 export function useLobby(gameID) {
   const { player } = useOnlinePlayer();
@@ -24,6 +24,7 @@ export function useLobby(gameID) {
   const [lobby, setLobby] = useState(/** @type {Lobby} */ (null));
   const [isNotFound, setIsNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fading, setFading] = useState(false);
 
   const ws = useRef(/** @type {WebSocket} */ (null));
 
@@ -129,6 +130,8 @@ export function useLobby(gameID) {
    */
   async function gameStartedReceiver(message) {
     console.log("Game started", message);
+    setFading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     navigate(`/online-game/${gameID}`);
   }
 
@@ -168,5 +171,6 @@ export function useLobby(gameID) {
     updatePlayer: playerUpdatedCaller,
     isNotFound,
     loading,
+    fading,
   };
 }

@@ -40,6 +40,7 @@ export function useLocalGame() {
   }, [state]);
 
   const isMyTurnRef = useRef(true);
+  const loadingRef = useRef(false);
 
   if (!meta || !state || !setMeta || !setState) {
     throw new Error("Game context not found or not initialized");
@@ -599,6 +600,8 @@ export function useLocalGame() {
     currentPlayer: state.players[state.currentPlayer],
     isMyTurn: true,
     isMyTurnRef,
+    loading: false,
+    loadingRef,
 
     closePopup,
 
