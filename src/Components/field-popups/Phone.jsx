@@ -55,7 +55,7 @@ export function Phone() {
       {!AppOpened ? (
         <div
           className="flex absolute inset-0 bg-cover bg-center top-[0.6rem] right-[0.6rem] left-[0.6rem] bottom-[0.6rem] rounded-[2.4rem]"
-          style={{ backgroundImage: "url('src/Pictures/P25wallpaper.jpg')" }}
+          style={{ backgroundImage: "url('/src/Pictures/P25wallpaper.jpg')" }}
         >
           <div className="grid grid-cols-3 gap-20 ml-[1.1rem] mr-[1.1rem] mt-[0.6rem] mb-[0.6rem] h-[3rem]">
             <div className="text-[1.1rem] font-bold">
@@ -73,22 +73,22 @@ export function Phone() {
           </div>
           <div className="grid grid-cols-4 gap-4 ml-[1.1rem] mt-[5rem] mb-[0.6rem] mr-[1.1rem] absolute">
             <div className="cursor-pointer opacity-50">
-              <img src="src/Logos/Console.png" />
+              <img src="/src/Logos/Console.png" />
             </div>
             <div className="cursor-pointer opacity-50">
-              <img src="src/Logos/Angeles.png" />
+              <img src="/src/Logos/Angeles.png" />
             </div>
             <div className="cursor-pointer opacity-50">
               <img src="src/Logos/Mix.png" />
             </div>
             <div className="cursor-pointer">
               <button onClick={HandleElza}>
-                <img src="src/Logos/Elza_app_logo.png" />
+                <img src="/src/Logos/Elza_app_logo.png" />
               </button>
             </div>
             <div className="cursor-pointer">
               <button onClick={HandleIdea}>
-                <img src="src/Logos/Idea_app_logo.png" />
+                <img src="/src/Logos/Idea_app_logo.png" />
               </button>
             </div>
           </div>
