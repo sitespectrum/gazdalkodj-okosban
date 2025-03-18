@@ -79,7 +79,7 @@ export function Phone() {
               <img src="/src/Logos/Angeles.png" />
             </div>
             <div className="cursor-pointer opacity-50">
-              <img src="src/Logos/Mix.png" />
+              <img src="/src/Logos/Mix.png" />
             </div>
             <div className="cursor-pointer">
               <button onClick={HandleElza}>
