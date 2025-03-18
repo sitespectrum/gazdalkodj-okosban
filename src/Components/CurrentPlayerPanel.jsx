@@ -67,7 +67,9 @@ export function CurrentPlayerPanel() {
                 </div>
               )}
 
-              <div className="flex items-center">{item.name}</div>
+              <div className="flex items-center">
+                <span className="line-clamp-1 text-start">{item.name}</span>
+              </div>
             </li>
           ))}
         </ul>

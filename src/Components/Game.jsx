@@ -13,6 +13,7 @@ import { useRef } from "react";
 import { Phone } from "./field-popups/Phone";
 
 export function Game() {
+  const [BatteryDied, setBatteryDied] = useState(false);
   const {
     popupClass,
     popupContent,
@@ -114,15 +115,28 @@ export function Game() {
 
                     <button
                       className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
-                      onClick={() => openPopup("phone", <Phone />)}
-                      disabled={!currentPlayer.inventory.includes("phone")}
+                      onClick={() =>
+                        openPopup(
+                          "phone",
+                          <Phone
+                            BatteryDied={BatteryDied}
+                            setBatteryDied={setBatteryDied}
+                          />
+                        )
+                      }
+                      disabled={
+                        !currentPlayer.inventory.includes("phone") ||
+                        BatteryDied
+                      }
                     >
                       Telefon
                     </button>
 
                     <button
                       className="text-2xl w-full font-medium hover:bg-white/85 active:not-disabled:scale-[.98] transition-all duration-100 bg-white text-black rounded-xl py-2 px-6 disabled:bg-white! disabled:text-black! disabled:opacity-50"
-                      onClick={() => endTurn(currentPlayer.index)}
+                      onClick={() =>
+                        endTurn(currentPlayer.index) && setBatteryDied(false)
+                      }
                       disabled={!currentPlayer.canEndTurn || !isMyTurn}
                     >
                       Kör vége
