@@ -628,7 +628,7 @@ function FieldTwentyOneYappel() {
         />
       </div>
       <div className="text-[0.65rem] text-center bg-[#002340] pt-3 px-1">
-        Vegyé telefont he.
+        Ha még nincs telefonod, itt megveheted.
       </div>
     </div>
   );
