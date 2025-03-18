@@ -23,10 +23,15 @@ export const PURCHASEABLE_ITEMS = {
     name: "Ház",
     price: 25_000_000,
   },
+  phone: {
+    id: "phone",
+    name: "Sumasang P25 Ultra Pro Max Slim 1TB",
+    price: 1_000_000,
+  },
   car: {
     id: "car",
     name: "Autó",
-    price: 1_000_000,
+    price: 2_500_000,
     optional: true,
   },
   tv: {
@@ -220,7 +225,7 @@ export const DEFAULT_GAME_STATE = {
       image: "/src/Pictures/Puppets/Piros bábú 1.png",
       money: 400_000,
       position: 0,
-      inventory: [],
+      inventory: ["phone"],
       insurances: [],
       inHospital: false,
       inJail: false,

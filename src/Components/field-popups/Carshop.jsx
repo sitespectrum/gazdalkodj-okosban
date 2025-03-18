@@ -19,7 +19,7 @@ export function Carshop() {
       </div>
       <div className="bg-white rounded-xl p-6 shadow-[0_0_1.5rem_rgba(0,0,0,0.2)] flex flex-col gap-16">
         <p className="mt-12 text-center text-3xl font-semibold">
-          Ár: 1 000 000 Ft
+          Ár: 2 500 000 Ft
         </p>
         <img className="h-48 mx-auto" src="/src/HQ Pictures/Auto.png" />
         <div className="flex w-full gap-6">

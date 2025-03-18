@@ -8,6 +8,7 @@ import { Idea } from "@/Components/field-popups/Idea";
 import { Insurance } from "@/Components/field-popups/Insurance";
 import { Lucky } from "@/Components/field-popups/Lucky";
 import { Steelroad } from "@/Components/field-popups/Steelroad";
+import { Yappel } from "@/Components/field-popups/Yappel";
 
 /** @type {import("@/lib/types").Field[]} */
 export const FIELDS = [
@@ -278,7 +279,13 @@ export const FIELDS = [
     isActionInstant: false,
     action: ({ openPopup }) => openPopup("idea", <Idea />),
   },
-  { id: 21, name: "Bank 4", x: 73.7, y: 7.5 },
+  {
+    id: 21,
+    name: "Yappel",
+    x: 73.7,
+    y: 7.5,
+    action: ({ openPopup }) => openPopup("yappel", <Yappel />),
+  },
   {
     id: 22,
     name: "ABC",
