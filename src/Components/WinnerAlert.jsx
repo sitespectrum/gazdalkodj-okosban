@@ -13,7 +13,7 @@ export function WinnerAlert() {
       <button
         className="new-game-button"
         onClick={() => {
-          navigate("/new-game");
+          navigate("/");
         }}
       >
         Új játék
