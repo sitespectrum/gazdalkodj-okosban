@@ -389,7 +389,7 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             return;
         }
 
-        if (game.State.Players[playerIndex].InHospital) {
+        if (game.State.Players[playerIndex].InHospital && !connection.IsAdmin) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {
@@ -534,7 +534,7 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
             return;
         }
 
-        if (!game.State!.Players[playerIndex].CanEndTurn) {
+        if (!game.State!.Players[playerIndex].CanEndTurn && !connection.IsAdmin) {
             var errorMessage = new WebSocketMessage<object> {
                 Type = "error",
                 Data = new {

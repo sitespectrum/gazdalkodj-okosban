@@ -19,6 +19,7 @@ import {
 import { useAlert } from "../use-alert";
 import { useOnlinePlayer } from "../use-online-player";
 import { usePopup } from "../use-popup";
+import { useLocation } from "react-router";
 
 /** @typedef {import("@/lib/types").GameManager} GameManager */
 /** @typedef {import("@/lib/types").GameState} GameState */
@@ -38,7 +39,8 @@ import { usePopup } from "../use-popup";
  * @param {string} id
  * @returns {GameManager}
  */
-export function useOnlineGame(id) {
+export function useOnlineGame(id, isAdmin = false) {
+  const location = useLocation();
   const { openPopup, closePopup } = usePopup();
   const { showAlert } = useAlert();
 
@@ -72,7 +74,13 @@ export function useOnlineGame(id) {
 
   useEffect(() => {
     ws.current = new WebSocket(
-      `${SERVER_URL}/ws/game-${id}?playerID=${player.id}`
+      `${SERVER_URL}/ws/${isAdmin ? "admin" : "game"}-${id}?playerID=${
+        player.id
+      }${
+        isAdmin
+          ? `&password=${new URLSearchParams(location.search).get("password")}`
+          : ""
+      }`
     );
     ws.current.onmessage = handleMessage;
     ws.current.onopen = () => {

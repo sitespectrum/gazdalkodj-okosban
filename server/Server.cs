@@ -21,10 +21,19 @@ var app = builder.Build();
 app.UseWebSockets();
 app.UseCors("AllowAllOrigins");
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Gazdálkodj Okosban!");
 
 app.MapGet("/games", () => {
     return Results.Json(GlobalData.Games.Where(g => !g.HasStarted && g.IsPublic).Select(g => new {
+        g.ID,
+        g.Name,
+        g.MaxPlayers,
+        playerCount = g.LobbyConnections.DistinctBy(c => c.ID).Count()
+    }));
+});
+
+app.MapGet("/admin/games", () => {
+    return Results.Json(GlobalData.Games.Where(g => g.HasStarted).Select(g => new {
         g.ID,
         g.Name,
         g.MaxPlayers,
@@ -151,6 +160,66 @@ app.MapGet("/ws/game-{gameID}", async (string gameID, string playerID, HttpConte
         Name = player.Name,
         Image = player.Image,
         IsHost = player.IsHost,
+        WSConnection = ws
+    };
+
+    game.Connections.Add(connection);
+    var handler = new MessagesHandler(game, connection);
+
+    await handler.SyncGameState();
+
+    var buffer = new byte[1024 * 4];
+    var receiveResult = await ws.ReceiveAsync(
+        new ArraySegment<byte>(buffer),
+        CancellationToken.None
+    );
+
+    Console.WriteLine(receiveResult);
+
+    while (!receiveResult.CloseStatus.HasValue) {
+        var messageBytes = new byte[receiveResult.Count];
+        Array.Copy(buffer, messageBytes, receiveResult.Count);
+
+        Console.WriteLine("Received message");
+        _ = handler.HandleMessage(messageBytes);
+
+        receiveResult = await ws.ReceiveAsync(
+            new ArraySegment<byte>(buffer),
+            CancellationToken.None
+        );
+    }
+
+    await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+    game.Connections.Remove(connection);
+});
+
+app.MapGet("/ws/admin-{gameID}", async (string gameID, string password, HttpContext context) => {
+    if (!context.WebSockets.IsWebSocketRequest) {
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        return;
+    }
+
+    var ws = await context.WebSockets.AcceptWebSocketAsync();
+
+    var game = GlobalData.Games.FirstOrDefault(g => g.ID == gameID);
+
+    if (game == null) {
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "game-not-found", CancellationToken.None);
+        return;
+    }
+
+    if (password != (System.Environment.GetEnvironmentVariable("ADMIN_PASSWORD") ?? "admin")) {
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "wrong-password", CancellationToken.None);
+        return;
+    }
+
+    var connection = new PlayerConnection {
+        ID = "admin",
+        Key = "admin",
+        Name = "Admin",
+        Image = "/src/Pictures/Puppets/Piros bábú 1.png",
+        IsHost = false,
+        IsAdmin = true,
         WSConnection = ws
     };
 

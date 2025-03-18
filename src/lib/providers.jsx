@@ -95,10 +95,11 @@ export function LocalGameProvider({ children }) {
 /**
  * @param {Object} props
  * @param {string} props.id
+ * @param {boolean} props.isAdmin
  * @param {React.ReactNode} props.children
  */
-export function OnlineGameProvider({ id, children }) {
-  const game = useOnlineGame(id);
+export function OnlineGameProvider({ id, isAdmin = false, children }) {
+  const game = useOnlineGame(id, isAdmin);
 
   return (
     <>
@@ -126,6 +127,9 @@ export function OnlineGameProvider({ id, children }) {
             )}
             {game.connectionError === "player-not-found" && (
               <span className="text-3xl">Nem vagy benne ebben a játékban</span>
+            )}
+            {game.connectionError === "wrong-password" && (
+              <span className="text-3xl">Hibás jelszó</span>
             )}
             {game.connectionError === "Closing" && (
               <span className="text-3xl">A kapcsolat megszakadt</span>
