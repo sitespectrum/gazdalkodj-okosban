@@ -1,8 +1,15 @@
+import { DEFAULT_PLAYER_IMAGES } from "@/lib/constants";
 import { makeID, timeAgo } from "@/lib/utils";
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
+  Divider,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -32,6 +39,7 @@ const defaultPlayer = {
   canRollDice: true,
   canEndTurn: false,
   state: "justStarted",
+  batteryPercentage: 100,
 };
 
 function TrashIcon() {
@@ -78,7 +86,12 @@ export default function LocalGames() {
       isGameOver: false,
       winningPlayerIndex: -1,
       currentPlayer: 0,
-      players: [defaultPlayer],
+      players: [
+        {
+          ...defaultPlayer,
+          name: "Játékos 1",
+        },
+      ],
     },
   });
 
@@ -168,7 +181,6 @@ export default function LocalGames() {
       </ScrollShadow>
 
       <Button
-        href="/new-local-game"
         className="mt-auto w-full max-w-md shrink-0"
         color="default"
         variant="flat"
@@ -192,12 +204,198 @@ export default function LocalGames() {
                 })
               }
             />
+
+            <div className="flex flex-col gap-3 overflow-y-auto max-h-96 p-4">
+              {newGame.state.players.map((player, i) => (
+                <>
+                  <span className="text-center">{i + 1}. játékos</span>
+                  <div className="flex gap-2 items-center">
+                    <Dropdown showArrow>
+                      <DropdownTrigger className="opacity-100 cursor-pointer disabled:cursor-default">
+                        <Avatar
+                          classNames={{
+                            base: "rounded-lg bg-transparent",
+                            img: "object-contain",
+                          }}
+                          src={player.image}
+                        />
+                      </DropdownTrigger>
+                      <DropdownMenu
+                        selectionMode="single"
+                        selectedKeys={[
+                          DEFAULT_PLAYER_IMAGES.find(
+                            (x) => x.image === player.image
+                          )?.id ?? "",
+                        ]}
+                        onSelectionChange={(value) => {
+                          setNewGame((prev) => ({
+                            ...prev,
+                            state: {
+                              ...prev.state,
+                              players: prev.state.players.map((p) =>
+                                p.index === player.index
+                                  ? {
+                                      ...p,
+                                      image:
+                                        DEFAULT_PLAYER_IMAGES.find(
+                                          (x) => x.id === value.currentKey
+                                        )?.image ?? "",
+                                    }
+                                  : p
+                              ),
+                            },
+                          }));
+                        }}
+                        children={[
+                          <DropdownItem
+                            key=""
+                            classNames={{
+                              title: "font-medium ml-2",
+                            }}
+                            color="primary"
+                            startContent={
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1.5rem"
+                                height="1.5rem"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                className="h-8 mx-1"
+                              >
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                <path d="M12 17h.01" />
+                              </svg>
+                            }
+                          >
+                            Egyéni
+                          </DropdownItem>,
+                          ...DEFAULT_PLAYER_IMAGES.map((image) => (
+                            <DropdownItem
+                              key={image.id}
+                              classNames={{
+                                title: "font-medium ml-2",
+                              }}
+                              startContent={
+                                <Avatar
+                                  classNames={{
+                                    base: "rounded-lg h-8 w-8 bg-transparent",
+                                    img: "object-contain",
+                                  }}
+                                  src={image.image}
+                                />
+                              }
+                            >
+                              {image.name}
+                            </DropdownItem>
+                          )),
+                        ].filter(Boolean)}
+                      ></DropdownMenu>
+                    </Dropdown>
+                    <Input
+                      label={"Név"}
+                      placeholder="Név..."
+                      value={player.name}
+                      onValueChange={(value) => {
+                        setNewGame((prev) => ({
+                          ...prev,
+                          state: {
+                            ...prev.state,
+                            players: prev.state.players.map((p) =>
+                              p.index === player.index
+                                ? {
+                                    ...p,
+                                    name: value,
+                                  }
+                                : p
+                            ),
+                          },
+                        }));
+                      }}
+                    />
+                  </div>
+
+                  {!DEFAULT_PLAYER_IMAGES.find(
+                    (x) => x.image === player.image
+                  ) && (
+                    <Input
+                      label={"Kép"}
+                      placeholder="Kép URL címe..."
+                      value={player.image}
+                      onValueChange={(value) => {
+                        setNewGame((prev) => ({
+                          ...prev,
+                          state: {
+                            ...prev.state,
+                            players: prev.state.players.map((p) =>
+                              p.index === player.index
+                                ? {
+                                    ...p,
+                                    image: value,
+                                  }
+                                : p
+                            ),
+                          },
+                        }));
+                      }}
+                    />
+                  )}
+                  {i != newGame.state.players.length - 1 && <Divider />}
+                </>
+              ))}
+            </div>
           </ModalBody>
-          <ModalFooter>
+          <ModalFooter className="flex flex-wrap gap-2">
             <Button
-              className="w-full font-bold"
+              className="w-full basis-[calc(50%-0.25rem)] font-bold"
               size="lg"
               color="primary"
+              isDisabled={newGame.state.players.length <= 1}
+              onPress={() => {
+                setNewGame((prev) => ({
+                  ...prev,
+                  state: {
+                    ...prev.state,
+                    players: prev.state.players.filter(
+                      (_, i) => i != prev.state.players.length - 1
+                    ),
+                  },
+                }));
+              }}
+            >
+              - játékos
+            </Button>
+            <Button
+              className="w-full basis-[calc(50%-0.25rem)] font-bold"
+              size="lg"
+              color="primary"
+              onPress={() => {
+                setNewGame((prev) => ({
+                  ...prev,
+                  state: {
+                    ...prev.state,
+                    players: [
+                      ...prev.state.players,
+                      {
+                        ...defaultPlayer,
+                        index: prev.state.players.length,
+                        name: `Játékos ${prev.state.players.length + 1}`,
+                      },
+                    ],
+                  },
+                }));
+              }}
+            >
+              + játékos
+            </Button>
+            <Button
+              className="w-full basis-full font-bold"
+              size="lg"
+              color="success"
               onPress={() => {
                 localStorage.setItem(
                   `local-game-${newGame.meta.id}`,
