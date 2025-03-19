@@ -73,6 +73,7 @@ export function useOnlineGame(id, isAdmin = false) {
   }, [state, player]);
 
   useEffect(() => {
+    if (!player) return;
     ws.current = new WebSocket(
       `${SERVER_URL}/ws/${isAdmin ? "admin" : "game"}-${id}?playerID=${
         player.id
@@ -94,7 +95,7 @@ export function useOnlineGame(id, isAdmin = false) {
     return () => {
       ws.current.close();
     };
-  }, []);
+  }, [player?.id]);
 
   useEffect(() => {
     if (state.winningPlayerIndex !== -1) {

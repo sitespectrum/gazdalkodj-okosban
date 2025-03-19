@@ -15,7 +15,7 @@ import { useOnlinePlayer } from "./use-online-player";
 
 /**
  * @param {string} gameID
- * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>, isNotFound: boolean, loading: boolean, fading: boolean}}
+ * @returns {{lobby: Lobby, startGame: () => Promise<void>, updatePlayer: (player: PublicPlayer) => Promise<void>, isNotFound: boolean, isFull: boolean, loading: boolean, fading: boolean}}
  */
 export function useLobby(gameID) {
   const { player } = useOnlinePlayer();
@@ -23,12 +23,14 @@ export function useLobby(gameID) {
 
   const [lobby, setLobby] = useState(/** @type {Lobby} */ (null));
   const [isNotFound, setIsNotFound] = useState(false);
+  const [isFull, setIsFull] = useState(false);
   const [loading, setLoading] = useState(true);
   const [fading, setFading] = useState(false);
 
   const ws = useRef(/** @type {WebSocket} */ (null));
 
   useEffect(() => {
+    if (!player) return;
     const playerJson = JSON.stringify(player);
     const encodedPlayer = encodeURIComponent(playerJson);
     ws.current = new WebSocket(
@@ -43,12 +45,15 @@ export function useLobby(gameID) {
       if (e.reason === "lobby-not-found") {
         setIsNotFound(true);
       }
+      if (e.reason === "lobby-full") {
+        setIsFull(true);
+      }
     };
 
     return () => {
       ws.current.close();
     };
-  }, []);
+  }, [player?.id]);
 
   /**
    * @param {WebSocketMessage<Lobby>} message
@@ -170,6 +175,7 @@ export function useLobby(gameID) {
     startGame,
     updatePlayer: playerUpdatedCaller,
     isNotFound,
+    isFull,
     loading,
     fading,
   };

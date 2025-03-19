@@ -69,8 +69,15 @@ function LockIcon() {
 
 export default function Lobby() {
   const { id } = useParams();
-  const { lobby, fading, startGame, updatePlayer, isNotFound, loading } =
-    useLobby(id);
+  const {
+    lobby,
+    fading,
+    startGame,
+    updatePlayer,
+    isNotFound,
+    isFull,
+    loading,
+  } = useLobby(id);
   const { player: onlinePlayer, setPlayer: setOnlinePlayer } =
     useOnlinePlayer();
 
@@ -105,7 +112,7 @@ export default function Lobby() {
         Váróterem
       </h1>
 
-      {loading && !isNotFound && (
+      {loading && !isNotFound && !isFull && (
         <div className="w-full flex-1 h-full flex items-center justify-center">
           <Spinner variant="simple" size="lg" />
         </div>
@@ -116,12 +123,27 @@ export default function Lobby() {
           <span className="text-2xl font-semibold">A játék nem található</span>
           <Button
             as={Link}
-            href="/"
+            href="/online-games"
             className="font-medium"
             size="lg"
             color="primary"
           >
-            Vissza a főoldalra
+            Vissza a listához
+          </Button>
+        </div>
+      )}
+
+      {isFull && (
+        <div className="w-full flex-1 flex flex-col gap-6 h-full items-center justify-center">
+          <span className="text-2xl font-semibold">A játék már tele van</span>
+          <Button
+            as={Link}
+            href="/online-games"
+            className="font-medium"
+            size="lg"
+            color="primary"
+          >
+            Vissza a listához
           </Button>
         </div>
       )}

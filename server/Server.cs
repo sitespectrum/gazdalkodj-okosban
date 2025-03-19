@@ -24,12 +24,19 @@ app.UseCors("AllowAllOrigins");
 app.MapGet("/", () => "Gazdálkodj Okosban!");
 
 app.MapGet("/games", () => {
-    return Results.Json(GlobalData.Games.Where(g => !g.HasStarted && g.IsPublic).Select(g => new {
-        g.ID,
-        g.Name,
-        g.MaxPlayers,
-        playerCount = g.LobbyConnections.DistinctBy(c => c.ID).Count()
-    }));
+    return Results.Json(
+        GlobalData.Games
+            .Where(
+                g => !g.HasStarted
+                    && g.IsPublic
+                    && g.LobbyConnections.DistinctBy(c => c.ID).Count() < g.MaxPlayers)
+            .Select(g => new {
+                g.ID,
+                g.Name,
+                g.MaxPlayers,
+                playerCount = g.LobbyConnections.DistinctBy(c => c.ID).Count()
+            })
+    );
 });
 
 app.MapGet("/admin/games", () => {
@@ -55,6 +62,10 @@ app.MapPost("/create-game", (Game game, [FromQuery] string hostID, HttpContext c
         game.MaxPlayers = 1;
     }
 
+    if (game.MaxPlayers > 999) {
+        game.MaxPlayers = 999;
+    }
+
     GlobalData.Games.Add(game);
 
     return Results.Ok(game);
@@ -74,6 +85,11 @@ app.MapGet("/ws/lobby-{gameID}", async (string gameID, string playerData, HttpCo
 
     if (game == null) {
         await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "lobby-not-found", CancellationToken.None);
+        return;
+    }
+
+    if (game.LobbyConnections.DistinctBy(x => x.ID).Count() >= game.MaxPlayers) {
+        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "lobby-full", CancellationToken.None);
         return;
     }
 
