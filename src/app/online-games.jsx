@@ -200,6 +200,10 @@ export default function OnlineGames() {
               label="Maximális játékosok száma"
               placeholder="Maximális játékosok száma"
               value={newGame.maxPlayers}
+              min={1}
+              max={999}
+              minValue={1}
+              maxValue={999}
               onValueChange={(value) =>
                 setNewGame({
                   ...newGame,
