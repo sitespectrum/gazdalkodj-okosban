@@ -273,6 +273,7 @@ export function useOnlineGame(id, isAdmin = false) {
           }
           updateState((prevGameState) => {
             prevGameState.players[playerIndex].state = "rolledDice";
+            prevGameState.players[playerIndex].canEndTurn = true;
             return {
               ...prevGameState,
             };

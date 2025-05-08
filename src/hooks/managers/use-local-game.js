@@ -234,6 +234,7 @@ export function useLocalGame() {
           showAlert(`Csak hatos dobással lehet kiszabadulni a börtönből!`);
           updateState((prevGameState) => {
             prevGameState.players[playerIndex].state = "rolledDice";
+            prevGameState.players[playerIndex].canEndTurn = true;
             return {
               ...prevGameState,
             };

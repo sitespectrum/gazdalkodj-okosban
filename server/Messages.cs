@@ -403,6 +403,7 @@ public class MessagesHandler(Game game, PlayerConnection connection) {
         if (game.State.Players[playerIndex].InJail && steps != 6) {
             game.State.Players[playerIndex].CanRollDice = false;
             game.State.Players[playerIndex].State = "rolledDice";
+            game.State.Players[playerIndex].CanEndTurn = true;
 
             BroadcastMessage(new WebSocketMessage<object> {
                 Type = "move-player-result",
